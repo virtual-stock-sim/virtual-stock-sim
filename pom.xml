@@ -40,49 +40,49 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-annotations</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/apache-jstl -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jstl</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-io -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-io</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-jmx -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jmx</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-plus -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty.toolchain/jetty-schemas -->
@@ -110,28 +110,28 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-xml -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-xml</artifactId>
-            <version>9.4.3.v20170317</version>
+            <version>9.4.17.v20190418</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
