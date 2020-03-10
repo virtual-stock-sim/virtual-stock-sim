@@ -1,0 +1,12 @@
+.idea/**
+*.iml
+.settings/**
+.claspath
+.project
+
+bin/**
+test-bin/**
+target/**
+
+logs/**
+derby.log
