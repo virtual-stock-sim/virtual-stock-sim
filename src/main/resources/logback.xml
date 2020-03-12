@@ -4,7 +4,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level %logger{36} - %msg%n)</pattern>
         </encoder>
     </appender>
 
@@ -20,5 +20,34 @@
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
+
+    <!-- Prevent jetty from spamming console and regular server log while still logging debug info -->
+    <!--<timestamp key="jetty-byDay" datePattern="yyyyMMdd'T'HHmmss"/>
+    <appender name="JETTY-STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level %logger{36} - %msg%n)</pattern>
+        </encoder>
+    </appender>
+    <appender name="JETTY-FILE" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <file>./logs/jetty_log-${jetty-byDay}.txt</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.eclipse" additivity="FALSE">
+        <appender-ref ref="JETTY-STDOUT"/>
+        <appender-ref ref="JETTY-FILE"/>
+    </logger>
+    <logger name="org.apache" additivity="FALSE">
+        <appender-ref ref="JETTY-STDOUT"/>
+        <appender-ref ref="JETTY-FILE"/>
+    </logger>-->
 
 </configuration>
