@@ -39,7 +39,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>transactionHistoryServlet</servlet-name>
-        <servlet-class>io.github.virtualstocksim.servlet.transactionHistoryServlet</servlet-class>
+        <servlet-class>io.github.virtualstocksim.servlet.TransactionHistoryServlet</servlet-class>
     </servlet>
 
 
@@ -50,7 +50,7 @@
 
     <servlet>
         <servlet-name>stocksFollowedServlet</servlet-name>
-        <servlet-class>io.github.virtualstocksim.servlet.stocksFollowedServlet</servlet-class>
+        <servlet-class>io.github.virtualstocksim.servlet.StocksFollowedServlet</servlet-class>
     </servlet>
 
 </web-app>

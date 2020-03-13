@@ -1,10 +1,10 @@
 package io.github.virtualstocksim.model;
 
-public class transactionHistoryModel {
+public class TransactionHistoryModel {
     // this stuff is subject to change when i can get my hands on actual data
 
 
-    public transactionHistoryModel() {
+    public TransactionHistoryModel() {
     }
 
 
@@ -22,39 +22,34 @@ public class transactionHistoryModel {
         return boughtPriceList[stockID] * numSharesList[stockID];
     }
 
-
-
     public double getBoughtPrice(int stockID) {
         return boughtPriceList[stockID];
     }
 
     public String[] getTicker() {
-
         return tickerList;
-
     }
 
-    public String getTest(){
-        return "TESTING";
-    }
-    public String getFirstStock() {
+    public String getStockHTML() {
         for(int i=0;i<4;i++) {
-             StockInfoToDisplay+=("<b>"+tickerList[i]+"</b>" + "    bought  " + numSharesList[i] + "Shares     @ $" + boughtPriceList[i] + " Total investment at time of buy: $" + this.getVolumePrice(i) +"<br/>" + "<br/>");
+             StockInfoToDisplay+=("<b>"+tickerList[i]+"</b>" + "    bought  " + numSharesList[i] + "Shares at $" + boughtPriceList[i] + " per share. Total investment at time of buy: $" + this.getVolumePrice(i) +"<br/>" + "<br/>");
         }
 
         return this.StockInfoToDisplay;
 
     }
 
-
     public void setNumShares(int x,int stockID) {
+
         numSharesList[stockID]=x;
     }
     public void setBoughtPrice(double x,int stockID){
+
         boughtPriceList[stockID]=x;
     }
 
     public void setCurrentPrice(double x,int stockID){
+
         currentPriceList[stockID]=x;
     }
 

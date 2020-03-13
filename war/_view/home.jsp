@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <html>
 <head>
-    <style><%@include file="../_view/homePageStyle.css"%></style>
+    <style><%@include file="cssfiles/homePageStyle.css"%></style>
 
     <title>VSS: Virtual Stock Sim</title>
 </head>
