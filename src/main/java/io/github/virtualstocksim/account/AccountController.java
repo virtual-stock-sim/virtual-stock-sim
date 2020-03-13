@@ -4,13 +4,10 @@ import  io.github.virtualstocksim.account.Account;
 
 public class AccountController {
     // account instance
-    private Account acc = new Account();
+    private Account acc;
 
     public AccountController() {
-         //hardcoded values for now 
-        acc.username = "VSS Admin";
-        acc.password = "virtualstocksim";
-        acc.email = "test-admin@vss.com";
+        acc = new Account("VSS Admin", "virtualstocksim", "test-admin@vss.com");
 
     }
 

@@ -1,12 +1,15 @@
 package io.github.virtualstocksim.account;
 
 public class Account {
-    public String username = "";
-    public String password = "";
-    public String email = "";
+    public String username;
+    public String password;
+    public String email;
 
 
-    public Account() {
+    public Account(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
 
