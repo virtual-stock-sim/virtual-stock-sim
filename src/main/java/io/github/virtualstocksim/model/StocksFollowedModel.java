@@ -1,6 +1,6 @@
 package io.github.virtualstocksim.model;
 
-public class stocksFollowedModel {
+public class StocksFollowedModel {
     //Using hard-coded data and a janky string for HTML, but the core concept is here
     private String tickerList[] = {"TSLA", "F", "DD", "AAPL", "GOOGL"};
     private double boughtPriceList[] = {360, 17, 123, 400, 51.3};
@@ -11,6 +11,10 @@ public class stocksFollowedModel {
     public double getPercentChange(int stockID) {
         return ((currentPriceList[stockID] - boughtPriceList[stockID]) / this.boughtPriceList[stockID]) * 100;
     }
+    public double getCurrentPrice(int stockID){
+        return currentPriceList[stockID];
+    }
+
     public String getFollowTest(){
         return "Hey, it worked";
     }

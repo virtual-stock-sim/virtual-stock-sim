@@ -8,18 +8,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import io.github.virtualstocksim.model.transactionHistoryModel;
+import io.github.virtualstocksim.model.TransactionHistoryModel;
 
-public class stocksFollowedServlet extends HttpServlet
+public class TransactionHistoryServlet extends HttpServlet
 {
     private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        logger.info("StocksFollowed Servlet: doGet");
-        transactionHistoryModel model = new transactionHistoryModel();
+        logger.info("Home Servlet: doGet");
+        TransactionHistoryModel model = new TransactionHistoryModel();
         req.setAttribute("model",model);
-        req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
+        req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
     }
 }
