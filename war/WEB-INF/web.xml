@@ -31,4 +31,14 @@
     </servlet>
 
 
+    <servlet-mapping>
+        <servlet-name>stocksFollowedServlet</servlet-name>
+        <url-pattern>/following</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>stocksFollowedServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.stocksFollowedServlet</servlet-class>
+    </servlet>
+
 </web-app>
