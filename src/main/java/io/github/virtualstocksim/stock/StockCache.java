@@ -12,15 +12,17 @@ public class StockCache extends Database
 {
     private static final Logger logger = LoggerFactory.getLogger(StockCache.class);
 
-    private static Lazy<StockCache> singleton = Lazy.lazily(new StockCache());
+    private static String dbPath = "vss_stockcache.db";
+
+    private static Lazy<StockCache> singleton = Lazy.lazily(() -> new StockCache(dbPath));
     public static StockCache Instance()
     {
         return singleton.get();
     }
 
-    private StockCache()
+    private StockCache(String dbPath)
     {
-        super("vss_stockcache.db");
+        super(dbPath);
         try
         {
             createTables();
