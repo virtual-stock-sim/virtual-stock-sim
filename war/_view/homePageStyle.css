@@ -1,8 +1,20 @@
 body {
-    background-color: gray;
+    background-color: #404040;
+    color:white;
+    text-align: center;
 }
 
 
-h1 {
-    margin-left: 50%;
+
+.header {
+    font-size: 30px;
+}
+
+.login-credentials {
+    padding:5px;
+}
+
+.create-account {
+    font-size: 30px;
+    margin-top:8%;
 }
