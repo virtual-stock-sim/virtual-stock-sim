@@ -11,3 +11,5 @@ WEB-INF/classes/**
 
 logs/**
 derby.log
+
+*.db
