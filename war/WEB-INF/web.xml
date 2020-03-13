@@ -26,9 +26,31 @@
         <servlet-name>CreateAccountServlet</servlet-name>
         <url-pattern>/createAccount</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>CreateAccountServlet</servlet-name>
         <servlet-class>io.github.virtualstocksim.servlet.CreateAccountServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>transactionHistoryServlet</servlet-name>
+        <url-pattern>/transactionhistory</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>transactionHistoryServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.transactionHistoryServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>stocksFollowedServlet</servlet-name>
+        <url-pattern>/following</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>stocksFollowedServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.stocksFollowedServlet</servlet-class>
     </servlet>
 
 </web-app>
