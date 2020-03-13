@@ -20,4 +20,15 @@
         <servlet-class>io.github.virtualstocksim.servlet.HomeServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>transactionHistoryServlet</servlet-name>
+        <url-pattern>/transactionhistory</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>transactionHistoryServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.transactionHistoryServlet</servlet-class>
+    </servlet>
+
+
 </web-app>
