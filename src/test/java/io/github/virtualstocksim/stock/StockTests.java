@@ -4,9 +4,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class StockTests extends StockCacheTestsBase
@@ -78,13 +80,20 @@ public class StockTests extends StockCacheTestsBase
     @Test
     public void testGetId()
     {
-
+        assertEquals(Stock.GetStock(1).get(), new Stock(1, "TSLA", new BigDecimal("360.00"), 1));
     }
 
     @Test
     public void testGetSymbol()
     {
+        assertEquals(Stock.GetStock("TSLA").get(), new Stock(1, "TSLA", new BigDecimal("360.00"), 1));
+    }
 
+    @Test
+    public void testStockData()
+    {
+        Stock stock = Stock.GetStock(1).get();
+        assertEquals(stock.getStockData(), new StockData(1, "test data 1").getData());
     }
 
     @Test
