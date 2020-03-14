@@ -22,10 +22,10 @@
     </root>
 
     <!-- Prevent jetty from spamming console and regular server log while still logging debug info -->
-    <!--<timestamp key="jetty-byDay" datePattern="yyyyMMdd'T'HHmmss"/>
+    <timestamp key="jetty-byDay" datePattern="yyyyMMdd'T'HHmmss"/>
     <appender name="JETTY-STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>TRACE</level>
+            <level>INFO</level>
         </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level %logger{36} - %msg%n)</pattern>
@@ -33,7 +33,7 @@
     </appender>
     <appender name="JETTY-FILE" class="ch.qos.logback.core.FileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>TRACE</level>
         </filter>
         <file>./logs/jetty_log-${jetty-byDay}.txt</file>
         <append>true</append>
@@ -48,6 +48,6 @@
     <logger name="org.apache" additivity="FALSE">
         <appender-ref ref="JETTY-STDOUT"/>
         <appender-ref ref="JETTY-FILE"/>
-    </logger>-->
+    </logger>
 
 </configuration>

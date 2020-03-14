@@ -5,18 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-public class StockCacheTests
+public class StockCacheTests extends StockCacheTestsBase
 {
-    private static StockCache sc;
-
     @BeforeClass
     public static void setup()
     {
-        sc = StockCache.Instance();
+
     }
 
     @Test
-    public void testSetup()
+    public void testInstantiation()
     {
         try
         {

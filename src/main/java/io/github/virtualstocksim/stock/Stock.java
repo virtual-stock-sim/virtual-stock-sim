@@ -15,9 +15,9 @@ public class Stock extends DatabaseItem
     private static final Logger logger = LoggerFactory.getLogger(Stock.class);
     private static StockCache dataCache = StockCache.Instance();
 
-    public String symbol;
-    public BigDecimal currPrice;
-    public final Lazy<StockData> stockData;
+    private String symbol;
+    private BigDecimal currPrice;
+    private final Lazy<StockData> stockData;
 
     public Stock(int id, String symbol, BigDecimal currPrice, int stockData)
     {
@@ -26,6 +26,14 @@ public class Stock extends DatabaseItem
         this.currPrice = currPrice;
         this.stockData = Lazy.lazily(() -> StockData.GetStockData(stockData).orElse(null));
     }
+
+    public String getSymbol() { return symbol; }
+    public void setSymbol(String symbol) { this.symbol = symbol; }
+
+    public BigDecimal getCurrPrice() { return currPrice; }
+    public void setCurrPrice(BigDecimal currPrice) { this.currPrice = currPrice; }
+
+    public String getStockData() { return stockData.get().getData(); }
 
     // Search database for stock entry based on param
     public static Optional<Stock> GetStock(int id)

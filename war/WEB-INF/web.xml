@@ -62,4 +62,13 @@
         <servlet-class>io.github.virtualstocksim.servlet.StocksFollowedServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>TestDisplayStockServlet</servlet-name>
+        <url-pattern>/testDisplayStocks</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>TestDisplayStockServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.TestDisplayStockServlet</servlet-class>
+    </servlet>
+
 </web-app>
