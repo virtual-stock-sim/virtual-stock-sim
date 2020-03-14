@@ -96,12 +96,24 @@ i {
 .leaderboard {
     position: absolute;
     bottom: 400px;
-    left: 10%;
+    left: 8%;
 }
 
 .top-stocks {
     position: absolute;
-    bottom: 400px;
-    left: 45%;
+    bottom: 365px;
+    left: 35%;
 }
+
+.about {
+    position: absolute;
+    bottom: 250px;
+    left: 55%;
+    margin-right: 5%;
+}
+
+.dev-name {
+    padding: 10px;
+}
+
 
