@@ -1,15 +1,14 @@
 package io.github.virtualstocksim.servlet;
+
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet
@@ -40,15 +39,28 @@ public class LoginServlet extends HttpServlet
 
         // assign model reference to allow controller to access it
         controller.setModel(acc);
+
         try {
             String uname = req.getParameter("uname");
             String pword = req.getParameter("pword");
             acc.setUname(uname);
             acc.setPword(pword);
-            if(uname == null || uname.isEmpty() || pword == null || pword.isEmpty()) {
+
+            // If user input is invalid, return error message with same page
+            /*
+             *
+             * TODO: Make a function to validate uname and pword (i.e. that the input is of the correct format,
+             *  isn't empty, isn't just a bunch of spaces, etc) instead of just using *.isEmpty();
+             *
+             */
+            if(uname.isEmpty() || pword.isEmpty()) {
                 errorMessage = "Login Failed. Please enter your username and password.";
                 req.setAttribute("errorMessage", errorMessage);
-
+                req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
+                /*
+                 * QUIT EARLY
+                 */
+                return;
             }
         } catch (NumberFormatException e){
             errorMessage = "Invalid String";
