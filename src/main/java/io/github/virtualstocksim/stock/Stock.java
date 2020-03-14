@@ -24,7 +24,7 @@ public class Stock extends DatabaseItem
         super(id);
         this.symbol = symbol;
         this.currPrice = currPrice;
-        this.stockData = Lazy.lazily(StockData.GetStockData(stockData).orElse(null));
+        this.stockData = Lazy.lazily(() -> StockData.GetStockData(stockData).orElse(null));
     }
 
     // Search database for stock entry based on param

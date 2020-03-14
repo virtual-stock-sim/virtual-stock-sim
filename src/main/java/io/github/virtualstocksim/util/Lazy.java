@@ -35,9 +35,4 @@ public class Lazy<T>
     {
         return new Lazy<>(toBeEval);
     }
-    // Lazy evaluation for object/value
-    public static <T> Lazy<T> lazily(T toBeEval)
-    {
-        return new Lazy<>(() -> toBeEval);
-    }
 }
