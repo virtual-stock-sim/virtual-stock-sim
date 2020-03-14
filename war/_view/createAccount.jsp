@@ -33,6 +33,12 @@
         <div class ="header">
                 <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
                 <h2>Simulated Investing, Reimagined</h2>
+                <button onClick="redirectHome()">Back to Login</button>
+                <script>
+                        function redirectHome() {
+                                location.href = "login";
+                        }
+                </script>
         </div>
 </body>
 

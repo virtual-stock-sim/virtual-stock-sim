@@ -5,16 +5,13 @@ body {
 }
 
 
-
 .header {
-    font-size: 30px;
+    font-size: 20px;
 }
 
-.login-credentials {
-    padding:5px;
-}
-
-.create-account {
-    font-size: 30px;
-    margin-top:8%;
+/* Placing Button in upper left */
+.createAccountBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
