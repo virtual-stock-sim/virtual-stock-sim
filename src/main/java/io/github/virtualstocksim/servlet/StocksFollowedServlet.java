@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.model.StocksFollowedModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class StocksFollowedServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         logger.info("StocksFollowed Servlet: doGet");
-        TransactionHistoryModel model = new TransactionHistoryModel();
+        StocksFollowedModel model = new StocksFollowedModel();
         req.setAttribute("model",model);
         req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
     }

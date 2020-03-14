@@ -13,7 +13,7 @@
     <h1>Followed Stocks</h1>
     <h3>Gain/loss of investments and followed stocks</h3>
     <div>
-
+    ${model.followedStockHTML}
 
 
     </div>
