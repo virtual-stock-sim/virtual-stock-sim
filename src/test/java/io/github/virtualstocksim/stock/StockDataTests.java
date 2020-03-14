@@ -1,13 +1,14 @@
 package io.github.virtualstocksim.stock;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class StockDataTests
+public class StockDataTests extends StockCacheTestsBase
 {
-    @Before
-    public void setup()
+    @BeforeClass
+    public static void setup()
     {
+
     }
 
     @Test

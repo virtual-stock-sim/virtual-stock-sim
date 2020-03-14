@@ -9,17 +9,14 @@ import java.util.LinkedList;
 
 import static org.junit.Assert.fail;
 
-public class StockTests
+public class StockTests extends StockCacheTestsBase
 {
-    private static StockCache sc;
-
     private static LinkedList<Integer> testStockDataIds;
     private static LinkedList<Integer> testStockIds;
 
     @BeforeClass
     public static void setup()
     {
-        sc = StockCache.Instance();
         testStockDataIds = new LinkedList<>();
         testStockIds = new LinkedList<>();
 

@@ -14,13 +14,13 @@ public class StockCache extends Database
 
     private static String dbPath = "vss_stockcache.db";
 
-    private static Lazy<StockCache> singleton = Lazy.lazily(() -> new StockCache(dbPath));
+    private static Lazy<StockCache> singleton = Lazy.lazily(StockCache::new);
     public static StockCache Instance()
     {
         return singleton.get();
     }
 
-    private StockCache(String dbPath)
+    private StockCache()
     {
         super(dbPath);
         try
@@ -53,6 +53,23 @@ public class StockCache extends Database
                     "data_id INT NOT NULL REFERENCES stocks_data(id)"
                     );
         }
+    }
+
+    public static void changeDatabase(String dbPath)
+    {
+        // Attempt to close current connection if there is one
+        try
+        {
+            if(singleton.hasEvaluated()) Instance().closeConnection();
+        } catch (SQLException e)
+        {
+            logger.error("Error closing database connection for stock cache\nError: " + e.getMessage());
+            return;
+        }
+
+        // Create new singleton with new database
+        StockCache.dbPath = dbPath;
+        singleton = Lazy.lazily(StockCache::new);
     }
 
 }

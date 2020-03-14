@@ -15,12 +15,15 @@ public class StockData extends DatabaseItem
     private static StockCache dataCache = StockCache.Instance();
 
     // Table columns
-    public String data;
+    private String data;
     public StockData(int id, String data)
     {
         super(id);
         this.data = data;
     }
+
+    public String getData() { return data; }
+    public void setData(String data) { this.data = data; }
 
     // Search database for entry based on id
     public static Optional<StockData> GetStockData(int id)
