@@ -20,6 +20,7 @@ public class TransactionHistoryServlet extends HttpServlet
         logger.info("Home Servlet: doGet");
         TransactionHistoryModel model = new TransactionHistoryModel();
         req.setAttribute("model",model);
+        req.setAttribute("stockList",model.getStockHTML());
         req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
     }
 }

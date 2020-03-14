@@ -16,6 +16,8 @@
     <h1>Transaction History</h1>
     <h3>A history of your stock purchases through VSS</h3>
     <div class = bodytext>
+
+        <c:forEach
         ${model.stockHTML}
     </div>
 </form>
