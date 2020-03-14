@@ -38,11 +38,35 @@ public class Stock extends DatabaseItem
     // Search database for stock entry based on param
     public static Optional<Stock> GetStock(int id)
     {
-        return get("SELECT id, symbol, curr,_price, data_id FROM stocks WHERE id = ?", id);
+        // Hardcoded values for testing
+        switch (id)
+        {
+            case 1: return Optional.of(new Stock(id, "TSLA", new BigDecimal("360.00"), id));
+            case 2: return Optional.of(new Stock(id, "F", new BigDecimal("17.00"), id));
+            case 3: return Optional.of(new Stock(id, "DD", new BigDecimal("123.00"), id));
+            case 4: return Optional.of(new Stock(id, "AAPL", new BigDecimal("400.00"), id));
+            case 5: return Optional.of(new Stock(id, "GOOGL", new BigDecimal("51.30"), id));
+            default:
+                return Optional.empty();
+        }
+
+        //return get("SELECT id, symbol, curr,_price, data_id FROM stocks WHERE id = ?", id);
     }
     public static Optional<Stock> GetStock(String symbol)
     {
-        return get("SELECT id, symbol, curr_price, data_id FROM stocks WHERE symbol = ?", symbol);
+        // Hardcoded values for jsp testing
+        switch (symbol)
+        {
+            case "TSLA": return Optional.of(new Stock(1, "TSLA", new BigDecimal("360.00"), 1));
+            case "F": return Optional.of(new Stock(2, "F", new BigDecimal("17.00"), 2));
+            case "DD": return Optional.of(new Stock(3, "DD", new BigDecimal("123.00"), 3));
+            case "AAPL": return Optional.of(new Stock(4, "AAPL", new BigDecimal("400.00"), 4));
+            case "GOOGL": return Optional.of(new Stock(5, "GOOGL", new BigDecimal("51.30"), 5));
+            default:
+                return Optional.empty();
+        }
+
+        //return get("SELECT id, symbol, curr_price, data_id FROM stocks WHERE symbol = ?", symbol);
     }
 
     // Generic search func
