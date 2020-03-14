@@ -23,7 +23,7 @@
             <label for="uname">Username:</label><br>
             <input type="text" id="uname" name="uname" value="${acc.uname}"><br>
             <label for="pword">Password:</label><br>
-            <input type="text" id="pword" name="pword" value="${acc.pword}"><br><br>
+            <input type="password" id="pword" name="pword" value="${acc.pword}"><br><br>
             <input type="submit" value ="Enter">
         </form>
     </div>
@@ -37,6 +37,7 @@
             function redirectAccount() {
                location.href = "createAccount";
             }
+
         </script>
 
     </div>

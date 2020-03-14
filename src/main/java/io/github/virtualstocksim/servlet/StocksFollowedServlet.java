@@ -12,7 +12,7 @@ import io.github.virtualstocksim.model.TransactionHistoryModel;
 
 public class StocksFollowedServlet extends HttpServlet
 {
-    private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(StocksFollowedServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException

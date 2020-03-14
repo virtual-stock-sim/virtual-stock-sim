@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class LoginServlet extends HttpServlet
 {
-    private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -46,15 +46,10 @@ public class LoginServlet extends HttpServlet
             acc.setUname(uname);
             acc.setPword(pword);
 
+
             // If user input is invalid, return error message with same page
-            /*
-             *
-             * TODO: Make a function to validate uname and pword (i.e. that the input is of the correct format,
-             *  isn't empty, isn't just a bunch of spaces, etc) instead of just using *.isEmpty();
-             *
-             */
-            if(uname.isEmpty() || pword.isEmpty()) {
-                errorMessage = "Login Failed. Please enter your username and password.";
+            if(!loginIsValid(uname, pword)) {
+                errorMessage = "Login Failed. Please enter a valid username and password.";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
                 /*
@@ -74,6 +69,18 @@ public class LoginServlet extends HttpServlet
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
 
+    }
+
+    /*
+     * TODO: Make a function to validate uname and pword (i.e. that the input is of the correct format,
+     *  isn't empty, isn't just a bunch of spaces, etc) instead of just using *.isEmpty();
+     */
+    public boolean loginIsValid(String username, String password){
+        if(username.isEmpty() || password.isEmpty() || (username.getClass() != String.class)
+                || password.getClass() != String.class || password.contains(" ") || username.contains(" ") ) {
+            return false;
+        }
+        return true;
     }
 
 }

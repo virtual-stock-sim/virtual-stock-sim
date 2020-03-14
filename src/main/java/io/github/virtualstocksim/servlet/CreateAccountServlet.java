@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class CreateAccountServlet extends HttpServlet {
 
-    private static final Logger logger = LoggerFactory.getLogger(io.github.virtualstocksim.servlet.CreateAccountServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(CreateAccountServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
