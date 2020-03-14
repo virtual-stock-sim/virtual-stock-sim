@@ -16,7 +16,10 @@ public class StockDataTests extends StockCacheTestsBase
     @Test
     public void testGetId()
     {
-        assertEquals(StockData.GetStockData(1).get(), new StockData(1, "test data 1"));
+        StockData fromDB = StockData.GetStockData(1).get();
+        StockData expected = new StockData(1, "test data 1");
+        assertEquals(fromDB.getId(), expected.getId());
+        assertEquals(fromDB.getData(), expected.getData());
     }
 
     @Test

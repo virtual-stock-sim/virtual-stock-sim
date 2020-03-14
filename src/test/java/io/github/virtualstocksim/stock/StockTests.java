@@ -80,14 +80,23 @@ public class StockTests extends StockCacheTestsBase
     @Test
     public void testGetId()
     {
-        assertEquals(Stock.GetStock(1).get(), new Stock(1, "TSLA", new BigDecimal("360.00"), 1));
+        Stock fromDB = Stock.GetStock(1).get() ;
+        Stock expected = new Stock(1, "TSLA", new BigDecimal("360.00"), 1);
+        assertEquals(fromDB.getId(), expected.getId());
+        assertEquals(fromDB.getSymbol(), expected.getSymbol());
+        assertEquals(fromDB.getCurrPrice(), expected.getCurrPrice());
+        assertEquals(fromDB.getStockData(), expected.getStockData());
     }
 
     @Test
     public void testGetSymbol()
     {
-        assertEquals(Stock.GetStock("TSLA").get(), new Stock(1, "TSLA", new BigDecimal("360.00"), 1));
-    }
+        Stock fromDB = Stock.GetStock("TSLA").get() ;
+        Stock expected = new Stock(1, "TSLA", new BigDecimal("360.00"), 1);
+        assertEquals(fromDB.getId(), expected.getId());
+        assertEquals(fromDB.getSymbol(), expected.getSymbol());
+        assertEquals(fromDB.getCurrPrice(), expected.getCurrPrice());
+        assertEquals(fromDB.getStockData(), expected.getStockData());    }
 
     @Test
     public void testStockData()
