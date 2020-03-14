@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import io.github.virtualstocksim.model.TransactionHistoryModel;
+import io.github.virtualstocksim.model.TransactionHistory;
 
 public class TransactionHistoryServlet extends HttpServlet
 {
@@ -18,9 +18,9 @@ public class TransactionHistoryServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         logger.info("Home Servlet: doGet");
-        TransactionHistoryModel model = new TransactionHistoryModel();
+        TransactionHistory model = new TransactionHistory();
         req.setAttribute("model",model);
-        req.setAttribute("stockList",model.getStockHTML());
+        req.setAttribute("stockList",model.getTransactions());
         req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
     }
 }

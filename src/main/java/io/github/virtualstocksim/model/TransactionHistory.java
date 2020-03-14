@@ -1,18 +1,41 @@
 package io.github.virtualstocksim.model;
 import io.github.virtualstocksim.stock.Stock;
-public class TransactionHistoryModel {
+import io.github.virtualstocksim.transaction.Transaction;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class TransactionHistory
+{
 
 
-
-    public TransactionHistoryModel() {
+    private List<Transaction> transactions;
+    public TransactionHistory(Transaction... transactions)
+    {
+        this.transactions = new LinkedList<>(Arrays.asList(transactions));
     }
 
+    public List<Transaction> getTransactions()
+    {
+        return this.transactions;
+    }
+
+    public void setTransactions(Transaction... transactions)
+    {
+        this.transactions = new LinkedList<>(Arrays.asList(transactions));
+    }
+
+    public void addTransaction(Transaction transaction)
+    {
+        this.transactions.add(transaction);
+    }
 
     //this method might not be used later. I'm using it to populate information for ms1
     //for MS1 in this class, a stock ID will only correlate with a position in an array
     //since there are no stock objects at this time, there will be 3 seperate arrays
 
-    private String tickerList[] = {"TSLA", "F", "DD", "AAPL", "GOOGL"};
+    /*private String tickerList[] = {"TSLA", "F", "DD", "AAPL", "GOOGL"};
     private double boughtPriceList[] = {360, 17, 123, 400, 51.3};
     private double currentPriceList[] = {1, 2, 3, 4, 5};
     private int numSharesList[] = {100, 200, 300, 400, 500};
@@ -31,7 +54,7 @@ public class TransactionHistoryModel {
         return tickerList;
     }
 
-    public Stock[] getStockHTML() {
+    public Stock[] getStockList() {
         for(int i=1;i<6;i++) {
             stockList[i-1]=Stock.GetStock(i).get();
         }
@@ -50,7 +73,7 @@ public class TransactionHistoryModel {
     public void setCurrentPrice(double x,int stockID){
 
         currentPriceList[stockID]=x;
-    }
+    }*/
 
 
 
