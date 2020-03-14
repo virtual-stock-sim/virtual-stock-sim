@@ -9,11 +9,10 @@ import java.util.List;
 public class TransactionHistory
 {
 
-
     private List<Transaction> transactions;
-    public TransactionHistory(Transaction... transactions)
+    public TransactionHistory(List<Transaction> transactions)
     {
-        this.transactions = new LinkedList<>(Arrays.asList(transactions));
+        this.transactions = new LinkedList<>(transactions);
     }
 
     public List<Transaction> getTransactions()
