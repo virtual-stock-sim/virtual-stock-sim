@@ -2,5 +2,5 @@
 <%@attribute name="stock" required="true" type="io.github.virtualstocksim.stock.Stock" %>
 
 <span>
-    <span>${stock.symbol}</span><span> ${stock.currPrice}</span>
+    <span>${stock.symbol}</span><span> ${stock.currentPrice}</span>
 </span>

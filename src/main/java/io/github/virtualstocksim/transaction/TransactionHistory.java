@@ -1,4 +1,4 @@
-package io.github.virtualstocksim.model;
+package io.github.virtualstocksim.transaction;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 
@@ -30,9 +30,6 @@ public class TransactionHistory
         this.transactions.add(transaction);
     }
 
-    //this method might not be used later. I'm using it to populate information for ms1
-    //for MS1 in this class, a stock ID will only correlate with a position in an array
-    //since there are no stock objects at this time, there will be 3 seperate arrays
 
     /*private String tickerList[] = {"TSLA", "F", "DD", "AAPL", "GOOGL"};
     private double boughtPriceList[] = {360, 17, 123, 400, 51.3};

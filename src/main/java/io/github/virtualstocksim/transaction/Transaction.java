@@ -3,6 +3,7 @@ package io.github.virtualstocksim.transaction;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class Transaction {
     public enum TransactionType
@@ -33,39 +34,27 @@ public class Transaction {
         return type;
     }
 
-    public void setType(TransactionType type)
-    {
-        this.type = type;
-    }
 
     public String getDate()
     {
         return date;
     }
 
-    public void setDate(String date)
-    {
-        this.date = date;
-    }
 
     public BigDecimal getPricePerShare()
     {
         return pricePerShare;
     }
 
-    public void setPricePerShare(BigDecimal pricePerShare)
-    {
-        this.pricePerShare = pricePerShare;
-    }
 
     public int getNumShares()
     {
         return numShares;
     }
 
-    public void setNumShares(int numShares)
-    {
-        this.numShares = numShares;
+
+    public BigDecimal getVolumePrice(){
+        return pricePerShare.multiply(new BigDecimal(this.numShares));
     }
 
     public Stock getStock()
@@ -73,8 +62,34 @@ public class Transaction {
         return stock;
     }
 
+
+    public void setType(TransactionType type)
+    {
+        this.type = type;
+    }
+
+    public void setDate(String date)
+    {
+        this.date = date;
+    }
+
+    public void setPricePerShare(BigDecimal pricePerShare)
+    {
+        this.pricePerShare = pricePerShare;
+    }
+
     public void setStock(Stock stock)
     {
         this.stock = stock;
     }
+
+    public void setNumShares(int numShares)
+    {
+        this.numShares = numShares;
+    }
+
+
+
+
+
 }

@@ -17,10 +17,8 @@
     <h1>Transaction History</h1>
     <h3>A history of your stock purchases through VSS</h3>
     <div class = bodytext>
-
         <c:forEach var="transaction" items="${model.transactions}">
-            <p>hello</p>
-            <t:transactionTemplate transaction="${transaction}"></t:transactionTemplate>
+            <ul>   <t:transactionTemplate transaction="${transaction}"></t:transactionTemplate> </ul>
         </c:forEach>
     </div>
 </form>
