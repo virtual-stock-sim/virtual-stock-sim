@@ -30,9 +30,12 @@ public class Follow {
     public void setCurrentPrice(){
         this.currentPrice=this.stock.getCurrPrice();
     }
+
     public double getPercentChange(){
         percentChange=this.getCurrentPrice().doubleValue()-this.getInitialPrice().doubleValue();
         percentChange=(percentChange/Math.abs(currentPrice.doubleValue()))*-1;
-        return percentChange*100;
+        DecimalFormat df = new DecimalFormat("#.##");
+        percentChange= percentChange*100;
+        return Double.parseDouble(df.format(percentChange));
     }
 }
