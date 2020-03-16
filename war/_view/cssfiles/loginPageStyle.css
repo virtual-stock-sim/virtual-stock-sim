@@ -18,3 +18,7 @@ body {
     font-size: 30px;
     margin-top:8%;
 }
+
+.error {
+    color: red;
+}
