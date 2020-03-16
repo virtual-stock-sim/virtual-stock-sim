@@ -2,13 +2,13 @@ package io.github.virtualstocksim.following;
 import io.github.virtualstocksim.stock.Stock;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 
 public class Follow {
     private BigDecimal  initialPrice,currentPrice;
     private Stock stock;
     private double percentChange;
 
-    //constructor !!!s
     public Follow(BigDecimal initialPrice, Stock stock){
         this.stock=stock;
         this.initialPrice=initialPrice;
@@ -33,7 +33,6 @@ public class Follow {
     public double getPercentChange(){
         percentChange=this.getCurrentPrice().doubleValue()-this.getInitialPrice().doubleValue();
         percentChange=(percentChange/Math.abs(currentPrice.doubleValue()))*-1;
-
         return percentChange*100;
     }
 }

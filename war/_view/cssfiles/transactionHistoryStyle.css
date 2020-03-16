@@ -1,12 +1,14 @@
-h1{
-    color : green;
+body {
+    background-color: #404040;
+    color:white;
+    text-align: center;
+}
+h3{
+    color:green;
     text-align: center;
 }
 
-h3{
-    color :green;
-    text-align: center;
-}
+
 .bodytext{
     text-align: center;
 }
