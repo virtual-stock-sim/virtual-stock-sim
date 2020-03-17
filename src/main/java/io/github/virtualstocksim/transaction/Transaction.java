@@ -3,17 +3,8 @@ package io.github.virtualstocksim.transaction;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class Transaction {
-    public enum TransactionType
-    {
-        BUY("Buy"), SELL("Sell");
-
-        private final String text;
-        public String getText() { return this.text; }
-        TransactionType(String type) { this.text = type; }
-    }
 
     private TransactionType type;
     private String date;

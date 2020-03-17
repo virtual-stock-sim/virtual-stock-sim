@@ -1,24 +1,24 @@
 package io.github.virtualstocksim.transactionHistory;
-import io.github.virtualstocksim.transaction.Transaction;
-import io.github.virtualstocksim.stock.Stock;
 
+import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.transaction.Transaction;
+import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.LinkedList;
-import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class TransactionTest {
    private LinkedList<Transaction> transactions = new LinkedList<>();
     public void setUp() {
-        transactions.add(new Transaction(Transaction.TransactionType.BUY, "3/13/20", new BigDecimal(1252.2), 1, Stock.GetStock(1).get()));
-        transactions.add(new Transaction(Transaction.TransactionType.BUY, "5/8/77", new BigDecimal(50.12), 7, Stock.GetStock(2).get()));
-        transactions.add(new Transaction(Transaction.TransactionType.SELL, "5/18/18", new BigDecimal(500.7), 8, Stock.GetStock(3).get()));
-        transactions.add(new Transaction(Transaction.TransactionType.BUY, "3/13/20", new BigDecimal(123.8), 100, Stock.GetStock(4).get()));
-        transactions.add(new Transaction(Transaction.TransactionType.SELL, "3/13/20", new BigDecimal(65.2), 12, Stock.GetStock(5).get()));
+        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(1252.2), 1, Stock.GetStock(1).get()));
+        transactions.add(new Transaction(TransactionType.BUY, "5/8/77", new BigDecimal(50.12), 7, Stock.GetStock(2).get()));
+        transactions.add(new Transaction(TransactionType.SELL, "5/18/18", new BigDecimal(500.7), 8, Stock.GetStock(3).get()));
+        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(123.8), 100, Stock.GetStock(4).get()));
+        transactions.add(new Transaction(TransactionType.SELL, "3/13/20", new BigDecimal(65.2), 12, Stock.GetStock(5).get()));
     }
 
 
@@ -78,11 +78,11 @@ public class TransactionTest {
     public void testSetType(){
         this.setUp();
         //flip types from initial setup
-        transactions.get(0).setType(Transaction.TransactionType.SELL);
-        transactions.get(1).setType(Transaction.TransactionType.SELL);
-        transactions.get(2).setType(Transaction.TransactionType.BUY);
-        transactions.get(3).setType(Transaction.TransactionType.SELL);
-        transactions.get(4).setType(Transaction.TransactionType.BUY);
+        transactions.get(0).setType(TransactionType.SELL);
+        transactions.get(1).setType(TransactionType.SELL);
+        transactions.get(2).setType(TransactionType.BUY);
+        transactions.get(3).setType(TransactionType.SELL);
+        transactions.get(4).setType(TransactionType.BUY);
 
         //verify they all flipped right
         assertEquals("SELL",transactions.get(0).getType().toString());
