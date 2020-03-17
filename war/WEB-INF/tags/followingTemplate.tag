@@ -3,6 +3,6 @@
 <%@taglib prefix="f" tagdir="/WEB-INF/tags" %>
 
 <span>
-    <ul><b>${followItem.stock.symbol} </b>| Current Price: $${followItem.currentPrice}        Percent Change Since Follow ${followItem.percentChange}  </ul>
+    <ul><b>${followItem.stock.symbol} </b> | Current Price: $${followItem.currentPrice}        Percent Change Since Follow ${followItem.percentChange}  </ul>
 
 </span>

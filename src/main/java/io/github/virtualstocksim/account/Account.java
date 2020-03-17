@@ -1,13 +1,22 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.stock.Stock;
+
+import java.util.ArrayList;
+
 public class Account {
     private String uname;
     private String pword;
     private String email;
+    private String bio;
+    private int id;
+    private int leaderboardRank;
+    private ArrayList<Stock> stocksFollowed;
+    private AccountType type;
 
 
     public Account() {
-
+        stocksFollowed = new ArrayList<Stock>();
     }
 
     public String getUname(){
