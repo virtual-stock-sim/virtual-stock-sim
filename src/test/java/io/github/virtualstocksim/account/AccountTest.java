@@ -6,7 +6,6 @@ import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.transaction.TransactionType;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,25 +32,24 @@ public class AccountTest
 
     @Before
     public void setup() {
+        // initialization of necessary instances
         Encryption encrypt = new Encryption();
         String password = "virtualstocksim";
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(),salt);
-        System.out.println(hash);
-
         uuid = UUID.randomUUID().toString();
-       stocks = new LinkedList<Stock>();
-       stocksFollowed = new StocksFollowed(stocks);
-       Amazon = new Stock(0, "AMZN",new BigDecimal("1800.00"),1);
-       stocksFollowed.addStock(Amazon);
+        stocks = new LinkedList<Stock>();
+        stocksFollowed = new StocksFollowed(stocks);
+        Amazon = new Stock(0, "AMZN",new BigDecimal("1800.00"),1);
+        stocksFollowed.addStock(Amazon);
+        transactions = new LinkedList<Transaction>();
+        transactionHistory = new TransactionHistory(transactions);
+        transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
-       transactions = new LinkedList<Transaction>();
-       transactionHistory = new TransactionHistory(transactions);
-
-       transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
-
+        // create and populate account with objects
      account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
              "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg");
+        // giving account a password for hashing
      account.setPword("virtualstocksim");
 
     }

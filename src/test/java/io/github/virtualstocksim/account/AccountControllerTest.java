@@ -9,10 +9,13 @@ import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 public class AccountControllerTest
 {
@@ -28,7 +31,7 @@ public class AccountControllerTest
     byte[] salt;
 
     @Before
-    public void setup(){
+    public void setup() {
         conn = new AccountController();
         Encryption encrypt = new Encryption();
         acc.setPword("virtualstocksim");
@@ -54,6 +57,7 @@ public class AccountControllerTest
     }
 
     // No tests yet because account controller has no methods
+
 
 
 }
