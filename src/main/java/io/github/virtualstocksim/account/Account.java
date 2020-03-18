@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.DatabaseItem;
+import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
@@ -17,7 +18,7 @@ public class Account extends DatabaseItem {
     private byte[] passwordHash;
     private byte[] passwordSalt;
     private int leaderboardRank;
-    private LinkedList<Stock> stocksFollowed;
+    private StocksFollowed stocksFollowed;
     private TransactionHistory transactionHistory;
     private AccountType type;
     private String profilePicture;
@@ -37,13 +38,14 @@ public class Account extends DatabaseItem {
      * @param bio User's bio
      * @param profilePicture String Path to profile picture locally on server
      */
-    public Account(int id, String uuid, AccountType type, String username, byte[] passwordHash, byte[] passwordSalt,
-                   LinkedList<Stock> stocksFollowed, TransactionHistory transactionHistory,
+    public Account(int id, String uuid, AccountType type, String email, String username, byte[] passwordHash, byte[] passwordSalt,
+                   StocksFollowed stocksFollowed, TransactionHistory transactionHistory,
                    int leaderboardRank, String bio, String profilePicture) {
         super(id);
         this.uuid = uuid;
         this.type = type;
         this.uname = username;
+        this.email = email;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.stocksFollowed = stocksFollowed;
@@ -66,6 +68,36 @@ public class Account extends DatabaseItem {
         return this.email;
     }
 
+    public String getUUID() {
+        return this.uuid;
+    }
+
+    public AccountType getAccountType() {
+        return this.type;
+    }
+
+    public byte[] getPasswordHash() {
+        return this.passwordHash;
+    }
+
+    public byte[] getPasswordSalt() {
+        return this.passwordSalt;
+    }
+
+    public StocksFollowed getStocksFollowed(){return this.stocksFollowed;}
+
+    public TransactionHistory getTransactionHistory() {return this.transactionHistory; }
+
+    public int getLeaderboardRank() {return this.leaderboardRank;}
+
+    public String getBio() {
+        return this.bio;
+    }
+
+    public String getProfilePicture(){
+        return this.profilePicture;
+    }
+
     public void setUname(String uname){
         this.uname = uname;
     }
@@ -78,9 +110,26 @@ public class Account extends DatabaseItem {
         this.email = email;
     }
 
-    // this method should return a list of transactions (I think?)
-    public void getTransactionHistory () {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setUuid(String UUID){
+        this.uuid = UUID;
+    }
+
+    public void setPasswordHash(byte[] passwordHash){
+        this.passwordHash = passwordHash;
+    }
+
+    public void setPasswordSalt(byte[] passwordSalt){this.passwordSalt = passwordSalt;}
+
+    public void setLeaderboardRank(int leaderboardRank){
+        this.leaderboardRank = leaderboardRank;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public void updateProfilePicture(int accountID)

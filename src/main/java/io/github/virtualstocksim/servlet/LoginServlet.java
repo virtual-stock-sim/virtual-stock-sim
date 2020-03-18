@@ -3,6 +3,7 @@ package io.github.virtualstocksim.servlet;
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.AccountType;
+import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
@@ -36,12 +37,13 @@ public class LoginServlet extends HttpServlet
 
         // create account model
         byte[] bytes = {3,4,5,6,7,8};
-        LinkedList<Stock> stocksFollowed = new LinkedList<Stock>();
         List<Transaction> transactions = new LinkedList<Transaction>();
         TransactionHistory transactionHistory = new TransactionHistory(transactions);
+        List<Stock> stocks = new LinkedList<Stock>();
+        StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
-        Account acc = new Account(0, "371298372189", AccountType.ADMIN, "VSSAdmin",bytes,bytes,
-                stocksFollowed, transactionHistory,-1,"","");
+        Account acc = new Account(0, "371298372189", AccountType.ADMIN,"vss-admin@vss.com", "VSSAdmin", bytes,bytes,
+                stocksFollowed, transactionHistory,-1,"Fun Text","my-picture.jpg");
 
         // store error message (if any)
         String errorMessage = null;
