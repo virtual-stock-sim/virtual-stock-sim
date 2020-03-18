@@ -1,38 +1,66 @@
 package io.github.virtualstocksim.following;
 
-import io.github.virtualstocksim.transaction.Transaction;
+import io.github.virtualstocksim.stock.Stock;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class StocksFollowed {
 
+    private List<Stock> stocksFollowed;
 
-    private ArrayList following= new ArrayList();
-
-    public StocksFollowed(ArrayList following)
+    public StocksFollowed(List<Stock> stocksFollowed)
     {
-        this.following= following;
-    }
-    public String getTest(){
-        return "pulling string from model  :)";
+        this.stocksFollowed = stocksFollowed;
     }
 
-    public ArrayList<Follow> getFollowing()
+    public StocksFollowed(String stocksFollowed)
     {
-        return this.following;
+        this(parseStocksFollowed(stocksFollowed));
     }
 
-    public void setFollow(ArrayList following) {
-        this.following = following;
+    public List<Stock> getStocksFollowed()
+    {
+        return this.stocksFollowed;
     }
 
-    public void setUnfollow(int index){
-        this.following.remove(index);
+    public void setStocksFollowed(List<Stock> stocksFollowed)
+    {
+        this.stocksFollowed = stocksFollowed;
+    }
+
+    public void setStocksFollowed(String stocksFollowed)
+    {
+        setStocksFollowed(parseStocksFollowed(stocksFollowed));
+    }
+
+    //TODO: Not sure if this should take an id/symbol instead of stock instance
+    // for same reason that removeStock takes an id/symbol instead of stock instance
+    public void addStock(Stock stock)
+    {
+        this.stocksFollowed.add(stock);
+    }
+
+    public void removeStock(int id)
+    {
+        this.stocksFollowed.removeIf(s -> s.getId() == id);
+    }
+
+    public void removeStock(String symbol)
+    {
+        this.stocksFollowed.removeIf(s -> s.getSymbol().equals(symbol));
+    }
+
+    ///TODO: Implement
+    /**
+     * Parses a string of comma seperated stock ids and returns stock instances
+     * @param stocksFollowed String containing comma seperated stock ids
+     * @return List of stock instances
+     */
+    private static List<Stock> parseStocksFollowed(String stocksFollowed)
+    {
+
+        return new LinkedList<>();
     }
 
 }
