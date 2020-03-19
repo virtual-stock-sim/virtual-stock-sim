@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.account;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
@@ -20,7 +19,7 @@ import java.util.UUID;
 public class AccountControllerTest
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static AccountDatabaseConnection accConn = new AccountDatabaseConnection();
 
     private AccountController conn;
     private Account acc;

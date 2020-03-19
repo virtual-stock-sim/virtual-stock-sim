@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.stock;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class StockTests
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static StockCacheConnection conn = new StockCacheConnection();
 
     @Test
     public void testGetId()

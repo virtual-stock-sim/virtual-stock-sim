@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.account;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class AccountTest
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static AccountDatabaseConnection conn = new AccountDatabaseConnection();
 
     private Account account;
     StocksFollowed stocksFollowed;

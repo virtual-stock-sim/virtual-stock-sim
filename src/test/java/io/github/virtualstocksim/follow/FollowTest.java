@@ -1,8 +1,8 @@
 package io.github.virtualstocksim.follow;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.stock.StockCacheConnection;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
-public class FollowTest extends DatabaseConnections
+public class FollowTest
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static StockCacheConnection conn = new StockCacheConnection();
 
     Follow [] testFollowList = new Follow[5];
     public void populate(){

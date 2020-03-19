@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class DatabaseTests
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static GenericDatabaseConnection conn = new GenericDatabaseConnection();
 
     @Test
     public void testTableExists()
@@ -16,9 +16,9 @@ public class DatabaseTests
         try
         {
             String tableName = "test_table";
-            assertFalse(databases.getGenericDB().tableExists(tableName));
-            databases.getGenericDB().createTable(tableName, "id INT NOT NULL");
-            assertTrue(databases.getGenericDB().tableExists(tableName));
+            assertFalse(conn.getGenericDB().tableExists(tableName));
+            conn.getGenericDB().createTable(tableName, "id INT NOT NULL");
+            assertTrue(conn.getGenericDB().tableExists(tableName));
         } catch (Exception e)
         {
             System.err.println(e.getMessage());

@@ -1,8 +1,8 @@
 package io.github.virtualstocksim.transactionHistory;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.stock.StockCacheConnection;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.ClassRule;
@@ -14,10 +14,10 @@ import java.util.LinkedList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class TransactionTest extends DatabaseConnections
+public class TransactionTest
 {
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static StockCacheConnection conn = new StockCacheConnection();
 
    private LinkedList<Transaction> transactions = new LinkedList<>();
     public void setUp() {

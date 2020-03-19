@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.stock;
 
-import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.database.DatabaseException;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -15,15 +14,15 @@ public class StockCacheTests
     private static final Logger logger = LoggerFactory.getLogger(StockCacheTests.class);
 
     @ClassRule
-    public static DatabaseConnections databases = new DatabaseConnections();
+    public static StockCacheConnection conn = new StockCacheConnection();
 
     @Test
     public void testInstantiation()
     {
         try
         {
-            assertTrue(databases.getStockCache().tableExists("stocks_data"));
-            assertTrue(databases.getStockCache().tableExists("stocks"));
+            assertTrue(conn.getStockCache().tableExists("stocks_data"));
+            assertTrue(conn.getStockCache().tableExists("stocks"));
         } catch (DatabaseException e)
         {
             logger.error("",e);
