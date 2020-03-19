@@ -55,7 +55,7 @@ public class AccountTest
 
         // create and populate account with objects
      account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
-             "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg");
+             "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg","3/19/2020");
         // giving account a password for hashing
      account.setPword("virtualstocksim");
 
