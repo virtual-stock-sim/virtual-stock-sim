@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.following.Follow;
+import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,10 @@ public class StocksFollowedServlet extends HttpServlet
         /**
          * TODO: This needs to be re-written to conform to new StocksFollowed class
          */
-        //StocksFollowed model = new StocksFollowed(followingList);
-        //req.setAttribute("model",model);
+
+
+        StocksFollowed model = new StocksFollowed(followingList);
+        req.setAttribute("model",model);
 
         req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
     }

@@ -2,65 +2,41 @@ package io.github.virtualstocksim.following;
 
 import io.github.virtualstocksim.stock.Stock;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
 public class StocksFollowed {
 
-    private List<Stock> stocksFollowed;
+    private List<Follow> stocksFollowed;
 
-    public StocksFollowed(List<Stock> stocksFollowed)
+    public StocksFollowed(List<Follow> stocksFollowed)
     {
         this.stocksFollowed = stocksFollowed;
     }
 
-    public StocksFollowed(String stocksFollowed)
-    {
-        this(parseStocksFollowed(stocksFollowed));
-    }
 
-    public List<Stock> getStocksFollowed()
+    public List<Follow> getStocksFollowed()
     {
         return this.stocksFollowed;
     }
 
-    public void setStocksFollowed(List<Stock> stocksFollowed)
+    public void setStocksFollowed(List<Follow> stocksFollowed)
     {
         this.stocksFollowed = stocksFollowed;
     }
 
-    public void setStocksFollowed(String stocksFollowed)
+
+    public void setFollow(Follow newFollow)
     {
-        setStocksFollowed(parseStocksFollowed(stocksFollowed));
+        this.stocksFollowed.add(newFollow);
     }
 
-    //TODO: Not sure if this should take an id/symbol instead of stock instance
-    // for same reason that removeStock takes an id/symbol instead of stock instance
-    public void addStock(Stock stock)
+    public void removeFollow(Follow toRemove)
     {
-        this.stocksFollowed.add(stock);
+        this.stocksFollowed.remove(toRemove);
     }
 
-    public void removeStock(int id)
-    {
-        this.stocksFollowed.removeIf(s -> s.getId() == id);
-    }
 
-    public void removeStock(String symbol)
-    {
-        this.stocksFollowed.removeIf(s -> s.getSymbol().equals(symbol));
-    }
-
-    ///TODO: Implement
-    /**
-     * Parses a string of comma seperated stock ids and returns stock instances
-     * @param stocksFollowed String containing comma seperated stock ids
-     * @return List of stock instances
-     */
-    private static List<Stock> parseStocksFollowed(String stocksFollowed)
-    {
-
-        return new LinkedList<>();
-    }
 
 }

@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
@@ -38,10 +39,13 @@ public class AccountTest
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(),salt);
         uuid = UUID.randomUUID().toString();
-        stocks = new LinkedList<Stock>();
-        stocksFollowed = new StocksFollowed(stocks);
-        Amazon = new Stock(0, "AMZN",new BigDecimal("1800.00"),1);
-        stocksFollowed.addStock(Amazon);
+
+        List <Follow>followList = new LinkedList<Follow>();
+        followList.add(new Follow(new BigDecimal(100), Stock.GetStock(1).get()));
+        stocksFollowed = new StocksFollowed(followList);
+
+
+
         transactions = new LinkedList<Transaction>();
         transactionHistory = new TransactionHistory(transactions);
         transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
