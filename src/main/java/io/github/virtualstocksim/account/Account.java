@@ -194,7 +194,7 @@ public class Account extends DatabaseItem {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Account createAccountInDB(String username, String email, String password, AccountType type)
+    public Optional<Account> createAccountInDB(String username, String email, String password, AccountType type)
     {
         Encryption encrypt = new Encryption();
         Date date = new Date();
@@ -204,16 +204,26 @@ public class Account extends DatabaseItem {
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(), salt);
         String blank_string ="";
+        logger.info("Attempting to create a new account in account database...");
 
-        int id = accountDatabase.executeInsert("INSERT INTO account (uuid, type, email, username, password_hash, password_salt," +
-                " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp)" +
-                " VALUES(%s, %s, %s, %s, %s, %s, %s, -1, %s, %s, %s",uuid, type, email, username, hash, salt, blank_string, blank_string, -1,
-                blank_string, blank_string, timestamp);
+        try {
+            int id = accountDatabase.executeInsert(
+                    "INSERT INTO account (uuid, type, email, username, password_hash, password_salt," +
+                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp)" +
 
-            // return newly created account
-        return new Account(id, uuid, type, email, username, hash, salt, new StocksFollowed(new LinkedList<Follow>()),
-              new TransactionHistory(new LinkedList<Transaction>()), -1, blank_string, blank_string, timestamp);
+                            " VALUES(%s, %s, %s, %s, %s, %s, %s, -1, %s, %s, %s",uuid, type, email, username, hash, salt, blank_string, blank_string, -1,
+                    blank_string, blank_string, timestamp);
 
+            logger.info("Account with new id %s sucessfully created!",id);
+            return Optional.of(new Account(id, uuid, type, email, username, hash, salt, new StocksFollowed(new LinkedList<Follow>()),
+                    new TransactionHistory(new LinkedList<Transaction>()), -1, blank_string, blank_string, timestamp));
+
+        } catch (DatabaseException e){
+            logger.info("Account creation failed");
+            return Optional.empty();
+        }
+
+            // return newly created accou
         // generate password hash and salt
         // generate the timestamp
         // generate the UUID
