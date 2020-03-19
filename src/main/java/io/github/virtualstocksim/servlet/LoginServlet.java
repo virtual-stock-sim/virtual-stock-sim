@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class LoginServlet extends HttpServlet
         StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
         Account acc = new Account(0, "371298372189", AccountType.ADMIN,"vss-admin@vss.com", "VSSAdmin", bytes,bytes,
-                stocksFollowed , transactionHistory,-1,"Fun Text","my-picture.jpg","foo");
+                stocksFollowed , transactionHistory,-1,"Fun Text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
 
         // store error message (if any)
         String errorMessage = null;

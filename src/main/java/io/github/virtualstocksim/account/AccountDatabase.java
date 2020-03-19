@@ -61,7 +61,7 @@ public class AccountDatabase extends Database
                     "leaderboard_rank INT",
                     "bio LONG VARCHAR",
                     "profile_picture LONG VARCHAR",
-                    "timestamp LONG VARCHAR"
+                    "creation_date LONG VARCHAR"
 
             );
         }
