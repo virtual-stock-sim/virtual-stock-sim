@@ -1,40 +1,47 @@
 package io.github.virtualstocksim.stock;
 
 import io.github.virtualstocksim.database.Database;
-import io.github.virtualstocksim.util.Lazy;
+import io.github.virtualstocksim.database.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
 
 // Controller for stock data cache
 public class StockCache extends Database
 {
     private static final Logger logger = LoggerFactory.getLogger(StockCache.class);
+    private static final String initDBPath = "vss_stockcache.db";
 
-    private static String dbPath = "vss_stockcache.db";
+    private static StockCache singleton = init();
+    public static StockCache Instance() { return singleton; }
 
-    private static Lazy<StockCache> singleton = Lazy.lazily(StockCache::new);
-    public static StockCache Instance()
+    private static StockCache init()
     {
-        return singleton.get();
+        try
+        {
+            return new StockCache(initDBPath);
+        } catch (DatabaseException e)
+        {
+            logger.error(String.format("Unable to open connection to stock cache database\n%s", e));
+            System.exit(-1);
+        }
+        return null;
     }
 
-    private StockCache()
+    private StockCache(String dbPath) throws DatabaseException
     {
-        super(dbPath);
+        super(dbPath, logger);
         try
         {
             createTables();
-        } catch (SQLException e)
+        } catch (DatabaseException e)
         {
-            logger.error("Unable to create tables for stock cache");
+            logger.error(String.format("Unable to create tables for stock cache\n%s", e));
             System.exit(-1);
         }
     }
 
     // Create tables if they don't exist
-    private void createTables() throws SQLException
+    private void createTables() throws DatabaseException
     {
         if(!tableExists("stocks_data"))
         {
@@ -55,21 +62,10 @@ public class StockCache extends Database
         }
     }
 
-    public static void changeDatabase(String dbPath)
+    @Override
+    public void changeDB(String dbPath) throws DatabaseException
     {
-        // Attempt to close current connection if there is one
-        try
-        {
-            if(singleton.hasEvaluated()) Instance().closeConnection();
-        } catch (SQLException e)
-        {
-            logger.error("Error closing database connection for stock cache\nError: " + e.getMessage());
-            return;
-        }
-
-        // Create new singleton with new database
-        StockCache.dbPath = dbPath;
-        singleton = Lazy.lazily(StockCache::new);
+        super.changeDB(dbPath);
+        createTables();
     }
-
 }

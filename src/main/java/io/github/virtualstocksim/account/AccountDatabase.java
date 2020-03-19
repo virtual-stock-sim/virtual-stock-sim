@@ -1,43 +1,50 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.Database;
-import io.github.virtualstocksim.stock.StockCache;
-import io.github.virtualstocksim.util.Lazy;
+import io.github.virtualstocksim.database.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
-
-import static io.github.virtualstocksim.stock.StockCache.Instance;
 
 public class AccountDatabase extends Database
 {
     private static final Logger logger = LoggerFactory.getLogger(AccountDatabase.class);
+    private final static String initDBPath = "vss_accounts.db";
 
-    private static String dbPath = "vss_accounts.db";
-
-    private static Lazy<AccountDatabase> singleton = Lazy.lazily(AccountDatabase::new);
+    private static AccountDatabase singleton = init();
     public static AccountDatabase Instance()
     {
-        return singleton.get();
+        return singleton;
     }
 
-
-    private AccountDatabase()
+    private static AccountDatabase init()
     {
-        super(dbPath);
+        try
+        {
+            return new AccountDatabase(initDBPath);
+        }
+        catch (DatabaseException e)
+        {
+            logger.error(String.format("Unable to open connection to account database\n%s", e));
+            System.exit(-1);
+        }
+        return null;
+    }
+
+    private AccountDatabase(String dbPath) throws DatabaseException
+    {
+        super(dbPath, logger);
         try
         {
             createTables();
-        } catch (SQLException e)
+        } catch (DatabaseException e)
         {
-            logger.error("Unable to create tables for Account Database");
+            logger.error(String.format("Unable to create tables for account database\n%s", e));
             System.exit(-1);
         }
     }
 
     // Create tables if they don't exist
-    private void createTables() throws SQLException
+    private void createTables() throws DatabaseException
     {
         if(!tableExists("accounts"))
         {
@@ -59,24 +66,10 @@ public class AccountDatabase extends Database
 
     }
 
-
-    public static void changeDatabase(String dbPath)
+    @Override
+    public void changeDB(String dbPath) throws DatabaseException
     {
-        // Attempt to close current connection if there is one
-        try
-        {
-            if(singleton.hasEvaluated()) Instance().closeConnection();
-        } catch (SQLException e)
-        {
-            logger.error("Error closing database connection for account database\nError: " + e.getMessage());
-            return;
-        }
-
-        // Create new singleton with new database
-        AccountDatabase.dbPath = dbPath;
-        singleton = Lazy.lazily(AccountDatabase::new);
+        super.changeDB(dbPath);
+        createTables();
     }
-
-
-
 }

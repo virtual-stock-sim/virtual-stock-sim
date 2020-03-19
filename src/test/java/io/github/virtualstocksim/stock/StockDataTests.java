@@ -1,30 +1,35 @@
 package io.github.virtualstocksim.stock;
 
-import org.junit.BeforeClass;
+import io.github.virtualstocksim.database.DatabaseConnections;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Optional;
 
-public class StockDataTests extends StockCacheTestsBase
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class StockDataTests
 {
-    @BeforeClass
-    public static void setup()
-    {
-
-    }
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
 
     @Test
     public void testGetId()
     {
-        StockData fromDB = StockData.GetStockData(1).get();
-        StockData expected = new StockData(1, "test data 1");
-        assertEquals(fromDB.getId(), expected.getId());
-        assertEquals(fromDB.getData(), expected.getData());
+        StockData expected = DummyStocks.GetDummyStockData(DummyStocks.StockSymbol.AMAZON);
+
+        Optional<StockData> dataOptional = StockData.Find(expected.getId());
+        assertTrue(dataOptional.isPresent());
+        StockData stockData = dataOptional.get();
+
+        assertEquals(stockData.getId(), expected.getId());
+        assertTrue(stockData.getData().equals(expected.getData()));
     }
 
-    @Test
+/*    @Test
     public void testCommit()
     {
 
-    }
+    }*/
 }

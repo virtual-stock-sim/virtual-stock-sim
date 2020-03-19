@@ -1,113 +1,54 @@
 package io.github.virtualstocksim.stock;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import io.github.virtualstocksim.database.DatabaseConnections;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
-public class StockTests extends StockCacheTestsBase
+public class StockTests
 {
-    private static LinkedList<Integer> testStockDataIds;
-    private static LinkedList<Integer> testStockIds;
-
-    @BeforeClass
-    public static void setup()
-    {
-        testStockDataIds = new LinkedList<>();
-        testStockIds = new LinkedList<>();
-
-
-        // Populate with some test data
-        try
-        {
-            int numInserts = 4;
-            int id;
-            id = sc.executeInsert("INSERT INTO stocks_data(data) VALUES('some test data')");
-            testStockDataIds.add(id);
-            id = sc.executeInsert("INSERT INTO stocks(symbol, curr_price, data_id) VALUES('TEST_SYM_1', 300.43, ?)", id);
-            testStockIds.add(id);
-
-            id = sc.executeInsert("INSERT INTO stocks_data(data) VALUES('json string')");
-            testStockDataIds.add(id);
-            id = sc.executeInsert("INSERT INTO stocks(symbol, curr_price, data_id) VALUES('TEST_SYM_2', 12.58, ?)", id);
-            testStockIds.add(id);
-
-            if(testStockDataIds.size() != numInserts/2 && testStockIds.size() != numInserts/2)
-            {
-                System.err.println("Not all test data was correctly inserted");
-                fail();
-            }
-        } catch (SQLException e)
-        {
-            sc.logSqlError("Unable to populate test cache with test data", e);
-            fail();
-        }
-    }
-
-    @AfterClass
-    public static void cleanup()
-    {
-        // Remove the test data
-        try
-        {
-            int effected = 0;
-            for(int id : testStockIds)
-            {
-                effected += sc.executeUpdate("DELETE FROM stocks WHERE id = ?", id);
-            }
-            for(int id : testStockDataIds)
-            {
-                effected += sc.executeUpdate("DELETE FROM stocks_data WHERE id = ?", id);
-            }
-            if(effected != testStockDataIds.size() + testStockIds.size())
-            {
-                System.err.println("Not all test data was correctly deleted");
-                fail();
-            }
-        } catch (SQLException e)
-        {
-            sc.logSqlError("Not all test data was correctly deleted", e);
-            fail();
-        }
-    }
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
 
     @Test
     public void testGetId()
     {
-        Stock fromDB = Stock.GetStock(1).get() ;
-        Stock expected = new Stock(1, "TSLA", new BigDecimal("360.00"), 1);
-        assertEquals(fromDB.getId(), expected.getId());
-        assertEquals(fromDB.getSymbol(), expected.getSymbol());
-        assertEquals(fromDB.getCurrPrice(), expected.getCurrPrice());
-        assertEquals(fromDB.getStockData(), expected.getStockData());
+        Stock expected = DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA);
+
+        Optional<Stock> stockOptional = Stock.Find(expected.getId());
+        assertTrue(stockOptional.isPresent());
+
+        Stock stock = stockOptional.get();
+
+        assertEquals(stock.getId(), expected.getId());
+        assertEquals(stock.getSymbol(), expected.getSymbol());
+        assertEquals(stock.getCurrPrice().compareTo(expected.getCurrPrice()), 0);
+        assertEquals(stock.getStockData().getId(), expected.getStockData().getId());
     }
 
     @Test
     public void testGetSymbol()
     {
-        Stock fromDB = Stock.GetStock("TSLA").get() ;
-        Stock expected = new Stock(1, "TSLA", new BigDecimal("360.00"), 1);
-        assertEquals(fromDB.getId(), expected.getId());
-        assertEquals(fromDB.getSymbol(), expected.getSymbol());
-        assertEquals(fromDB.getCurrPrice(), expected.getCurrPrice());
-        assertEquals(fromDB.getStockData(), expected.getStockData());    }
+        Stock expected = DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA);
 
-    @Test
-    public void testStockData()
-    {
-        Stock stock = Stock.GetStock(1).get();
-        assertEquals(stock.getStockData(), new StockData(1, "test data 1").getData());
+        Optional<Stock> stockOptional = Stock.Find(expected.getSymbol());
+        assertTrue(stockOptional.isPresent());
+
+        Stock stock = stockOptional.get();
+
+        assertEquals(stock.getId(), expected.getId());
+        assertTrue(stock.getSymbol().equals(expected.getSymbol()));
+        assertEquals(stock.getCurrPrice().compareTo(expected.getCurrPrice()), 0);
+        assertEquals(stock.getStockData().getId(), expected.getStockData().getId());
     }
 
-    @Test
+/*    @Test
     public void testCommit()
     {
 
-    }
+    }*/
 }

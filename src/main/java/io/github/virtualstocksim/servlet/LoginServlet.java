@@ -3,6 +3,7 @@ package io.github.virtualstocksim.servlet;
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.AccountType;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
@@ -39,7 +40,7 @@ public class LoginServlet extends HttpServlet
         byte[] bytes = {3,4,5,6,7,8};
         List<Transaction> transactions = new LinkedList<Transaction>();
         TransactionHistory transactionHistory = new TransactionHistory(transactions);
-        List<Stock> stocks = new LinkedList<Stock>();
+        List<Follow> stocks = new LinkedList<Follow>();
         StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
         Account acc = new Account(0, "371298372189", AccountType.ADMIN,"vss-admin@vss.com", "VSSAdmin", bytes,bytes,

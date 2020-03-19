@@ -1,24 +1,27 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.ClassRule;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-
 public class AccountControllerTest
 {
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
+
     private AccountController conn;
     private Account acc;
     StocksFollowed stocksFollowed;
@@ -41,9 +44,10 @@ public class AccountControllerTest
 
         uuid = UUID.randomUUID().toString();
         stocks = new LinkedList<Stock>();
-        stocksFollowed = new StocksFollowed(stocks);
-        Amazon = new Stock(0, "AMZN",new BigDecimal("1800.00"),1);
-        stocksFollowed.addStock(Amazon);
+
+        List <Follow>followList = new LinkedList<Follow>();
+        followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        stocksFollowed = new StocksFollowed(followList);
 
         transactions = new LinkedList<Transaction>();
         transactionHistory = new TransactionHistory(transactions);

@@ -1,25 +1,30 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class AccountTest
 {
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
+
     private Account account;
     StocksFollowed stocksFollowed;
     Stock Amazon;
@@ -38,10 +43,13 @@ public class AccountTest
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(),salt);
         uuid = UUID.randomUUID().toString();
-        stocks = new LinkedList<Stock>();
-        stocksFollowed = new StocksFollowed(stocks);
-        Amazon = new Stock(0, "AMZN",new BigDecimal("1800.00"),1);
-        stocksFollowed.addStock(Amazon);
+
+        List <Follow>followList = new LinkedList<Follow>();
+        followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        stocksFollowed = new StocksFollowed(followList);
+
+        Amazon = DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON);
+
         transactions = new LinkedList<Transaction>();
         transactionHistory = new TransactionHistory(transactions);
         transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));

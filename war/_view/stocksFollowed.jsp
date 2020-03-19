@@ -17,7 +17,7 @@
     <h3>Gain/loss of investments and followed stocks</h3>
     <div class =bodytext>
 
-    <c:forEach var="followItem" items="${model.following}">
+    <c:forEach var="followItem" items="${model.stocksFollowed}">
         <ul>   <f:followingTemplate followItem="${followItem}"></f:followingTemplate> </ul>
 
     </c:forEach>

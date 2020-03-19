@@ -10,41 +10,98 @@ import java.util.Arrays;
 public class Database
 {
     protected Connection db;
-    private static final Logger logger = LoggerFactory.getLogger(Database.class);
-    public final String dbPath;
+    private static final Logger defaultLogger = LoggerFactory.getLogger(Database.class);
+    private Logger logger;
+    protected String dbPath;
 
-    public Database(String dbPath)
+    /**
+     * @param dbPath Path to database to open connection to
+     * @throws SQLException
+     */
+    public Database(String dbPath) throws DatabaseException
     {
-        this.dbPath = dbPath;
+        this(dbPath, defaultLogger);
+    }
+
+    /**
+     * @param dbPath Path to database to open connection to
+     * @param logger Logger to use when logging SQL commands
+     *               Allowing a custom logger allows classes that extend database
+     *               to use their own logger so its more explicit what class
+     *               is doing what
+     * @throws SQLException
+     */
+    public Database(String dbPath, Logger logger) throws DatabaseException
+    {
+        this.logger = logger;
+        changeDB(dbPath);
+    }
+
+    public String getDbPath() { return this.dbPath; }
+
+    public void closeConn() throws DatabaseException
+    {
         try
         {
-            db = DriverManager.getConnection(String.format("jdbc:derby:%s;create=true", dbPath));
+            if(db != null && !db.isClosed())
+            {
+                db.close();
+            }
         }
         catch (SQLException e)
         {
-            logSqlError("Unable to open connection to and/or create database", e);
-            System.exit(-1);
+            throw new DatabaseException("Unable to close connection", dbPath, e);
         }
     }
 
-    public void closeConnection() throws SQLException
+    /**
+     * Changes the connected database
+     * @param dbPath Path for the new database
+     * @throws DatabaseException
+     */
+    public void changeDB(String dbPath) throws DatabaseException
     {
-        db.close();
+        closeConn();
+        try
+        {
+            db = DriverManager.getConnection(String.format("jdbc:derby:%s;create=true", dbPath));
+            this.dbPath = dbPath;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Failed to open connection", dbPath, e);
+        }
     }
 
-    public boolean tableExists(String table) throws SQLException
+    /**
+     * Checks if a table exists within the database schema
+     * @param table Name of the table
+     * @return If the table exists
+     * @throws DatabaseException
+     */
+    public boolean tableExists(String table) throws DatabaseException
     {
-        logger.info(String.format("Checking if table %s exists in %s", table, dbPath));
-        DatabaseMetaData metaData = db.getMetaData();
-        ResultSet rs = metaData.getTables(null, "APP", table.toUpperCase(), null);
+        try
+        {
+            logger.info(String.format("Checking if table %s exists in %s", table, dbPath));
+            DatabaseMetaData metaData = db.getMetaData();
+            ResultSet rs = metaData.getTables(null, "APP", table.toUpperCase(), null);
 
-        return rs.next() && rs.getString(3).equals(table.toUpperCase());
+            return rs.next() && rs.getString(3).equals(table.toUpperCase());
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Failed to check table existence", dbPath, e);
+        }
     }
 
-    // Create table `name` with `columns`
-        // Columns should the whole column declaration
-        // i.e. "id INT NOT NULL"
-    public void createTable(String name, String... columns) throws SQLException
+    /**
+     * Create a table in the database
+     * @param name Name of the table
+     * @param columns Columns of the table (i.e. `id INT NOT NULL`)
+     * @throws DatabaseException
+     */
+    public void createTable(String name, String... columns) throws DatabaseException
     {
         logger.info("Creating table " + name);
         StringBuilder sql = new StringBuilder(String.format("CREATE TABLE %s(", name));
@@ -59,94 +116,177 @@ public class Database
 
     protected static Object[] emptyObjArr = {};
 
-    // Execute basic sql
-    public void executeStmt(String sql) throws SQLException
+    /**
+     * Executes a SQL command
+     * @param sql SQL command
+     * @throws DatabaseException
+     */    public void executeStmt(String sql) throws DatabaseException
     {
         executeStmt(sql, emptyObjArr);
     }
-    // Execute prepared sql statement with parameters
-    public void executeStmt(String sql, Object... values) throws SQLException
+
+    /**
+     * Executes a SQL command
+     * @param sql SQL command
+     * @param params Parameters for SQL command
+     * @throws DatabaseException
+     */
+    public void executeStmt(String sql, Object... params) throws DatabaseException
     {
-        logSqlExecute(sql, values);
-        PreparedStatement stmt = db.prepareStatement(sql);
-        for(int i = 0; i < values.length; ++i)
+        try
         {
-            stmt.setObject(i, values[i]);
+            logger.info(formatSqlExecute(sql, params));
+            PreparedStatement stmt = db.prepareStatement(sql);
+            for(int i = 0; i < params.length; ++i)
+            {
+                stmt.setObject(i, params[i]);
+            }
+            stmt.execute();
+            logger.info("Execution successful");
         }
-        stmt.execute();
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Execution Failure", dbPath, e);
+        }
     }
 
-    // Execute basic sql query
-    public ResultSet executeQuery(String sql) throws SQLException
+    /**
+     * Executes given SQL as a query
+     * @param sql SQL query
+     * @return Results from query
+     * @throws DatabaseException
+     */    public ResultSet executeQuery(String sql) throws DatabaseException
     {
         return executeQuery(sql, emptyObjArr);
     }
-    // Execute prepared sql query with parameters
-    public ResultSet executeQuery(String sql, Object... values) throws SQLException
+
+    /**
+     * Executes given SQL as a query
+     * @param sql SQL query
+     * @param params Parameters for SQL query
+     * @return Results from query
+     * @throws DatabaseException
+     */
+    public ResultSet executeQuery(String sql, Object... params) throws DatabaseException
     {
-        logSqlExecute(sql, values);
-        PreparedStatement stmt = db.prepareStatement(sql);
-        for(int i = 0; i < values.length; ++i)
+        try
         {
-            stmt.setObject(i+1, values[i]);
+            logger.info(formatSqlExecute(sql, params));
+            PreparedStatement stmt = db.prepareStatement(sql);
+            for(int i = 0; i < params.length; ++i)
+            {
+                stmt.setObject(i+1, params[i]);
+            }
+            ResultSet rs = stmt.executeQuery();
+            logger.info("Query Successful");
+            return rs;
         }
-        return stmt.executeQuery();
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Query Failure", dbPath, e);
+        }
     }
 
-    // Execute basic sql update
-    public int executeUpdate(String sql) throws SQLException
+    /**
+     * Executes given SQL as an update
+     * @param sql SQL update command
+     * @return Number of rows effected by update
+     * @throws DatabaseException
+     */
+    public int executeUpdate(String sql) throws DatabaseException
     {
         return executeUpdate(sql, emptyObjArr);
     }
-    // Execute prepared sql update with parameters
-        // Returns # of rows effected
-    public int executeUpdate(String sql, Object... values) throws SQLException
+
+    /**
+     * Executes given SQL as an update
+     * @param sql SQL update command
+     * @param params Parameters for the SQL command
+     * @return Number of rows effected by update
+     * @throws DatabaseException
+     */
+    public int executeUpdate(String sql, Object... params) throws DatabaseException
     {
-        logSqlExecute(sql, values);
-        PreparedStatement stmt = db.prepareStatement(sql);
-        for(int i = 0; i < values.length; ++i)
+        try
         {
-            stmt.setObject(i+1, values[i]);
+            logger.info(formatSqlExecute(sql, params));
+            PreparedStatement stmt = db.prepareStatement(sql);
+            for(int i = 0; i < params.length; ++i)
+            {
+                stmt.setObject(i+1, params[i]);
+            }
+            int effected = stmt.executeUpdate();
+            logger.info("Update successful");
+            return effected;
         }
-        return stmt.executeUpdate();
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Update Failure", dbPath, e);
+        }
     }
 
-    // Execute basic sql insertion
-    public int executeInsert(String sql) throws SQLException
+    /**
+     * Executes given SQL as an insertion
+     * @param sql SQL insertion command
+     * @return The automatically generated primary key if it exists, otherwise 0
+     * @throws DatabaseException
+     */
+    public int executeInsert(String sql) throws DatabaseException
     {
         return executeInsert(sql, emptyObjArr);
     }
-    // Execute prepared sql insertion with parameters
-        // Returns generated key from insertion
-    public int executeInsert(String sql, Object... values) throws SQLException
-    {
-        logSqlExecute(sql, values);
-        PreparedStatement stmt = db.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        for(int i = 0; i < values.length; ++i)
-        {
-            stmt.setObject(i+1, values[i]);
-        }
-        stmt.executeUpdate();
 
-        // Return key from insertion
-        ResultSet rs = stmt.getGeneratedKeys();
-        if(rs.next())
+    /**
+     * Executes given SQL as an insertion
+     * @param sql SQL insertion command
+     * @param params Parameters for the SQL command
+     * @return The automatically generated primary key if it exists, otherwise 0
+     * @throws DatabaseException
+     */
+    public int executeInsert(String sql, Object... params) throws DatabaseException
+    {
+        try
         {
-            return rs.getInt(1);
+            logger.info(formatSqlExecute(sql, params));
+            PreparedStatement stmt = db.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            for(int i = 0; i < params.length; ++i)
+            {
+                stmt.setObject(i+1, params[i]);
+            }
+            stmt.executeUpdate();
+            logger.info("Insertion successful");
+
+            logger.info("Getting generated key from insertion...");
+            // Return key from insertion
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next())
+            {
+                return rs.getInt(1);
+            }
+            else
+            {
+                return 0;
+            }
         }
-        else
+        catch (SQLException e)
         {
-            return 0;
+            throw new DatabaseException("Insert Failure", dbPath, e);
         }
     }
 
-    public void logSqlError(String msg, SQLException e)
+    /**
+     * Logs an SQL command
+     * @param sql SQL command that was executed
+     * @param params Parameters for the SQL command
+     */
+    public static String formatSqlExecute(String sql, Object... params)
     {
-        logger.error(String.format("==SQL Error==\n%s\nDatabase: %s\nException: %s\nState: %s\nError Code: %d", msg, dbPath, e.getMessage(), e.getSQLState(), e.getErrorCode()));
+        return String.format("Executing SQL... \n\t SQL Command: %s \n\t Parameters: %s", sql, Arrays.toString(params));
     }
 
-    public void logSqlExecute(String sql, Object[] values)
+    private static String indentString(String input)
     {
-        logger.info(String.format("SQL: %s | Params: %s", sql, Arrays.toString(values)));
+        System.out.println(input);
+        return input == null ? "" : input.replaceAll("(?m)^", "\t");
     }
 }
