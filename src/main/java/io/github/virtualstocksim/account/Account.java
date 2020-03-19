@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public class Account extends DatabaseItem {
     private TransactionHistory transactionHistory;
     private AccountType type;
     private String profilePicture;
-    private final String timestamp;
+    private final Timestamp timestamp;
 
 
     /**
@@ -55,7 +57,7 @@ public class Account extends DatabaseItem {
      */
     public Account(int id, String uuid, AccountType type, String email, String username, byte[] passwordHash, byte[] passwordSalt,
                    StocksFollowed stocksFollowed, TransactionHistory transactionHistory,
-                   int leaderboardRank, String bio, String profilePicture, String timestamp) {
+                   int leaderboardRank, String bio, String profilePicture, Timestamp timestamp) {
         super(id);
         this.uuid = uuid;
         this.type = type;
@@ -72,12 +74,17 @@ public class Account extends DatabaseItem {
 
     }
 
-    /*public Optional<Account> findAccount(int id){
-        try
+    /**
+     * @param id the account ID to locate
+     * @return returned account, if any. (Could be empty if account does not exist)
+     */
+    public Optional<Account> findAccount(int id){
+        throw new UnsupportedOperationException("Still working on implementation");
+        /*try
         {
             logger.info("Searching for account...");
             ResultSet rs = accountDatabase.executeQuery(String.format("SELECT uuid, type, email, username, password_hash, " +
-                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp" +
+                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date" +
                    "FROM accounts WHERE %s = ?",id),id);
 
             // Return empty if nothing was found
@@ -98,7 +105,7 @@ public class Account extends DatabaseItem {
                             rs.getInt("leaderboard_rank"),
                             rs.getString("bio"),
                             rs.getString("profile_picture"),
-                            rs.getString("timestamp")
+                            rs.getString("creation_date")
                     )
             );
         }
@@ -111,8 +118,8 @@ public class Account extends DatabaseItem {
             logger.error("Error while parsing result from account database\n", e);
         }
         return Optional.empty();
-    }
     }*/
+    }
 
     public String getUname(){
         return this.uname;
@@ -190,16 +197,28 @@ public class Account extends DatabaseItem {
         this.profilePicture = profilePicture;
     }
 
+    /**
+     *
+     * @param accountID Account id to update
+     * @param newPicturePath Updated picture
+     */
     public void updateProfilePicture(int accountID, String newPicturePath) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     * @param username - username of user
+     * @param email     - email of user
+     * @param password  - user's password to be encrypted
+     * @param type      - AccountType (Admin or User)
+     * @return Either a newly created account, or empty if creation fails.
+     */
     public Optional<Account> createAccountInDB(String username, String email, String password, AccountType type)
     {
         Encryption encrypt = new Encryption();
         Date date = new Date();
         byte[] salt, hash;
-        String timestamp = date.toString();
+        Timestamp timestamp = Timestamp.valueOf(Instant.now().toString());
         String uuid = UUID.randomUUID().toString();
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(), salt);
