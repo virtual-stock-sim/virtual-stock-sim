@@ -1,22 +1,24 @@
 package io.github.virtualstocksim.database;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DatabaseTests extends DatabaseTestsBase
+public class DatabaseTests
 {
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
 
     @Test
     public void testTableExists()
     {
-        Database db = new Database(dbPath);
         try
         {
             String tableName = "test_table";
-            assertFalse(db.tableExists(tableName));
-            db.createTable(tableName, "id INT NOT NULL");
-            assertTrue(db.tableExists(tableName));
+            assertFalse(databases.getGenericDB().tableExists(tableName));
+            databases.getGenericDB().createTable(tableName, "id INT NOT NULL");
+            assertTrue(databases.getGenericDB().tableExists(tableName));
         } catch (Exception e)
         {
             System.err.println(e.getMessage());
@@ -24,13 +26,15 @@ public class DatabaseTests extends DatabaseTestsBase
         }
     }
 
+/*
     @Test
     public void testCreateTable()
     {
     }
+*/
 
-    @Test
+/*    @Test
     public void testExecuteStmt()
     {
-    }
+    }*/
 }

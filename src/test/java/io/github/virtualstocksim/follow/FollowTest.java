@@ -1,18 +1,27 @@
 package io.github.virtualstocksim.follow;
+
+import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.stock.Stock;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import java.math.BigDecimal;
 
-public class FollowTest {
+import static org.junit.Assert.assertEquals;
+
+public class FollowTest extends DatabaseConnections
+{
+    @ClassRule
+    public static DatabaseConnections databases = new DatabaseConnections();
+
     Follow [] testFollowList = new Follow[5];
     public void populate(){
-        testFollowList[0]=(new Follow(new BigDecimal(100), Stock.GetStock(1).get()));
-        testFollowList[1]=(new Follow(new BigDecimal(498), Stock.GetStock(2).get()));
-        testFollowList[2]=(new Follow(new BigDecimal(320), Stock.GetStock(3).get()));
-        testFollowList[3]=(new Follow(new BigDecimal(5), Stock.GetStock(4).get()));
-        testFollowList[4]=(new Follow(new BigDecimal(.12), Stock.GetStock(5).get()));
+        testFollowList[0]=(new Follow(new BigDecimal(100), Stock.Find(1).get()));
+        testFollowList[1]=(new Follow(new BigDecimal(498), Stock.Find(2).get()));
+        testFollowList[2]=(new Follow(new BigDecimal(320), Stock.Find(3).get()));
+        testFollowList[3]=(new Follow(new BigDecimal(5), Stock.Find(4).get()));
+        testFollowList[4]=(new Follow(new BigDecimal(.12), Stock.Find(5).get()));
     }
     @Test
     public void testGetPercentChange() {
@@ -27,11 +36,11 @@ public class FollowTest {
     @Test
     public void testGetCurrentPrice(){
         this.populate();
-        assertEquals(testFollowList[0].getCurrentPrice(),Stock.GetStock(1).get().getCurrPrice());
-        assertEquals(testFollowList[1].getCurrentPrice(),Stock.GetStock(2).get().getCurrPrice());
-        assertEquals(testFollowList[2].getCurrentPrice(),Stock.GetStock(3).get().getCurrPrice());
-        assertEquals(testFollowList[3].getCurrentPrice(),Stock.GetStock(4).get().getCurrPrice());
-        assertEquals(testFollowList[4].getCurrentPrice(),Stock.GetStock(5).get().getCurrPrice());
+        assertEquals(testFollowList[0].getCurrentPrice(),Stock.Find(1).get().getCurrPrice());
+        assertEquals(testFollowList[1].getCurrentPrice(),Stock.Find(2).get().getCurrPrice());
+        assertEquals(testFollowList[2].getCurrentPrice(),Stock.Find(3).get().getCurrPrice());
+        assertEquals(testFollowList[3].getCurrentPrice(),Stock.Find(4).get().getCurrPrice());
+        assertEquals(testFollowList[4].getCurrentPrice(),Stock.Find(5).get().getCurrPrice());
 
     }
 

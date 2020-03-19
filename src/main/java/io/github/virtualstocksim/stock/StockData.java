@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.database.DatabaseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +13,11 @@ public class StockData extends DatabaseItem
 {
 
     private static final Logger logger = LoggerFactory.getLogger(StockData.class);
-    private static StockCache dataCache = StockCache.Instance();
+    private static StockCache cache = StockCache.Instance();
 
     // Table columns
     private String data;
-    public StockData(int id, String data)
+    protected StockData(int id, String data)
     {
         super(id);
         this.data = data;
@@ -26,24 +27,14 @@ public class StockData extends DatabaseItem
     public void setData(String data) { this.data = data; }
 
     // Search database for entry based on id
-    public static Optional<StockData> GetStockData(int id)
+    static Optional<StockData> Find(int id)
     {
-        // Hardcoded values for jsp testing
-        switch (id)
+        try
         {
-            case 1: return Optional.of(new StockData(1, "test data 1"));
-            case 2: return Optional.of(new StockData(2, "test data 2"));
-            case 3: return Optional.of(new StockData(3, "test data 3"));
-            case 4: return Optional.of(new StockData(4, "test data 4"));
-            case 5: return Optional.of(new StockData(5, "test data 5"));
-            default:
-                return Optional.empty();
-        }
+            logger.info("Searching for stock data...");
+            ResultSet rs = cache.executeQuery("SELECT data FROM stocks_data WHERE id=?", id);
 
-/*        try(
-                ResultSet rs = dataCache.executeQuery("SELECT data FROM stocks_data WHERE id=?", id)
-        )
-        {
+            // Return empty if nothing was found
             if(!rs.next()) return Optional.empty();
 
             return Optional.of(new StockData(
@@ -51,17 +42,39 @@ public class StockData extends DatabaseItem
                     rs.getString("data")
             ));
         }
+        catch (DatabaseException e)
+        {
+            logger.error(String.format("Stock Data with id %d not found\n", id), e);
+        }
         catch(SQLException e)
         {
-            logger.error(e.getMessage());
-            logger.warn(String.format("StockData with ID of `%d` not found", id));
+            logger.error("Error while parsing result from stock cache\n", e);
+        }
+        return Optional.empty();
+    }
+
+    static Optional<StockData> Create(String data)
+    {
+        try
+        {
+            logger.info("Creating new stock data...");
+            int id = cache.executeInsert("INSERT INTO stocks_data(data) VALUES(?)", data);
+            return Optional.of(new StockData(id, data));
+        }
+        catch (DatabaseException e)
+        {
+            logger.error("",e);
             return Optional.empty();
-        }*/
+        }
     }
 
     @Override
-    public void commit()
+    public void commit() throws DatabaseException
     {
-
+        logger.info("Committing stock data changes to database");
+        cache.executeUpdate("UPDATE stocks_data SET data = ? WHERE id = ?",
+                data,
+                id
+                );
     }
 }
