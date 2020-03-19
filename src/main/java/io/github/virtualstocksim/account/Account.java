@@ -1,15 +1,28 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.database.DatabaseItem;
+import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.Optional;
+import java.util.UUID;
 
 
 public class Account extends DatabaseItem {
+    private static final Logger logger = LoggerFactory.getLogger(Account.class);
+    private static AccountDatabase accountDatabase = AccountDatabase.Instance();
+
     private String uname;
     private String pword;
     private String email;
@@ -59,9 +72,47 @@ public class Account extends DatabaseItem {
 
     }
 
-    public Account getAccount(int id){
-        throw new UnsupportedOperationException("Not implemented yet");
+    /*public Optional<Account> findAccount(int id){
+        try
+        {
+            logger.info("Searching for account...");
+            ResultSet rs = accountDatabase.executeQuery(String.format("SELECT uuid, type, email, username, password_hash, " +
+                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp" +
+                   "FROM accounts WHERE %s = ?",id),id);
+
+            // Return empty if nothing was found
+            if(!rs.next()) return Optional.empty();
+
+            // else return the account found
+            return Optional.of(
+                    new Account(
+                            id,
+                            rs.getString("uuid"),
+                            rs.getString("type"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getBytes("password_hash"),
+                            rs.getBytes("password_salt"),
+                            rs.getString("followed_stocks"),
+                            rs.getString("transaction_history"),
+                            rs.getInt("leaderboard_rank"),
+                            rs.getString("bio"),
+                            rs.getString("profile_picture"),
+                            rs.getString("timestamp")
+                    )
+            );
+        }
+        catch (DatabaseException e)
+        {
+            logger.error(String.format("Account with search parameter %s not found\n", id), e);
+        }
+        catch(SQLException e)
+        {
+            logger.error("Error while parsing result from account database\n", e);
+        }
+        return Optional.empty();
     }
+    }*/
 
     public String getUname(){
         return this.uname;
@@ -143,8 +194,26 @@ public class Account extends DatabaseItem {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Account createDBEntry(String username, String email, String password, AccountType type)
+    public Account createAccountInDB(String username, String email, String password, AccountType type)
     {
+        Encryption encrypt = new Encryption();
+        Date date = new Date();
+        byte[] salt, hash;
+        String timestamp = date.toString();
+        String uuid = UUID.randomUUID().toString();
+        salt = encrypt.getNextSalt();
+        hash = encrypt.hash(password.toCharArray(), salt);
+        String blank_string ="";
+
+        int id = accountDatabase.executeInsert("INSERT INTO account (uuid, type, email, username, password_hash, password_salt," +
+                " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp)" +
+                " VALUES(%s, %s, %s, %s, %s, %s, %s, -1, %s, %s, %s",uuid, type, email, username, hash, salt, blank_string, blank_string, -1,
+                blank_string, blank_string, timestamp);
+
+            // return newly created account
+        return new Account(id, uuid, type, email, username, hash, salt, new StocksFollowed(new LinkedList<Follow>()),
+              new TransactionHistory(new LinkedList<Transaction>()), -1, blank_string, blank_string, timestamp);
+
         // generate password hash and salt
         // generate the timestamp
         // generate the UUID
@@ -162,7 +231,6 @@ public class Account extends DatabaseItem {
 
           test fields returned from db against fields placed into database and make sure they match
          */
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void commit()

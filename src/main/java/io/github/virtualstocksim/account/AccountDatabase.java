@@ -53,13 +53,15 @@ public class AccountDatabase extends Database
                     "uuid VARCHAR(256) NOT NULL UNIQUE",
                     "type VARCHAR(16) NOT NULL",
                     "username LONG VARCHAR NOT NULL",
+                    "email LONG VARCHAR NOT NULL UNIQUE",
                     "password_hash VARCHAR(256) FOR BIT DATA NOT NULL",
                     "password_salt VARCHAR(16) FOR BIT DATA NOT NULL",
                     "followed_stocks LONG VARCHAR",
                     "transaction_history LONG VARCHAR",
                     "leaderboard_rank INT",
                     "bio LONG VARCHAR",
-                    "profile_picture LONG VARCHAR"
+                    "profile_picture LONG VARCHAR",
+                    "timestamp LONG VARCHAR"
 
             );
         }
