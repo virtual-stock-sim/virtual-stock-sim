@@ -259,6 +259,7 @@ public class Database
             logger.info("Getting generated key from insertion...");
             // Return key from insertion
             ResultSet rs = stmt.getGeneratedKeys();
+
             if(rs.next())
             {
                 return rs.getInt(1);
@@ -282,11 +283,5 @@ public class Database
     public static String formatSqlExecute(String sql, Object... params)
     {
         return String.format("Executing SQL... \n\t SQL Command: %s \n\t Parameters: %s", sql, Arrays.toString(params));
-    }
-
-    private static String indentString(String input)
-    {
-        System.out.println(input);
-        return input == null ? "" : input.replaceAll("(?m)^", "\t");
     }
 }

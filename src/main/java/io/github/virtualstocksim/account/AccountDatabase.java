@@ -52,8 +52,8 @@ public class AccountDatabase extends Database
                     "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
                     "uuid VARCHAR(256) NOT NULL UNIQUE",
                     "type VARCHAR(16) NOT NULL",
-                    "username LONG VARCHAR NOT NULL",
-                    "email LONG VARCHAR NOT NULL UNIQUE",
+                    "username VARCHAR(255) NOT NULL",
+                    "email VARCHAR(255) NOT NULL UNIQUE",
                     "password_hash VARCHAR(256) FOR BIT DATA NOT NULL",
                     "password_salt VARCHAR(16) FOR BIT DATA NOT NULL",
                     "followed_stocks LONG VARCHAR",
@@ -61,7 +61,7 @@ public class AccountDatabase extends Database
                     "leaderboard_rank INT",
                     "bio LONG VARCHAR",
                     "profile_picture LONG VARCHAR",
-                    "creation_date LONG VARCHAR"
+                    "creation_date TIMESTAMP"
 
             );
         }

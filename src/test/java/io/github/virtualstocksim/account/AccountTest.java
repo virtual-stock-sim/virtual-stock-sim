@@ -8,13 +8,12 @@ import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.transaction.TransactionType;
+import io.github.virtualstocksim.util.Util;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +57,7 @@ public class AccountTest
         // create and populate account with objects
      account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
              "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text",
-             "my-picture.jpg", Timestamp.valueOf(Instant.now().toString()) );
+             "my-picture.jpg", Util.GetTimeStamp());
         // giving account a password for hashing
      account.setPword("virtualstocksim");
 
