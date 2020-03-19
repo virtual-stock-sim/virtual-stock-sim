@@ -16,9 +16,7 @@ public class Follow {
         //only need store initial price (@ time of follow)in here
         //current price will always just be gotten from stock
     }
-    public Stock getStock(){
-        return this.stock;
-    }
+
 
     public BigDecimal getCurrentPrice(){
         return this.stock.getCurrPrice();
