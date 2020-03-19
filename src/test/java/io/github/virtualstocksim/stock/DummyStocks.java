@@ -12,7 +12,11 @@ public class DummyStocks
          * Add new stocks below
          */
         AMAZON("AMZN", 1),
-        TESLA("TSLA", 2);
+        TESLA("TSLA", 2),
+        GOOGLE("GOOGL",3),
+        FORD("F",4),
+        APPLE("AAPL",5);
+
 
         private final String text;
         private final int id;
@@ -36,9 +40,11 @@ public class DummyStocks
         /*
          * Add new stocks below
          */
-        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), 1));
-        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), 2));
-
+        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), StockSymbol.AMAZON.getID()));
+        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), StockSymbol.TESLA.getID()));
+        stocks.put(StockSymbol.GOOGLE, new Stock(StockSymbol.GOOGLE.getID(), StockSymbol.GOOGLE.getSymbol(), new BigDecimal("300.0"), StockSymbol.GOOGLE.getID()));
+        stocks.put(StockSymbol.FORD, new Stock(StockSymbol.FORD.getID(), StockSymbol.FORD.getSymbol(), new BigDecimal("400.0"), StockSymbol.FORD.getID()));
+        stocks.put(StockSymbol.APPLE, new Stock(StockSymbol.APPLE.getID(), StockSymbol.APPLE.getSymbol(), new BigDecimal("500.0"), StockSymbol.APPLE.getID()));
         return stocks;
     }
 
@@ -51,7 +57,9 @@ public class DummyStocks
          */
         stockDatas.put(StockSymbol.AMAZON, new StockData(StockSymbol.AMAZON.getID(), "amazon test data"));
         stockDatas.put(StockSymbol.TESLA, new StockData(StockSymbol.TESLA.getID(), "tesla test data"));
-
+        stockDatas.put(StockSymbol.GOOGLE, new StockData(StockSymbol.GOOGLE.getID(), "google test data"));
+        stockDatas.put(StockSymbol.FORD, new StockData(StockSymbol.FORD.getID(), "ford test data"));
+        stockDatas.put(StockSymbol.APPLE, new StockData(StockSymbol.APPLE.getID(), "apple test data"));
 
         return stockDatas;
     }

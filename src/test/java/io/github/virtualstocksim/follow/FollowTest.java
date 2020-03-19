@@ -1,32 +1,32 @@
 package io.github.virtualstocksim.follow;
-
+import io.github.virtualstocksim.stock.DummyStocks;
+import io.github.virtualstocksim.database.DatabaseConnections;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.stock.StockCacheConnection;
 import org.junit.ClassRule;
 import org.junit.Test;
-
+import io.github.virtualstocksim.stock.DummyStocks;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
-public class FollowTest
+public class FollowTest extends DatabaseConnections
 {
     @ClassRule
-    public static StockCacheConnection conn = new StockCacheConnection();
+    public static DatabaseConnections databases = new DatabaseConnections();
 
     Follow [] testFollowList = new Follow[5];
     public void populate(){
-        testFollowList[0]=(new Follow(new BigDecimal(100), Stock.Find(1).get()));
-        testFollowList[1]=(new Follow(new BigDecimal(498), Stock.Find(2).get()));
-        testFollowList[2]=(new Follow(new BigDecimal(320), Stock.Find(3).get()));
-        testFollowList[3]=(new Follow(new BigDecimal(5), Stock.Find(4).get()));
-        testFollowList[4]=(new Follow(new BigDecimal(.12), Stock.Find(5).get()));
+        testFollowList[0]=(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        testFollowList[1]=(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        testFollowList[2]=(new Follow(new BigDecimal(320), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        testFollowList[3]=(new Follow(new BigDecimal(50),   DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        testFollowList[4]=(new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
     }
     @Test
     public void testGetPercentChange() {
         this.populate();
-        assertEquals(-72.22,testFollowList[0].getPercentChange(),0.05);
+        assertEquals(0,testFollowList[0].getPercentChange(),0.05);
         assertEquals(2829.41,testFollowList[1].getPercentChange(),0.05);
         assertEquals(160.16,testFollowList[2].getPercentChange(),0.05);
         assertEquals(-98.75,testFollowList[3].getPercentChange(),0.05);
