@@ -51,7 +51,7 @@ public class AccountControllerTest
         transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
         acc= new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
-                "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg");
+                "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg","3/19/2020");
 
         conn.setModel(acc);
     }

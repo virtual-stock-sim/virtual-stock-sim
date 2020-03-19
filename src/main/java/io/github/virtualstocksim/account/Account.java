@@ -22,6 +22,7 @@ public class Account extends DatabaseItem {
     private TransactionHistory transactionHistory;
     private AccountType type;
     private String profilePicture;
+    private final String timestamp;
 
 
     /**
@@ -37,10 +38,11 @@ public class Account extends DatabaseItem {
      * @param leaderboardRank  User's rank, among other users, of total profit gained. Initially set to -1
      * @param bio User's bio
      * @param profilePicture String Path to profile picture locally on server
+     * @param timestamp time the account was created (java.time)
      */
     public Account(int id, String uuid, AccountType type, String email, String username, byte[] passwordHash, byte[] passwordSalt,
                    StocksFollowed stocksFollowed, TransactionHistory transactionHistory,
-                   int leaderboardRank, String bio, String profilePicture) {
+                   int leaderboardRank, String bio, String profilePicture, String timestamp) {
         super(id);
         this.uuid = uuid;
         this.type = type;
@@ -53,7 +55,12 @@ public class Account extends DatabaseItem {
         this.leaderboardRank = leaderboardRank;
         this.bio = bio;
         this.profilePicture = profilePicture;
+        this.timestamp = timestamp;
 
+    }
+
+    public Account getAccount(int id){
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public String getUname(){
@@ -132,14 +139,35 @@ public class Account extends DatabaseItem {
         this.profilePicture = profilePicture;
     }
 
-    public void updateProfilePicture(int accountID)
+    public void updateProfilePicture(int accountID, String newPicturePath) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public Account createDBEntry(String username, String email, String password, AccountType type)
     {
+        // generate password hash and salt
+        // generate the timestamp
+        // generate the UUID
+        // place these into new account in database for empty string for blank fields
+        // -1 for leaderboard rank
+        /*
+        Create(type, email, username, password):
+          uuid = genUUID()
+          salt = getSalt()
+          hash = genHash(password, salt)
+          // database insert method returns generated primary key id of what was just inserted
+          id = insertIntoDB(uuid, type, email, username, salt, hash, empty string for stocks followed, empty list
+          for transaction history, -1 for leaderboard rank, empty string for bio, empty string for profile picture)
+          return new Account(params)
+
+          test fields returned from db against fields placed into database and make sure they match
+         */
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void commit()
     {
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }
