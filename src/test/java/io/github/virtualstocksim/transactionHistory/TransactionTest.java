@@ -21,11 +21,11 @@ public class TransactionTest
 
    private LinkedList<Transaction> transactions = new LinkedList<>();
     public void setUp() {
-        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(1252.2), 1, Stock.Find(1).get()));
-        transactions.add(new Transaction(TransactionType.BUY, "5/8/77", new BigDecimal(50.12), 7, Stock.Find(2).get()));
-        transactions.add(new Transaction(TransactionType.SELL, "5/18/18", new BigDecimal(500.7), 8, Stock.Find(3).get()));
-        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(123.8), 100, Stock.Find(4).get()));
-        transactions.add(new Transaction(TransactionType.SELL, "3/13/20", new BigDecimal(65.2), 12, Stock.Find(5).get()));
+        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(1252.2), 1, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));
+        transactions.add(new Transaction(TransactionType.BUY, "5/8/77", new BigDecimal(50.12), 7, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        transactions.add(new Transaction(TransactionType.SELL, "5/18/18", new BigDecimal(500.7), 8, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
+        transactions.add(new Transaction(TransactionType.BUY, "3/13/20", new BigDecimal(123.8), 100, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
+        transactions.add(new Transaction(TransactionType.SELL, "3/13/20", new BigDecimal(65.2), 12, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
     }
 
 
@@ -140,11 +140,11 @@ public class TransactionTest
    @Test
    public void testGetStock(){
         this.setUp();
-       assertEquals(transactions.get(0).getStock().getStockData(),Stock.Find(1).get().getStockData());
-       assertEquals(transactions.get(1).getStock().getStockData(),Stock.Find(2).get().getStockData());
-       assertEquals(transactions.get(2).getStock().getStockData(),Stock.Find(3).get().getStockData());
-       assertEquals(transactions.get(3).getStock().getStockData(),Stock.Find(4).get().getStockData());
-       assertEquals(transactions.get(4).getStock().getStockData(),Stock.Find(5).get().getStockData());
+       assertEquals(transactions.get(0).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON));
+       assertEquals(transactions.get(1).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA));
+       assertEquals(transactions.get(2).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE));
+       assertEquals(transactions.get(3).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD));
+       assertEquals(transactions.get(4).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE));
 
    }
 

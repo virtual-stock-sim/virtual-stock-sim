@@ -1,47 +1,45 @@
 package io.github.virtualstocksim.follow;
+import io.github.virtualstocksim.stock.DummyStocks;
 
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.stock.StockCacheConnection;
 import org.junit.ClassRule;
 import org.junit.Test;
-
+import io.github.virtualstocksim.stock.DummyStocks;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
 public class FollowTest
 {
-    @ClassRule
-    public static StockCacheConnection conn = new StockCacheConnection();
+
 
     Follow [] testFollowList = new Follow[5];
     public void populate(){
-        testFollowList[0]=(new Follow(new BigDecimal(100), Stock.Find(1).get()));
-        testFollowList[1]=(new Follow(new BigDecimal(498), Stock.Find(2).get()));
-        testFollowList[2]=(new Follow(new BigDecimal(320), Stock.Find(3).get()));
-        testFollowList[3]=(new Follow(new BigDecimal(5), Stock.Find(4).get()));
-        testFollowList[4]=(new Follow(new BigDecimal(.12), Stock.Find(5).get()));
+        testFollowList[0]=(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));
+        testFollowList[1]=(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        testFollowList[2]=(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
+        testFollowList[3]=(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
+        testFollowList[4]=(new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
     }
     @Test
     public void testGetPercentChange() {
         this.populate();
-        assertEquals(-72.22,testFollowList[0].getPercentChange(),0.05);
-        assertEquals(2829.41,testFollowList[1].getPercentChange(),0.05);
-        assertEquals(160.16,testFollowList[2].getPercentChange(),0.05);
-        assertEquals(-98.75,testFollowList[3].getPercentChange(),0.05);
-        assertEquals(-99.76,testFollowList[4].getPercentChange(),0.05);
+        assertEquals(0,testFollowList[0].getPercentChange(),0.05);
+        assertEquals(149,testFollowList[1].getPercentChange(),0.05);
+        assertEquals(-26.67,testFollowList[2].getPercentChange(),0.05);
+        assertEquals(25.25,testFollowList[3].getPercentChange(),0.05);
+        assertEquals(-99.98,testFollowList[4].getPercentChange(),0.05);
 
     }
     @Test
     public void testGetCurrentPrice(){
         this.populate();
-        assertEquals(testFollowList[0].getCurrentPrice(),Stock.Find(1).get().getCurrPrice());
-        assertEquals(testFollowList[1].getCurrentPrice(),Stock.Find(2).get().getCurrPrice());
-        assertEquals(testFollowList[2].getCurrentPrice(),Stock.Find(3).get().getCurrPrice());
-        assertEquals(testFollowList[3].getCurrentPrice(),Stock.Find(4).get().getCurrPrice());
-        assertEquals(testFollowList[4].getCurrentPrice(),Stock.Find(5).get().getCurrPrice());
-
+        assertEquals(testFollowList[0].getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON).getCurrPrice());
+        assertEquals(testFollowList[1].getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA).getCurrPrice());
+        assertEquals(testFollowList[2].getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE).getCurrPrice());
+        assertEquals(testFollowList[3].getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD).getCurrPrice());
+        assertEquals(testFollowList[4].getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE).getCurrPrice());
     }
 
     @Test
@@ -49,8 +47,8 @@ public class FollowTest
         this.populate();
         assertEquals(testFollowList[0].getInitialPrice().doubleValue(),100,0.001);
         assertEquals(testFollowList[1].getInitialPrice().doubleValue(),498.00,0.001);
-        assertEquals(testFollowList[2].getInitialPrice().doubleValue(),320.00,0.001);
-        assertEquals(testFollowList[3].getInitialPrice().doubleValue(),5.00,0.001);
+        assertEquals(testFollowList[2].getInitialPrice().doubleValue(),220.00,0.001);
+        assertEquals(testFollowList[3].getInitialPrice().doubleValue(),501,0.001);
         assertEquals(testFollowList[4].getInitialPrice().doubleValue(),.12,0.001);
 
     }

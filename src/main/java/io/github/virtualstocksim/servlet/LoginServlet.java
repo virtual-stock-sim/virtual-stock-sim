@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet
         StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
         Account acc = new Account(0, "371298372189", AccountType.ADMIN,"vss-admin@vss.com", "VSSAdmin", bytes,bytes,
-                stocksFollowed, transactionHistory,-1,"Fun Text","my-picture.jpg");
+                stocksFollowed , transactionHistory,-1,"Fun Text","my-picture.jpg","foo");
 
         // store error message (if any)
         String errorMessage = null;
