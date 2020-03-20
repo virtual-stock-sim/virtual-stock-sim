@@ -155,7 +155,8 @@ public class Database
      * @param sql SQL query
      * @return Results from query
      * @throws DatabaseException
-     */    public ResultSet executeQuery(String sql) throws DatabaseException
+     */
+    public ResultSet executeQuery(String sql) throws DatabaseException
     {
         return executeQuery(sql, emptyObjArr);
     }
