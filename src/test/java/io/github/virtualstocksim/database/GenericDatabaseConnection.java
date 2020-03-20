@@ -1,10 +1,12 @@
 package io.github.virtualstocksim.database;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -56,10 +58,17 @@ public class GenericDatabaseConnection extends ExternalResource
         catch (SQLException e) {}
 
 
-        File db = new File(genericDBPath);
-        if(db.exists())
+        File file = new File(genericDBPath);
+        if(file.exists())
         {
-            db.delete();
+            try
+            {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e)
+            {
+                System.err.println("Couldn't delete temporary test folder");
+                System.err.println(e.getMessage());
+            }
         }
     }
 }

@@ -50,7 +50,7 @@ public class AccountDatabase extends Database
         {
             createTable("accounts",
                     "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
-                    "uuid VARCHAR(256) NOT NULL UNIQUE",
+                    "uuid VARCHAR(36) NOT NULL UNIQUE",
                     "type VARCHAR(16) NOT NULL",
                     "username VARCHAR(255) NOT NULL",
                     "email VARCHAR(255) NOT NULL UNIQUE",
