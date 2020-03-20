@@ -9,8 +9,8 @@ public class DatabaseException extends RuntimeException
 
     public DatabaseException(String msg, String dbPath, SQLException e)
     {
-        super(msg, e, false, true);
-        this.sqlEx = null;
+        super(String.format("%s\nConnected Database: %s", msg, dbPath), e, false, true);
+        this.sqlEx = e;
     }
 
     public String getDbPath()

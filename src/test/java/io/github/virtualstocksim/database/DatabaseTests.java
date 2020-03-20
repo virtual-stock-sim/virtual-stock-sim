@@ -2,11 +2,14 @@ package io.github.virtualstocksim.database;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
 public class DatabaseTests
 {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseTests.class);
     @ClassRule
     public static GenericDatabaseConnection conn = new GenericDatabaseConnection();
 
@@ -19,9 +22,9 @@ public class DatabaseTests
             assertFalse(conn.getGenericDB().tableExists(tableName));
             conn.getGenericDB().createTable(tableName, "id INT NOT NULL");
             assertTrue(conn.getGenericDB().tableExists(tableName));
-        } catch (Exception e)
+        } catch (DatabaseException e)
         {
-            System.err.println(e.getMessage());
+            logger.error("", e);
             fail();
         }
     }
