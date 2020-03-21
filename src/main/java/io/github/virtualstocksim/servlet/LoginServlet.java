@@ -40,13 +40,13 @@ public class LoginServlet extends HttpServlet
 
         // create account model
         byte[] bytes = {3,4,5,6,7,8};
-        List<Transaction> transactions = new LinkedList<Transaction>();
-        TransactionHistory transactionHistory = new TransactionHistory(transactions);
-        List<Follow> stocks = new LinkedList<Follow>();
-        StocksFollowed stocksFollowed = new StocksFollowed(stocks);
+        //List<Transaction> transactions = new LinkedList<Transaction>();
+        //TransactionHistory transactionHistory = new TransactionHistory(transactions);
+        //List<Follow> stocks = new LinkedList<Follow>();
+        //StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
-        Account acc = new Account(0, "371298372189", AccountType.ADMIN,"vss-admin@vss.com", "VSSAdmin", bytes,bytes,
-                stocksFollowed , transactionHistory,-1,"Fun Text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
+        Account acc = new Account(0, "371298372189", "ADMIN","vss-admin@vss.com", "VSSAdmin", bytes,bytes,
+                "", "",-1,"Fun Text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
 
         // store error message (if any)
         String errorMessage = null;

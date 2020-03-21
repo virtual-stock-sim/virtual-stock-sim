@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -26,10 +27,10 @@ public class AccountTest
     public static AccountDatabaseConnection conn = new AccountDatabaseConnection();
 
     private Account account;
-    StocksFollowed stocksFollowed;
+   // StocksFollowed stocksFollowed;
     Stock Amazon;
-    List<Transaction> transactions;
-    TransactionHistory transactionHistory;
+   // List<Transaction> transactions;
+   // TransactionHistory transactionHistory;
     List<Stock> stocks;
     String uuid;
     byte[] hash;
@@ -44,19 +45,19 @@ public class AccountTest
         hash = encrypt.hash(password.toCharArray(),salt);
         uuid = UUID.randomUUID().toString();
 
-        List <Follow>followList = new LinkedList<Follow>();
-        followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
-        stocksFollowed = new StocksFollowed(followList);
+        //List <Follow>followList = new LinkedList<Follow>();
+       // followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        //stocksFollowed = new StocksFollowed(followList);
 
         Amazon = DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON);
 
-        transactions = new LinkedList<Transaction>();
-        transactionHistory = new TransactionHistory(transactions);
-        transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
+        //transactions = new LinkedList<Transaction>();
+        //transactionHistory = new TransactionHistory(transactions);
+       // transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
         // create and populate account with objects
-     account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
-             "VSSAdmin", hash, salt, stocksFollowed, transactionHistory,-1,"Fun text",
+     account = new Account(0, uuid, "ADMIN", "VSSAdmin@vss.com",
+             "VSSAdmin", hash, salt, "", "",-1,"Fun text",
              "my-picture.jpg", Util.GetTimeStamp());
         // giving account a password for hashing
      account.setPword("virtualstocksim");
@@ -86,7 +87,7 @@ public class AccountTest
 
     @Test
     public void testGetAccountType(){
-        assertEquals(AccountType.ADMIN, account.getAccountType());
+        assertEquals("ADMIN", account.getAccountType());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class AccountTest
 
     @Test
     public void testGetStocksFollowed() {
-        assertEquals(stocksFollowed, account.getStocksFollowed() );
+        assertEquals("", account.getStocksFollowed() );
     }
 
     @Test
@@ -111,7 +112,7 @@ public class AccountTest
 
     @Test
     public void testGetTransactionHistory(){
-        assertEquals(transactionHistory, account.getTransactionHistory());
+        assertEquals("", account.getTransactionHistory());
     }
 
     @Test
@@ -164,5 +165,13 @@ public class AccountTest
     public void testSetProfilePicture(){
         account.setProfilePicture("new-picture.jpg");
         assertEquals("new-picture.jpg", account.getProfilePicture());
+    }
+
+    @Test
+    public void testCreateAccountInDB(){
+        Optional<Account> new_acc =  Account.Create("VSSAdmin", "VSSAdmin@vss.com","topsecret","ADMIN");
+        Optional<Account> find_acc = Account.Find("email", "VSSAdmin@vss.com");
+        assertEquals(new_acc, find_acc);
+
     }
 }

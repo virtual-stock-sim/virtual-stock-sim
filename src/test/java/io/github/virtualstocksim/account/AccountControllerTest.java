@@ -46,17 +46,17 @@ public class AccountControllerTest
         uuid = UUID.randomUUID().toString();
         stocks = new LinkedList<Stock>();
 
-        List <Follow>followList = new LinkedList<Follow>();
-        followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
-        stocksFollowed = new StocksFollowed(followList);
+       // List <Follow>followList = new LinkedList<Follow>();
+       // followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+       // stocksFollowed = new StocksFollowed(followList);
 
-        transactions = new LinkedList<Transaction>();
-        transactionHistory = new TransactionHistory(transactions);
+        //transactions = new LinkedList<Transaction>();
+        //transactionHistory = new TransactionHistory(transactions);
 
-        transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
+        //transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
-        acc= new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com", "VSSAdmin", hash, salt,
-                stocksFollowed, transactionHistory,-1,"Fun text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
+        acc= new Account(0, uuid, "ADMIN", "VSSAdmin@vss.com", "VSSAdmin", hash, salt,
+                "", "",-1,"Fun text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
 
         conn.setModel(acc);
     }

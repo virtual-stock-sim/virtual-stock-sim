@@ -8,6 +8,7 @@ import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
+import io.github.virtualstocksim.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +34,15 @@ public class Account extends DatabaseItem {
     private byte[] passwordHash;
     private byte[] passwordSalt;
     private int leaderboardRank;
-    private StocksFollowed stocksFollowed;
-    private TransactionHistory transactionHistory;
-    private AccountType type;
+    //private StocksFollowed stocksFollowed;
+   // private TransactionHistory transactionHistory;
+    /**
+     * IMPORTANT: These are being changed to strings for the time being, as we are still testing. They will
+     * eventually be objects again
+     */
+    private String stocksFollowed;
+    private String transactionHistory;
+    private String accountType;
     private String profilePicture;
     private final Timestamp timestamp;
 
@@ -44,23 +51,23 @@ public class Account extends DatabaseItem {
      *
      * @param id account ID for referencing in database
      * @param uuid  Unique identifier for each account created
-     * @param type Enum of accountType; i.e. "admin" or "user"
+     * @param accountType type of account i.e. "admin" or "user"
      * @param username User's username
      * @param passwordHash password hash for encryption
      * @param passwordSalt password salt used to hash a password
      * @param stocksFollowed Linked list of Stocks that user is following
      * @param transactionHistory TransactionHistory object, which is a List of transaction objects
      * @param leaderboardRank  User's rank, among other users, of total profit gained. Initially set to -1
-     * @param bio User's bio
+     * @param bio User's bio (string)
      * @param profilePicture String Path to profile picture locally on server
      * @param timestamp time the account was created (java.time)
      */
-    public Account(int id, String uuid, AccountType type, String email, String username, byte[] passwordHash, byte[] passwordSalt,
-                   StocksFollowed stocksFollowed, TransactionHistory transactionHistory,
+    public Account(int id, String uuid, String accountType, String email, String username, byte[] passwordHash, byte[] passwordSalt,
+                   String stocksFollowed, String transactionHistory,
                    int leaderboardRank, String bio, String profilePicture, Timestamp timestamp) {
         super(id);
         this.uuid = uuid;
-        this.type = type;
+        this.accountType = accountType;
         this.uname = username;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -74,52 +81,6 @@ public class Account extends DatabaseItem {
 
     }
 
-    /**
-     * @param id the account ID to locate
-     * @return returned account, if any. (Could be empty if account does not exist)
-     */
-    public Optional<Account> findAccount(int id){
-        throw new UnsupportedOperationException("Still working on implementation");
-        /*try
-        {
-            logger.info("Searching for account...");
-            ResultSet rs = accountDatabase.executeQuery(String.format("SELECT uuid, type, email, username, password_hash, " +
-                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date" +
-                   "FROM accounts WHERE %s = ?",id),id);
-
-            // Return empty if nothing was found
-            if(!rs.next()) return Optional.empty();
-
-            // else return the account found
-            return Optional.of(
-                    new Account(
-                            id,
-                            rs.getString("uuid"),
-                            rs.getString("type"),
-                            rs.getString("username"),
-                            rs.getString("email"),
-                            rs.getBytes("password_hash"),
-                            rs.getBytes("password_salt"),
-                            rs.getString("followed_stocks"),
-                            rs.getString("transaction_history"),
-                            rs.getInt("leaderboard_rank"),
-                            rs.getString("bio"),
-                            rs.getString("profile_picture"),
-                            rs.getString("creation_date")
-                    )
-            );
-        }
-        catch (DatabaseException e)
-        {
-            logger.error(String.format("Account with search parameter %s not found\n", id), e);
-        }
-        catch(SQLException e)
-        {
-            logger.error("Error while parsing result from account database\n", e);
-        }
-        return Optional.empty();
-    }*/
-    }
 
     public String getUname(){
         return this.uname;
@@ -137,8 +98,8 @@ public class Account extends DatabaseItem {
         return this.uuid;
     }
 
-    public AccountType getAccountType() {
-        return this.type;
+    public String getAccountType() {
+        return this.accountType;
     }
 
     public byte[] getPasswordHash() {
@@ -149,9 +110,17 @@ public class Account extends DatabaseItem {
         return this.passwordSalt;
     }
 
-    public StocksFollowed getStocksFollowed(){return this.stocksFollowed;}
+    /**
+     * THESE SHOULD EVENTUALLY BE CHANGED BACK TO THEIR RESPECTIVE OBJECTS AFTER TESTING
+     * @return stocks user is following in a StocksFollowed object
+     */
+    public String getStocksFollowed(){return this.stocksFollowed;}
 
-    public TransactionHistory getTransactionHistory() {return this.transactionHistory; }
+    /**
+     * THESE SHOULD EVENTUALLY BE CHANGED BACK TO THEIR RESPECTIVE OBJECTS AFTER TESTING
+     * @return User's transactions in a transactionHistory object
+     */
+    public String getTransactionHistory() {return this.transactionHistory; }
 
     public int getLeaderboardRank() {return this.leaderboardRank;}
 
@@ -206,43 +175,98 @@ public class Account extends DatabaseItem {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+
+
     /**
-     * @param username - username of user
-     * @param email     - email of user
-     * @param password  - user's password to be encrypted
-     * @param type      - AccountType (Admin or User)
+     * @param searchCol Column of DB to use in the WHERE portion of the SQL statement
+     * @param colValue Value of column to search by
+     * @return returned account, if any. (Could be empty if account does not exist)
+     */
+    public static Optional<Account> Find(String searchCol, Object colValue) {
+        /**
+         * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
+         * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in
+         * for testing. - Dan
+         */
+        try {
+            logger.info("Searching for account...");
+            ResultSet rs = accountDatabase.executeQuery(String.format("SELECT id, uuid, type, username, email, password_hash, " +
+                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date" +
+                    "FROM accounts WHERE %s = ?", searchCol), colValue);
+
+            // Return empty if nothing was found
+            if(!rs.next()) return Optional.empty();
+
+            // else return the account found
+            return Optional.of(
+                    new Account(
+                            rs.getInt("id"),
+                            rs.getString("uuid"),
+                            rs.getString("type"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getBytes("password_hash"),
+                            rs.getBytes("password_salt"),
+                            rs.getString("followed_stocks"),
+                            rs.getString("transaction_history"),
+                            rs.getInt("leaderboard_rank"),
+                            rs.getString("bio"),
+                            rs.getString("profile_picture"),
+                            rs.getTimestamp("creation_date")
+                    )
+            );
+        }
+        catch (DatabaseException e)
+        {
+            logger.error(String.format("Account with search parameter %s not found\n", colValue), e);
+        }
+        catch(SQLException e)
+        {
+            logger.error("Error while parsing result from account database\n", e);
+        }
+        return Optional.empty();
+    }
+
+
+
+
+    /**
+     * @param username username of user
+     * @param email email of user
+     * @param password user's password to be encrypted
+     * @param accountType AccountType (Admin or User)
      * @return Either a newly created account, or empty if creation fails.
      */
-    public Optional<Account> createAccountInDB(String username, String email, String password, AccountType type)
+    public static Optional<Account> Create(String username, String email, String password, String accountType)
     {
         Encryption encrypt = new Encryption();
-        Date date = new Date();
         byte[] salt, hash;
-        Timestamp timestamp = Timestamp.valueOf(Instant.now().toString());
+        Timestamp timestamp = Util.GetTimeStamp();
         String uuid = UUID.randomUUID().toString();
         salt = encrypt.getNextSalt();
         hash = encrypt.hash(password.toCharArray(), salt);
         String blank_string ="";
+        int defaultLeaderboardRank = -1;
         logger.info("Attempting to create a new account in account database...");
 
         try {
             int id = accountDatabase.executeInsert(
-                    "INSERT INTO account (uuid, type, email, username, password_hash, password_salt," +
-                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp)" +
+                    "INSERT INTO accounts (uuid, type, username, email, password_hash, password_salt, " +
+                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp) " +
 
-                            " VALUES(%s, %s, %s, %s, %s, %s, %s, -1, %s, %s, %s",uuid, type, email, username, hash, salt, blank_string, blank_string, -1,
-                    blank_string, blank_string, timestamp);
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType, username, email, hash, salt, blank_string,
+                    blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
 
             logger.info("Account with new id %s sucessfully created!",id);
-            return Optional.of(new Account(id, uuid, type, email, username, hash, salt, new StocksFollowed(new LinkedList<Follow>()),
-                    new TransactionHistory(new LinkedList<Transaction>()), -1, blank_string, blank_string, timestamp));
+            return Optional.of(new Account(id, uuid, accountType, username, email, hash, salt, "",
+                    "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
 
         } catch (DatabaseException e){
             logger.info("Account creation failed");
             return Optional.empty();
         }
 
-            // return newly created accou
+            // return newly created account
         // generate password hash and salt
         // generate the timestamp
         // generate the UUID
