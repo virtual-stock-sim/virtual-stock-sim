@@ -14,12 +14,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AccountTest
 {
@@ -169,9 +166,22 @@ public class AccountTest
 
     @Test
     public void testCreateAccountInDB(){
-        Optional<Account> new_acc =  Account.Create("VSSAdmin", "VSSAdmin@vss.com","topsecret","ADMIN");
-        Optional<Account> find_acc = Account.Find("email", "VSSAdmin@vss.com");
-        assertEquals(new_acc, find_acc);
+        Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret","ADMIN");
+        if(!new_acc.isPresent()){ fail(); }
+        Optional<Account> find_acc = Account.Find("email",  "test@test.com");
+        if(!find_acc.isPresent()){ fail(); }
+        assertEquals(new_acc.get().getId(), find_acc.get().getId());
+        assertEquals(new_acc.get().getUUID(), find_acc.get().getUUID());
+        assertEquals(new_acc.get().getUname(),find_acc.get().getUname());
+        assertEquals(new_acc.get().getEmail(), find_acc.get().getEmail());
+        assertArrayEquals(new_acc.get().getPasswordHash(), find_acc.get().getPasswordHash());
+        assertArrayEquals(new_acc.get().getPasswordSalt(), find_acc.get().getPasswordSalt());
+        assertEquals(new_acc.get().getStocksFollowed(),find_acc.get().getStocksFollowed());
+        assertEquals(new_acc.get().getTransactionHistory(),find_acc.get().getTransactionHistory());
+        assertEquals(new_acc.get().getLeaderboardRank(), find_acc.get().getLeaderboardRank());
+        assertEquals(new_acc.get().getBio(), find_acc.get().getBio());
+        assertEquals(new_acc.get().getProfilePicture(), find_acc.get().getProfilePicture());
+        assertEquals(new_acc.get().getCreationDate(), find_acc.get().getCreationDate());
 
     }
 }

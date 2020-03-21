@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
@@ -132,6 +133,10 @@ public class Account extends DatabaseItem {
         return this.profilePicture;
     }
 
+    public Timestamp getCreationDate(){
+        return this.timestamp;
+    }
+
     public void setUname(String uname){
         this.uname = uname;
     }
@@ -191,7 +196,7 @@ public class Account extends DatabaseItem {
         try {
             logger.info("Searching for account...");
             ResultSet rs = accountDatabase.executeQuery(String.format("SELECT id, uuid, type, username, email, password_hash, " +
-                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date" +
+                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
                     "FROM accounts WHERE %s = ?", searchCol), colValue);
 
             // Return empty if nothing was found
@@ -252,12 +257,12 @@ public class Account extends DatabaseItem {
         try {
             int id = accountDatabase.executeInsert(
                     "INSERT INTO accounts (uuid, type, username, email, password_hash, password_salt, " +
-                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, timestamp) " +
+                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 
                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType, username, email, hash, salt, blank_string,
                     blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
 
-            logger.info("Account with new id %s sucessfully created!",id);
+            logger.info("Account with new id " + id + " successfully created!");
             return Optional.of(new Account(id, uuid, accountType, username, email, hash, salt, "",
                     "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
 
