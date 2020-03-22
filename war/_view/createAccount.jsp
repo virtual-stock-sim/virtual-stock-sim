@@ -22,17 +22,13 @@
 
         <div class = "sign-up">
                 <form action="${pageContext.servletContext.contextPath}/createAccount" method="post">
-                        <label for="email">E-MAIL:</label><br>
-                        <input type="text" id="email" name="email"><br><br>
+                        <input type="text" id="email" placeholder=" Email" name="email"><br><br>
 
-                        <label for="uname">USERNAME:</label><br>
-                        <input type="text" id="uname" name="uname"><br><br>
+                        <input type="text" id="uname" placeholder=" Username" name="uname"><br><br>
 
-                        <label for="pword">PASSWORD:</label><br>
-                        <input type="password" id="pword" name="pword"><br><br>
+                        <input type="password" id="pword" placeholder=" Password " name="pword"><br><br>
 
-                        <label for="pwordconfirm">CONFIRM PASSWORD:</label><br>
-                        <input type="password" id="pwordconfirm" name="pwordconfirm"><br><br><br>
+                        <input type="password" id="pwordconfirm" placeholder=" Confirm Password" name="pwordconfirm"><br><br><br>
 
                         <input type="submit" value ="SIGN UP">
                 </form>
