@@ -68,7 +68,7 @@ public class Stock extends DatabaseItem
     {
         logger.info("Searching for stock...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, symbol, curr_price, data_id FROM stocks WHERE %s = ?", searchCol), colValue);
+            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, symbol, curr_price, data_id FROM stocks WHERE %s = ?", searchCol), colValue)
             )
         {
             // Return empty if nothing was found
@@ -85,7 +85,7 @@ public class Stock extends DatabaseItem
         }
         catch(SQLException e)
         {
-            logger.error("Error while parsing result from stock cache\n", e);
+            logger.error(String.format("Unable to retrieve stock from database with search parameters %s = %s\n", searchCol, colValue), e);
         }
         return Optional.empty();
     }
