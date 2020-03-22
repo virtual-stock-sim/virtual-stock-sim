@@ -36,35 +36,39 @@ public class CreateAccountServlet extends HttpServlet {
             String uname = req.getParameter("uname");
             String pword = req.getParameter("pword");
             String email = req.getParameter("email");
-            String confirmPword = req.getParameter("pwordConfirm");
+            String confirmPword = req.getParameter("pwordconfirm");
 
             // check for fields containing values
-            if((uname == null) || (pword == null) || (email == null) || (confirmPword == null) || uname.isEmpty()){
-                errorMessage = "Required field(s) empty ";
+            if((uname == null) || (pword == null) || (email == null) || (confirmPword == null)){
+                errorMessage = "Required field(s) empty";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+                return;
             }
 
             // check to make sure passwords match
-            if(pword != confirmPword){
+            if(!pword.equals(confirmPword)){
                 errorMessage = "Passwords do not match. Please try again. ";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+                return;
             }
             // check to make sure password meets length requirements
             if(pword.length() < 8 || pword.isEmpty() || confirmPword.isEmpty()){
                 errorMessage = "Passwords must be at least 8 characters long.";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+                return;
             }
 
             Account.Create(uname,email,pword,"ADMIN");
 
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e){
             errorMessage = "Invalid credentials. Please enter a valid username and password.";
+            req.setAttribute("errorMessage", errorMessage);
         }
 
-        req.setAttribute("errorMessage", errorMessage);
+        req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
 
 
     }

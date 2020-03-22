@@ -29,10 +29,10 @@
                         <input type="text" id="uname" name="uname"><br><br>
 
                         <label for="pword">PASSWORD:</label><br>
-                        <input type="text" id="pword" name="pword"><br><br>
+                        <input type="password" id="pword" name="pword"><br><br>
 
                         <label for="pwordconfirm">CONFIRM PASSWORD:</label><br>
-                        <input type="text" id="pwordconfirm" name="pwordconfirm"><br><br><br>
+                        <input type="password" id="pwordconfirm" name="pwordconfirm"><br><br><br>
 
                         <input type="submit" value ="SIGN UP">
                 </form>
