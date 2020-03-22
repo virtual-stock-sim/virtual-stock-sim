@@ -9,12 +9,16 @@ import java.util.List;
 public class StocksFollowed {
 
     private List<Follow> stocksFollowed;
+    private String inputString;
 
     public StocksFollowed(List<Follow> stocksFollowed)
     {
         this.stocksFollowed = stocksFollowed;
     }
 
+    public StocksFollowed(String s){
+        this.inputString=s;
+    }
 
     public List<Follow> getStocksFollowed()
     {

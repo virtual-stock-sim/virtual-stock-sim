@@ -47,7 +47,8 @@ public class StockCache extends Database
         {
             createTable("stocks_data",
                     "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
-                    "data LONG VARCHAR NOT NULL"
+                    "data LONG VARCHAR NOT NULL",
+                    "last_updated TIMESTAMP"
                     );
         }
 
@@ -57,7 +58,8 @@ public class StockCache extends Database
                     "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
                     "symbol VARCHAR(10) NOT NULL UNIQUE",
                     "curr_price DECIMAL(12, 2)",
-                    "data_id INT NOT NULL REFERENCES stocks_data(id)"
+                    "data_id INT NOT NULL REFERENCES stocks_data(id)",
+                    "last_updated TIMESTAMP"
                     );
         }
     }

@@ -1,6 +1,6 @@
 package io.github.virtualstocksim.transaction;
 
-public enum TransactionType
+public enum  TransactionType
 {
     BUY("Buy"), SELL("Sell");
 

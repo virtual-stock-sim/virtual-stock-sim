@@ -2,14 +2,15 @@ package io.github.virtualstocksim.following;
 import io.github.virtualstocksim.stock.Stock;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 
 public class Follow {
     private BigDecimal  initialPrice,currentPrice;
     private Stock stock;
     private double percentChange;
-
-    public Follow(BigDecimal initialPrice, Stock stock){
+    private String timeStamp;
+    public Follow(BigDecimal initialPrice, Stock stock, Timestamp timeStamp){
         this.stock=stock;
         this.initialPrice=initialPrice;
         this.currentPrice=stock.getCurrPrice();
@@ -17,6 +18,9 @@ public class Follow {
         //current price will always just be gotten from stock
     }
 
+    public Stock getStock(){
+        return this.stock;
+    }
 
     public BigDecimal getCurrentPrice(){
         return this.stock.getCurrPrice();
