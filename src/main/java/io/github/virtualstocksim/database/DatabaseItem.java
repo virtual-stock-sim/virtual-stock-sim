@@ -1,5 +1,7 @@
 package io.github.virtualstocksim.database;
 
+import java.sql.SQLException;
+
 public abstract class DatabaseItem
 {
     protected final int id;
@@ -7,5 +9,5 @@ public abstract class DatabaseItem
 
     public int getId() { return id; }
 
-    public abstract void commit() throws DatabaseException;
+    public abstract void commit() throws SQLException;
 }
