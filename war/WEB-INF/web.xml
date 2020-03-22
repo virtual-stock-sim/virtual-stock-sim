@@ -4,12 +4,12 @@
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
+
     
     <display-name>Virtual Stock Sim</display-name>
     <welcome-file-list>
-        <welcome-file>/login</welcome-file>
+        <welcome-file>/landing</welcome-file>
     </welcome-file-list>
-
 
 
 <!-- Servlets -->
@@ -61,5 +61,15 @@
         <servlet-name>stocksFollowedServlet</servlet-name>
         <servlet-class>io.github.virtualstocksim.servlet.StocksFollowedServlet</servlet-class>
     </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LandingServlet</servlet-name>
+        <url-pattern>/landing</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LandingServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.LandingServlet</servlet-class>
+    </servlet>
+
 
 </web-app>

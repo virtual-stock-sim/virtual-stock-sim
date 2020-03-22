@@ -37,15 +37,25 @@ public class CreateAccountServlet extends HttpServlet {
             String pword = req.getParameter("pword");
             String email = req.getParameter("email");
             String confirmPword = req.getParameter("pwordConfirm");
+
+            // check for fields containing values
+            if((uname == null) || (pword == null) || (email == null) || (confirmPword == null) || uname.isEmpty()){
+                errorMessage = "Required field(s) empty ";
+                req.setAttribute("errorMessage", errorMessage);
+                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+            }
+
             // check to make sure passwords match
             if(pword != confirmPword){
                 errorMessage = "Passwords do not match. Please try again. ";
                 req.setAttribute("errorMessage", errorMessage);
+                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
             }
             // check to make sure password meets length requirements
             if(pword.length() < 8 || pword.isEmpty() || confirmPword.isEmpty()){
                 errorMessage = "Passwords must be at least 8 characters long.";
                 req.setAttribute("errorMessage", errorMessage);
+                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
             }
 
             Account.Create(uname,email,pword,"ADMIN");

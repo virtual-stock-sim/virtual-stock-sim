@@ -6,40 +6,43 @@
 <head>
         <title>Create an Account - Virtual Stock Sim</title>
         <style><%@include file="cssfiles/accountPageStyle.css"%></style>
-        <t:header/>
 </head>
 
 <body>
-        <h1>Create an Account</h1>
-        <h2>Sign up to start investing with us.</h2>
+        <div class = "create-an-account">
+                <h1>Create an Account</h1>
+                <h3>Sign up to start investing with us.</h3>
+                <h6 style="font-size: 15px;">(And make a ton of money)</h6>
+        </div>
+
 
         <c:if test="${! empty errorMessage}">
                 <div class="error">${errorMessage}</div>
         </c:if>
 
         <div class = "sign-up">
-                <form action="${pageContext.servletContext.contextPath}/createAccount" method="post">>
-                        <label for="email">E-mail:</label><br>
-                        <input type="text" id="email" name="email"><br>
+                <form action="${pageContext.servletContext.contextPath}/createAccount" method="post">
+                        <label for="email">E-MAIL:</label><br>
+                        <input type="text" id="email" name="email"><br><br>
 
-                        <label for="uname">Username:</label><br>
-                        <input type="text" id="uname" name="uname"><br>
+                        <label for="uname">USERNAME:</label><br>
+                        <input type="text" id="uname" name="uname"><br><br>
 
-                        <label for="pword">Password:</label><br>
-                        <input type="text" id="pword" name="pword"><br>
+                        <label for="pword">PASSWORD:</label><br>
+                        <input type="text" id="pword" name="pword"><br><br>
 
-                        <label for="pwordconfirm">Confirm Password:</label><br>
-                        <input type="text" id="pwordconfirm" name="pwordconfirm"><br><br>
+                        <label for="pwordconfirm">CONFIRM PASSWORD:</label><br>
+                        <input type="text" id="pwordconfirm" name="pwordconfirm"><br><br><br>
 
-                        <input type="submit" value ="Sign Up">
+                        <input type="submit" value ="SIGN UP">
                 </form>
         </div>
 
         <div class ="return-to-home">
-                <button onClick="redirectHome()">Back to Login</button>
+                <button onClick="redirectHome()">HOME</button>
                 <script>
                         function redirectHome() {
-                                location.href = "login";
+                                location.href = "landing";
                         }
                 </script>
         </div>
