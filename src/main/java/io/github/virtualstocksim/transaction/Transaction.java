@@ -3,18 +3,20 @@ package io.github.virtualstocksim.transaction;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 public class Transaction {
 
     private TransactionType type;
-    private String date;
+    private Timestamp timeStamp;
     private BigDecimal pricePerShare;
     private int numShares;
     private Stock stock;
-    public Transaction (TransactionType type, String date, BigDecimal pricePerShare, int numShares, Stock stock)
+    public Transaction (TransactionType type, Timestamp timeStamp, BigDecimal pricePerShare, int numShares, Stock stock)
     {
         this.type = type;
-        this.date = date;
+        this.timeStamp=timeStamp;
         this.pricePerShare = pricePerShare;
         this.numShares = numShares;
         this.stock = stock;
@@ -26,9 +28,9 @@ public class Transaction {
     }
 
 
-    public String getDate()
+    public Timestamp getTimestamp()
     {
-        return date;
+        return this.timeStamp;
     }
 
 
@@ -59,9 +61,9 @@ public class Transaction {
         this.type = type;
     }
 
-    public void setDate(String date)
+    public void setTimeStamp(Timestamp date)
     {
-        this.date = date;
+        this.timeStamp = date;
     }
 
     public void setPricePerShare(BigDecimal pricePerShare)

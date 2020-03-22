@@ -3,6 +3,7 @@ import io.github.virtualstocksim.stock.DummyStocks;
 
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.util.Util;
 import org.junit.ClassRule;
 import org.junit.Test;
 import io.github.virtualstocksim.stock.DummyStocks;
@@ -16,11 +17,11 @@ public class FollowTest
 
     Follow [] testFollowList = new Follow[5];
     public void populate(){
-        testFollowList[0]=(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));
-        testFollowList[1]=(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
-        testFollowList[2]=(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
-        testFollowList[3]=(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
-        testFollowList[4]=(new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
+        testFollowList[0]=(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON), Util.GetTimeStamp()));
+        testFollowList[1]=(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA), Util.GetTimeStamp()));
+        testFollowList[2]=(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE), Util.GetTimeStamp()));
+        testFollowList[3]=(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD), Util.GetTimeStamp()));
+        testFollowList[4]=(new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE), Util.GetTimeStamp()));
     }
     @Test
     public void testGetPercentChange() {
