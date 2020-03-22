@@ -18,6 +18,9 @@ public class Follow {
         //current price will always just be gotten from stock
     }
 
+    public Stock getStock(){
+        return this.stock;
+    }
 
     public BigDecimal getCurrentPrice(){
         return this.stock.getCurrPrice();

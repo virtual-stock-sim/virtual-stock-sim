@@ -26,7 +26,7 @@ public class StocksFollowedServlet extends HttpServlet
         logger.info("StocksFollowed Servlet: doGet");
 
         ArrayList<Follow> followingList= new ArrayList<>();
-        followingList.add(new Follow(new BigDecimal(100), Stock.Find(1).get(), Util.GetTimeStamp()));
+        followingList.add(new Follow(new BigDecimal(100), Stock.Find(1).get(),Util.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(498), Stock.Find(2).get(),Util.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(320), Stock.Find(3).get(),Util.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(5), Stock.Find(4).get(),Util.GetTimeStamp()));
