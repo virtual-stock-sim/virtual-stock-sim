@@ -3,10 +3,11 @@ package io.github.virtualstocksim.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.RowSetFactory;
+import javax.sql.rowset.RowSetProvider;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.TreeMap;
 
 /**
  * Static methods for executing SQL
@@ -14,6 +15,22 @@ import java.util.TreeMap;
 public class SqlCmd
 {
     private static final Logger logger = LoggerFactory.getLogger(SqlCmd.class);
+    private static final RowSetFactory rowSetFac = getRowSetFactory();
+
+    private static RowSetFactory getRowSetFactory()
+    {
+        try
+        {
+            return RowSetProvider.newFactory();
+        }
+        catch (SQLException e)
+        {
+            logger.error("Couldn't create a row set factory for CachedRowSet creation. System exiting.\n", e);
+            System.exit(-1);
+        }
+
+        return null;
+    }
 
     // Empty array for overloaded methods
     private static final Object[] emptyObjArr = {};
@@ -40,11 +57,20 @@ public class SqlCmd
      */
     public static void execute(Connection conn, String sql, Object... params) throws SQLException
     {
-        logger.info(formatSqlExecute(sql, params));
+        PreparedStatement stmt = null;
+        try
+        {
+            logger.info(formatSqlExecute(sql, params));
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        fillStmtParams(stmt, params);
-        stmt.execute();
+            stmt = conn.prepareStatement(sql);
+
+            fillStmtParams(stmt, params);
+            stmt.execute();
+        }
+        finally
+        {
+            if(stmt != null) stmt.close();
+        }
     }
 
     /**
@@ -71,11 +97,19 @@ public class SqlCmd
      */
     public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException
     {
-        logger.info(formatSqlExecute(sql, params));
+        PreparedStatement stmt = null;
+        try
+        {
+            logger.info(formatSqlExecute(sql, params));
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        fillStmtParams(stmt, params);
-        return stmt.executeUpdate();
+            stmt = conn.prepareStatement(sql);
+            fillStmtParams(stmt, params);
+            return stmt.executeUpdate();
+        }
+        finally
+        {
+            if(stmt != null) stmt.close();
+        }
     }
 
     /**
@@ -102,28 +136,35 @@ public class SqlCmd
      */
     public static int executeInsert(Connection conn, String sql, Object... params) throws SQLException
     {
-        logger.info(formatSqlExecute(sql, params));
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try
+        {
+            logger.info(formatSqlExecute(sql, params));
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        fillStmtParams(stmt, params);
-        stmt.executeUpdate();
+            stmt = conn.prepareStatement(sql);
+            fillStmtParams(stmt, params);
+            stmt.executeUpdate();
 
-        ResultSet rs = stmt.getGeneratedKeys();
-        return rs.next() ? rs.getInt(1) : 0;
+            rs = stmt.getGeneratedKeys();
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+        finally
+        {
+            if(rs != null) rs.close();
+            if(stmt != null) stmt.close();
+        }
     }
 
     /**
      * Executes SQL query
      * @param conn Database connection
      * @param sql SQL command
-     * @param <T> Type for the first column returned by the query.
-     *           To be used for the key for the returned TreeMap
-     * @return TreeMap of results. Key is value of first column returned by query, Value is HashMap of row contents with column name as Key
+     * @return CachedRowSet containing cached data from the returned ResultSet
      * @throws SQLException
      * @see Connection
-     * @see TreeMap
      */
-    public static <T extends Comparable<T>> TreeMap<T, HashMap<String, Object>> executeQuery(Connection conn, String sql) throws SQLException
+    public static CachedRowSet executeQuery(Connection conn, String sql) throws SQLException
     {
         return executeQuery(conn, sql, emptyObjArr);
     }
@@ -133,42 +174,33 @@ public class SqlCmd
      * @param conn Database connection
      * @param sql SQL command
      * @param params SQL command parameters
-     * @param <T> Type for the first column returned by the query.
-     *           To be used for the key for the returned TreeMap
-     * @return TreeMap of results. Key is value of first column returned by query, Value is HashMap of row contents with column name as Key
+     * @return CachedRowSet containing cached data from the returned ResultSet
      * @throws SQLException
      * @see Connection
-     * @see TreeMap
      */
-    public static <T extends Comparable<T>> TreeMap<T, HashMap<String, Object>> executeQuery(Connection conn, String sql, Object... params) throws SQLException
+    public static CachedRowSet executeQuery(Connection conn, String sql, Object... params) throws SQLException
     {
-        logger.info(formatSqlExecute(sql, params));
-
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        fillStmtParams(stmt, params);
-
-        ResultSet rs = stmt.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-
-        TreeMap<T, HashMap<String, Object>> results = new TreeMap<>();
-
-        // Iterate over each row of the result set
-        while(rs.next())
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try
         {
-            // New hash map to store row contents
-            HashMap<String, Object> row = new HashMap<>();
-            // Iterate over each column of row
-            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
-            {
-                // Use column name as key for column value
-                row.put(rsmd.getColumnName(i), rs.getObject(i));
-            }
+            logger.info(formatSqlExecute(sql, params));
 
-            // Add row to results TreeMap with value of first column as the key
-            results.put((T) rs.getObject(1), row);
+            stmt = conn.prepareStatement(sql);
+            fillStmtParams(stmt, params);
+
+            rs = stmt.executeQuery();
+
+            CachedRowSet crs = rowSetFac.createCachedRowSet();
+            crs.populate(rs);
+
+            return crs;
         }
-
-        return results;
+        finally
+        {
+            if(rs != null) rs.close();
+            if(stmt != null) stmt.close();
+        }
     }
 
     /**
