@@ -28,7 +28,8 @@ public class AccountController {
         try(Connection conn = AccountDatabase.getConnection();
             CachedRowSet passwordCheckRS = SqlCmd.executeQuery(conn, String.format("SELECT password_hash, password_salt " +
                     "from accounts " +
-                    " where username = ? "), username);
+                    " where username = ? "), username);)
+        {
             if(!passwordCheckRS.next()){
                 return Optional.empty();
             }
