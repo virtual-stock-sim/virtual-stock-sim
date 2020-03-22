@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.account.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class CreateAccountServlet extends HttpServlet {
 
@@ -19,6 +21,42 @@ public class CreateAccountServlet extends HttpServlet {
         logger.info("Create Account Servlet: doGet");
 
         req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        logger.info("Create Account Servlet: doPost");
+
+        // String to hold error message (if any)
+        String errorMessage = null;
+
+        try {
+
+            String uname = req.getParameter("uname");
+            String pword = req.getParameter("pword");
+            String email = req.getParameter("email");
+            String confirmPword = req.getParameter("pwordConfirm");
+            // check to make sure passwords match
+            if(pword != confirmPword){
+                errorMessage = "Passwords do not match. Please try again. ";
+                req.setAttribute("errorMessage", errorMessage);
+            }
+            // check to make sure password meets length requirements
+            if(pword.length() < 8 || pword.isEmpty() || confirmPword.isEmpty()){
+                errorMessage = "Passwords must be at least 8 characters long.";
+                req.setAttribute("errorMessage", errorMessage);
+            }
+
+            Account.Create(uname,email,pword,"ADMIN");
+
+        }catch (NumberFormatException e){
+            errorMessage = "Invalid credentials. Please enter a valid username and password.";
+        }
+
+        req.setAttribute("errorMessage", errorMessage);
+
+
     }
 
 }

@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class LoginServlet extends HttpServlet
 {
@@ -39,14 +40,12 @@ public class LoginServlet extends HttpServlet
         logger.info("Login Servlet: doPost");
 
         // create account model
-        byte[] bytes = {3,4,5,6,7,8};
+
         //List<Transaction> transactions = new LinkedList<Transaction>();
         //TransactionHistory transactionHistory = new TransactionHistory(transactions);
         //List<Follow> stocks = new LinkedList<Follow>();
         //StocksFollowed stocksFollowed = new StocksFollowed(stocks);
 
-        Account acc = new Account(0, "371298372189", "ADMIN","vss-admin@vss.com", "VSSAdmin", bytes,bytes,
-                "", "",-1,"Fun Text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
 
         // store error message (if any)
         String errorMessage = null;
@@ -55,35 +54,28 @@ public class LoginServlet extends HttpServlet
         AccountController controller = new AccountController();
 
         // assign model reference to allow controller to access it
-        controller.setModel(acc);
+        //controller.setModel(acc);
 
         try {
             String uname = req.getParameter("uname");
             String pword = req.getParameter("pword");
-            acc.setUname(uname);
-            acc.setPword(pword);
 
+          Optional<Account> acc = AccountController.login(uname,pword);
 
+          if( !acc.isPresent() || !loginIsValid(uname,pword) ){
             // If user input is invalid, return error message with same page
-            if(!loginIsValid(uname, pword)) {
-                errorMessage = "Login Failed. Please enter a valid username and password.";
-                req.setAttribute("errorMessage", errorMessage);
-                req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
-                /*
-                 * QUIT EARLY
-                 */
-                return;
-            }
+            errorMessage = "Login Failed. Please enter a valid username and password.";
+            req.setAttribute("errorMessage", errorMessage);
+            req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
+          }
         } catch (NumberFormatException e){
-            errorMessage = "Invalid String";
+            errorMessage = "Invalid credentials. Please enter a valid username and password";
         }
 
-        req.setAttribute("uname", req.getParameter("uname"));
-        req.setAttribute("pword", req.getParameter("pword"));
         req.setAttribute("errorMessage", errorMessage);
 
-        req.setAttribute("acc", acc);
 
+        // login is valid, redirect user
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
 
     }
