@@ -27,7 +27,7 @@ public class StockDatabase
         dataSource = DatabaseFactory.getDatabase(dbPath);
     }
 
-    private static Connection getConnection() throws SQLException
+    public static Connection getConnection() throws SQLException
     {
         return getInstance().dataSource.getConnection();
     }
