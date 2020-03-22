@@ -1,5 +1,7 @@
 <%@tag description="navigation bar" pageEncoding="UTF-8" %>
 <style><%@include file="/_view/cssfiles/navbarStyle.css"%></style>
+<link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
+
 
 
 <div class = "navbar">

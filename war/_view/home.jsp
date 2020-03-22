@@ -6,15 +6,21 @@
 <html>
 <head>
     <style><%@include file="cssfiles/homePageStyle.css"%></style>
+    <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
+
 
     <title>Home - VSS: Virtual Stock Sim</title>
 </head>
 <body>
 
-<t:header/>
+<div class = "header">
+    <t:header/>
+
+</div>
+
 
 <div class = "createAccountBtn">
-    <button onClick="redirectAccount()">Create an Account</button>
+    <button onClick="redirectAccount()">CREATE AN ACCOUNT</button>
     <script>
         function redirectAccount() {
             location.href = "createAccount";
@@ -22,7 +28,10 @@
     </script>
 </div>
 
-<t:navbar/>
+<div class = "navbar">
+    <t:navbar/>
+</div>
+
 
 <div class="leaderboard">
     <h1>Leading Investors</h1>

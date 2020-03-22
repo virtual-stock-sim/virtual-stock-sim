@@ -1,14 +1,15 @@
 /* Navbar container */
 .navbar {
+    white-space:nowrap;
     overflow: hidden;
     background-color: #333;
-    font-family: Arial;
+    font-family: 'Bebas Neue';font-size: 25px;
 }
 
 /* Links inside the navbar */
 .navbar a {
     float: left;
-    font-size: 16px;
+    font-size: 20px;
     color: white;
     text-align: center;
     padding: 14px 115px;
@@ -23,7 +24,7 @@
 
 /* Dropdown button */
 .dropdown .dropBtn {
-    font-size: 16px;
+    font-size: 20px;
     border: none;
     outline: none;
     color: white;

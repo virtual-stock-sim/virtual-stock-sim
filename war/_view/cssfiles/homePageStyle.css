@@ -3,6 +3,11 @@ body {
     color:white;
     text-align: center;
     font-family: "Lato", sans-serif;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../../_view/resources/images/home/homebackground.jpg");
 }
 
 /* Placing Button in upper left */
@@ -15,24 +20,39 @@ body {
 
 
 .leaderboard {
-    position: absolute;
-    bottom: 400px;
-    left: 8%;
+    float: left;
+    width: 33.3%;
+    padding-top: 30px;
+    padding-bottom: 120px;
+    margin-top: 12%;
 }
 
 .top-stocks {
-    position: absolute;
-    bottom: 365px;
-    left: 35%;
+    margin-top: 12%;
+    float: left;
+    padding-top: 30px;
+    padding-bottom: 120px;
+    width: 33.3%;
 }
 
-.about {
-    position: absolute;
-    bottom: 250px;
-    left: 55%;
-    margin-right: 5%;
+
+.header {
+
 }
 
-.dev-name {
-    padding: 10px;
+button {
+    background-color: #e7e7e7;
+    color: black;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Bebas Neue';font-size: 25px;
+
+}
+
+button:hover{
+    background-color: gray;
+    color:white;
 }
