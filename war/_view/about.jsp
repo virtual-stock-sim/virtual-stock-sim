@@ -8,11 +8,12 @@
     <style><%@include file="cssfiles/aboutPageStyle.css"%></style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
     <title>About - VSS: Virtual Stock Sim</title>
 </head>
 <body>
 
-<div class = container style="padding:128px 16px" id ="about">
+<div class = container style="padding:10px 16px" id ="about">
     <h3 class = "center">ABOUT VSS</h3>
     <p class ="center">What we bring to the table</p>
     <div class = "row center" style="margin-top: 64px">
@@ -53,42 +54,57 @@
 <div class = "container" style="padding:50px 16px" id ="team">
     <h3 class ="center">THE TEAM</h3>
     <p class ="center large">The Creators of Virtual Stock Sim</p>
-    <div class = "row grayscale" style="margin-top: 64px">
+    <div class = "row grayscale" style="margin-top: 34px">
         <div class="col margin-bottom">
             <div class = "card">
-            <img src="../_view/resources/images/about/earl-linkedin.jpg" alt="Earl" style="width:100%">
+            <img src="../_view/resources/images/about/earl.jpg" alt="Earl" style="width:100%">
                 <div class="container">
                     <h3>Earl Kennedy</h3>
                     <p class="opacity">Project Manager & Full Stack Developer</p>
                     <p>The glue that held the team together, Earl served as the team's lead as he delegated
-                        tasks and managed deadlines while also creating the databases on the backend from the ground up.</p>
-                    <p><button class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                        tasks and managed deadlines while also creating the database backend from the ground up.</p>
+                    <p><button onclick="earlLinkedin()" class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                    <script>
+                        function earlLinkedin() {
+                            location.href="https://www.linkedin.com/in/earlkennedyiv/"
+                        }
+                    </script>
             </div>
         </div>
         </div>
             <div class="col margin-bottom">
                 <div class = "card">
-                    <img src="../_view/resources/images/about/dan-linkedin.jpg" alt="Dan" style="width:100%">
+                    <img src="../_view/resources/images/about/dan.jpg" alt="Earl" style="width:100%">
                     <div class="container">
                         <h3>Dan Palmieri</h3>
                         <p class="opacity">Full Stack Developer</p>
                         <p>Dan's interest in web development led him to taking on the bulk of designing and building the
                             front-end user interface. He also was responsible for developing the Account and Encryption backend.
                         </p>
-                        <p><button class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                        <p><button onclick="danLinkedin()" class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                        <script>
+                            function danLinkedin() {
+                                location.href="https://www.linkedin.com/in/dpalmieri5/"
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
                 <div class="col margin-bottom">
                     <div class = "card">
-                        <img src="../_view/resources/images/about/brett-linkedin.jpg" alt="Brett" style="width:100%">
+                        <img src="../_view/resources/images/about/brett.jpg" alt="Brett" style="width:100%">
                         <div class="container">
                             <h3>Brett Kearney</h3>
                             <p class="opacity">Full Stack Developer</p>
                             <p>Brett took on the majority of the backend, developing the transaction history and followed
                                 stocks. Brett also took on web scraping to get the company history and price history for a stock.
                             </p>
-                            <p><button class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                            <p><button onclick="brettLinkedin()" class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
+                            <script>
+                                function brettLinkedin() {
+                                    location.href="https://www.linkedin.com/in/brett-kearney-bbb947160/"
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
