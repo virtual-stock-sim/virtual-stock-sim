@@ -233,6 +233,9 @@ public class Account extends DatabaseItem {
     }
 
 
+    // Static methods to search database based on given parameter
+    public static Optional<Account> find (int id){return Find("id", id);}
+    public static Optional<Account> find (String username){return Find("username", username);}
 
 
     /**
@@ -244,12 +247,11 @@ public class Account extends DatabaseItem {
      */
     public static Optional<Account> Create(String username, String email, String password, String accountType)
     {
-        Encryption encrypt = new Encryption();
         byte[] salt, hash;
         Timestamp timestamp = Util.GetTimeStamp();
         String uuid = UUID.randomUUID().toString();
-        salt = encrypt.getNextSalt();
-        hash = encrypt.hash(password.toCharArray(), salt);
+        salt = Encryption.getNextSalt();
+        hash = Encryption.hash(password.toCharArray(), salt);
         String blank_string ="";
         int defaultLeaderboardRank = -1;
         logger.info("Attempting to create a new account in account database...");
@@ -270,25 +272,6 @@ public class Account extends DatabaseItem {
             logger.info("Account creation failed");
             return Optional.empty();
         }
-
-            // return newly created account
-        // generate password hash and salt
-        // generate the timestamp
-        // generate the UUID
-        // place these into new account in database for empty string for blank fields
-        // -1 for leaderboard rank
-        /*
-        Create(type, email, username, password):
-          uuid = genUUID()
-          salt = getSalt()
-          hash = genHash(password, salt)
-          // database insert method returns generated primary key id of what was just inserted
-          id = insertIntoDB(uuid, type, email, username, salt, hash, empty string for stocks followed, empty list
-          for transaction history, -1 for leaderboard rank, empty string for bio, empty string for profile picture)
-          return new Account(params)
-
-          test fields returned from db against fields placed into database and make sure they match
-         */
     }
 
     public void commit()

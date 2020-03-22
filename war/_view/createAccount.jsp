@@ -13,13 +13,17 @@
         <h1>Create an Account</h1>
         <h2>Sign up to start investing with us.</h2>
 
+        <c:if test="${! empty errorMessage}">
+                <div class="error">${errorMessage}</div>
+        </c:if>
+
         <div class = "sign-up">
-                <form>
+                <form action="${pageContext.servletContext.contextPath}/createAccount" method="post">>
                         <label for="email">E-mail:</label><br>
                         <input type="text" id="email" name="email"><br>
 
                         <label for="uname">Username:</label><br>
-                        <input type="text" id="uname" name="uname"><br>   
+                        <input type="text" id="uname" name="uname"><br>
 
                         <label for="pword">Password:</label><br>
                         <input type="text" id="pword" name="pword"><br>
