@@ -9,11 +9,12 @@ public class Follow {
     private BigDecimal  initialPrice,currentPrice;
     private Stock stock;
     private double percentChange;
-    private String timeStamp;
+    private Timestamp timeStamp;
     public Follow(BigDecimal initialPrice, Stock stock, Timestamp timeStamp){
         this.stock=stock;
         this.initialPrice=initialPrice;
         this.currentPrice=stock.getCurrPrice();
+        this.timeStamp=timeStamp;
         //only need store initial price (@ time of follow)in here
         //current price will always just be gotten from stock
     }
@@ -32,7 +33,9 @@ public class Follow {
     public void setCurrentPrice(){
         this.currentPrice=this.stock.getCurrPrice();
     }
-
+    public Timestamp getTimeStamp(){
+        return this.timeStamp;
+    }
     public double getPercentChange(){
         percentChange=this.getCurrentPrice().doubleValue()-this.getInitialPrice().doubleValue();
         percentChange=(percentChange/Math.abs(currentPrice.doubleValue()))*-1;
