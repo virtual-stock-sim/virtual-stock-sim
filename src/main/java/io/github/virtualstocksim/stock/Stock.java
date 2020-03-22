@@ -110,7 +110,7 @@ public class Stock extends DatabaseItem
         {
             logger.info("Creating new stock...");
 
-            Optional<StockData> data = StockData.Create(stockData);
+            Optional<StockData> data = StockData.Create(stockData, lastUpdated);
             if(!data.isPresent()) return Optional.empty();
 
             int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, data_id, last_updated) VALUES(?, ?, ?, ?)", symbol, currPrice, data.get().getId(), lastUpdated);

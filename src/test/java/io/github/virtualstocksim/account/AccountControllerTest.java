@@ -1,17 +1,12 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
-import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Before;
-import org.junit.ClassRule;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.LinkedList;
@@ -20,9 +15,6 @@ import java.util.UUID;
 
 public class AccountControllerTest
 {
-    @ClassRule
-    public static AccountDatabaseConnection accConn = new AccountDatabaseConnection();
-
     private AccountController conn;
     private Account acc;
     StocksFollowed stocksFollowed;

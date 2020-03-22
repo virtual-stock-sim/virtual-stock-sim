@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.stock;
 
-import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -10,9 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 public class StockTests
 {
-    @ClassRule
-    public static StockCacheConnection conn = new StockCacheConnection();
-
     @Test
     public void testGetId()
     {
