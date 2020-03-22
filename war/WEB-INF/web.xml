@@ -71,5 +71,14 @@
         <servlet-class>io.github.virtualstocksim.servlet.LandingServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>AboutServlet</servlet-name>
+        <url-pattern>/about</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AboutServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.AboutServlet</servlet-class>
+    </servlet>
+
 
 </web-app>

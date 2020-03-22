@@ -37,18 +37,5 @@
     <p>3) Amazon - $1785.00 - UP 7%</p>
 </div>
 
-<div class = "about">
-    <h1>About Us</h1>
-    <p>Virtual Stock Sim is a stock investment simulation website that uses real-world stock data and prices
-    for users' personal investments in order to provide the most authentic experience possible.</p>
-
-    <h2>The Team</h2>
-    <u1>
-        <li class="dev-name" type="none">Brett Kearney</li>
-        <li class="dev-name" type="none">Dan Palmieri</li>
-        <li class="dev-name" type="none">Earl Kennedy</li>
-    </u1>
-</div>
-
 </body>
 </html>

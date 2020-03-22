@@ -1,7 +1,7 @@
 package io.github.virtualstocksim.account;
-import  io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.encryption.Encryption;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +26,19 @@ public class AccountController {
     {
         try {
             logger.info("Logging user " + username + " in...");
-            ResultSet passwordCheckRS = accountDatabase.executeQuery(String.format("SELECT password_hash, password_salt " +
+            ResultSet passwordCheckRS = accountDatabase.executeQuery(("SELECT password_hash, password_salt " +
                     "from accounts " +
                     " where username = ? "), username);
+            if(!passwordCheckRS.next()){
+                return Optional.empty();
+            }
             boolean isValid = Encryption.validateInput(password.toCharArray(), passwordCheckRS.getBytes("password_salt"), passwordCheckRS.getBytes("password_hash"));
 
             // check if credentials are valid
             if (isValid) {
-                return Account.find(username);
+                return Account.Find(username);
+            }else{
+                return Optional.empty();
             }
 
         } catch (DatabaseException e) {

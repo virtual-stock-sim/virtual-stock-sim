@@ -3,22 +3,13 @@ package io.github.virtualstocksim.account;
 import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.Transaction;
-import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -187,7 +178,7 @@ public class Account extends DatabaseItem {
      * @param colValue Value of column to search by
      * @return returned account, if any. (Could be empty if account does not exist)
      */
-    public static Optional<Account> Find(String searchCol, Object colValue) {
+    private static Optional<Account> Find(String searchCol, Object colValue) {
         /**
          * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
          * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in
@@ -234,8 +225,8 @@ public class Account extends DatabaseItem {
 
 
     // Static methods to search database based on given parameter
-    public static Optional<Account> find (int id){return Find("id", id);}
-    public static Optional<Account> find (String username){return Find("username", username);}
+    public static Optional<Account> Find(int id){return Find("id", id);}
+    public static Optional<Account> Find(String username){return Find("username", username);}
 
 
     /**

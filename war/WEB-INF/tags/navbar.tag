@@ -4,6 +4,7 @@
 
 <div class = "navbar">
     <a href="home">Home</a>
+    <a href="about">About Us</a>
     <div class = "dropdown">
         <button class = "dropBtn">Stocks
             <i class="arrow down"></i>

@@ -168,7 +168,7 @@ public class AccountTest
     public void testCreateAccountInDB(){
         Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret","ADMIN");
         if(!new_acc.isPresent()){ fail(); }
-        Optional<Account> find_acc = Account.Find("email",  "test@test.com");
+        Optional<Account> find_acc = Account.Find("DanPalm5");
         if(!find_acc.isPresent()){ fail(); }
         assertEquals(new_acc.get().getId(), find_acc.get().getId());
         assertEquals(new_acc.get().getUUID(), find_acc.get().getUUID());
