@@ -51,7 +51,7 @@ public class StocksFollowedController {
         followList.add(new Follow(new BigDecimal(498), Stock.Find(5).get(),Util.GetTimeStamp()));
         StocksFollowed model = new StocksFollowed(followList);
         StocksFollowedController testController = new StocksFollowedController();
-        logger.info(testController.buildJSON(model));
+        //logger.info(testController.buildJSON(model));
     }
 
 
