@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.util;
 
-import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 
 import java.util.function.Supplier;
@@ -9,6 +8,7 @@ import java.util.function.Supplier;
 public class Lazy<T> extends LazyInitializer<T>
 {
     private Supplier<T> supplier;
+    private boolean evaluated = false;
 
     public Lazy(Supplier<T> supplier)
     {
@@ -16,8 +16,14 @@ public class Lazy<T> extends LazyInitializer<T>
     }
 
     @Override
-    protected T initialize() throws ConcurrentException
+    protected T initialize()
     {
+        evaluated = true;
         return supplier.get();
+    }
+
+    public boolean hasEvaluated()
+    {
+        return evaluated;
     }
 }
