@@ -57,19 +57,12 @@ public class SqlCmd
      */
     public static void execute(Connection conn, String sql, Object... params) throws SQLException
     {
-        PreparedStatement stmt = null;
-        try
+        logger.info(formatSqlExecute(sql, params));
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            logger.info(formatSqlExecute(sql, params));
-
-            stmt = conn.prepareStatement(sql);
-
             fillStmtParams(stmt, params);
             stmt.execute();
-        }
-        finally
-        {
-            if(stmt != null) stmt.close();
         }
     }
 
@@ -97,18 +90,12 @@ public class SqlCmd
      */
     public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException
     {
-        PreparedStatement stmt = null;
-        try
-        {
-            logger.info(formatSqlExecute(sql, params));
+        logger.info(formatSqlExecute(sql, params));
 
-            stmt = conn.prepareStatement(sql);
+        try(PreparedStatement stmt = conn.prepareStatement(sql))
+        {
             fillStmtParams(stmt, params);
             return stmt.executeUpdate();
-        }
-        finally
-        {
-            if(stmt != null) stmt.close();
         }
     }
 
@@ -136,23 +123,15 @@ public class SqlCmd
      */
     public static int executeInsert(Connection conn, String sql, Object... params) throws SQLException
     {
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try
+        try(PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            logger.info(formatSqlExecute(sql, params));
-
-            stmt = conn.prepareStatement(sql);
             fillStmtParams(stmt, params);
             stmt.executeUpdate();
 
-            rs = stmt.getGeneratedKeys();
-            return rs.next() ? rs.getInt(1) : 0;
-        }
-        finally
-        {
-            if(rs != null) rs.close();
-            if(stmt != null) stmt.close();
+            try(ResultSet rs = stmt.getGeneratedKeys())
+            {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
         }
     }
 
@@ -180,26 +159,19 @@ public class SqlCmd
      */
     public static CachedRowSet executeQuery(Connection conn, String sql, Object... params) throws SQLException
     {
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try
-        {
-            logger.info(formatSqlExecute(sql, params));
+        logger.info(formatSqlExecute(sql, params));
 
-            stmt = conn.prepareStatement(sql);
+        try(PreparedStatement stmt = conn.prepareStatement(sql))
+        {
             fillStmtParams(stmt, params);
 
-            rs = stmt.executeQuery();
+            try(ResultSet rs = stmt.executeQuery())
+            {
+                CachedRowSet crs = rowSetFac.createCachedRowSet();
+                crs.populate(rs);
 
-            CachedRowSet crs = rowSetFac.createCachedRowSet();
-            crs.populate(rs);
-
-            return crs;
-        }
-        finally
-        {
-            if(rs != null) rs.close();
-            if(stmt != null) stmt.close();
+                return crs;
+            }
         }
     }
 
