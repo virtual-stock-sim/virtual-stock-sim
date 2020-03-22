@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.stock;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -40,11 +41,11 @@ public class DummyStocks
         /*
          * Add new stocks below
          */
-        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), StockSymbol.AMAZON.getID()));
-        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), StockSymbol.TESLA.getID()));
-        stocks.put(StockSymbol.GOOGLE, new Stock(StockSymbol.GOOGLE.getID(), StockSymbol.GOOGLE.getSymbol(), new BigDecimal("300.0"), StockSymbol.GOOGLE.getID()));
-        stocks.put(StockSymbol.FORD, new Stock(StockSymbol.FORD.getID(), StockSymbol.FORD.getSymbol(), new BigDecimal("400.0"), StockSymbol.FORD.getID()));
-        stocks.put(StockSymbol.APPLE, new Stock(StockSymbol.APPLE.getID(), StockSymbol.APPLE.getSymbol(), new BigDecimal("500.0"), StockSymbol.APPLE.getID()));
+        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), StockSymbol.AMAZON.getID(), Timestamp.valueOf("2020-01-21 21:18:07.233")));
+        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), StockSymbol.TESLA.getID(), Timestamp.valueOf("2020-02-21 21:18:07.233")));
+        stocks.put(StockSymbol.GOOGLE, new Stock(StockSymbol.GOOGLE.getID(), StockSymbol.GOOGLE.getSymbol(), new BigDecimal("300.0"), StockSymbol.GOOGLE.getID(), Timestamp.valueOf("2020-03-21 21:18:07.233")));
+        stocks.put(StockSymbol.FORD, new Stock(StockSymbol.FORD.getID(), StockSymbol.FORD.getSymbol(), new BigDecimal("400.0"), StockSymbol.FORD.getID(), Timestamp.valueOf("2020-04-21 21:18:07.233")));
+        stocks.put(StockSymbol.APPLE, new Stock(StockSymbol.APPLE.getID(), StockSymbol.APPLE.getSymbol(), new BigDecimal("500.0"), StockSymbol.APPLE.getID(), Timestamp.valueOf("2020-05-21 21:18:07.233")));
         return stocks;
     }
 
@@ -55,11 +56,11 @@ public class DummyStocks
         /*
          * Add new stocks below
          */
-        stockDatas.put(StockSymbol.AMAZON, new StockData(StockSymbol.AMAZON.getID(), "amazon test data"));
-        stockDatas.put(StockSymbol.TESLA, new StockData(StockSymbol.TESLA.getID(), "tesla test data"));
-        stockDatas.put(StockSymbol.GOOGLE, new StockData(StockSymbol.GOOGLE.getID(), "google test data"));
-        stockDatas.put(StockSymbol.FORD, new StockData(StockSymbol.FORD.getID(), "ford test data"));
-        stockDatas.put(StockSymbol.APPLE, new StockData(StockSymbol.APPLE.getID(), "apple test data"));
+        stockDatas.put(StockSymbol.AMAZON, new StockData(StockSymbol.AMAZON.getID(), "amazon test data", Timestamp.valueOf("2020-01-21 21:18:07.233")));
+        stockDatas.put(StockSymbol.TESLA, new StockData(StockSymbol.TESLA.getID(), "tesla test data", Timestamp.valueOf("2020-02-21 21:18:07.233")));
+        stockDatas.put(StockSymbol.GOOGLE, new StockData(StockSymbol.GOOGLE.getID(), "google test data", Timestamp.valueOf("2020-03-21 21:18:07.233")));
+        stockDatas.put(StockSymbol.FORD, new StockData(StockSymbol.FORD.getID(), "ford test data", Timestamp.valueOf("2020-04-21 21:18:07.233")));
+        stockDatas.put(StockSymbol.APPLE, new StockData(StockSymbol.APPLE.getID(), "apple test data", Timestamp.valueOf("2020-05-21 21:18:07.233")));
 
         return stockDatas;
     }

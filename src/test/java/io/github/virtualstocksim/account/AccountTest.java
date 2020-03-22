@@ -1,28 +1,20 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.Transaction;
-import io.github.virtualstocksim.transaction.TransactionHistory;
-import io.github.virtualstocksim.transaction.TransactionType;
 import io.github.virtualstocksim.util.Util;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class AccountTest
 {
-    @ClassRule
-    public static AccountDatabaseConnection conn = new AccountDatabaseConnection();
-
     private Account account;
    // StocksFollowed stocksFollowed;
     Stock Amazon;

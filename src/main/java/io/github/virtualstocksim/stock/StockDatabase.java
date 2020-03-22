@@ -1,4 +1,5 @@
-package io.github.virtualstocksim.account;
+package io.github.virtualstocksim.stock;
+
 
 import io.github.virtualstocksim.database.DatabaseFactory;
 import org.slf4j.Logger;
@@ -8,20 +9,20 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AccountDatabase
+public class StockDatabase
 {
-    private static final Logger logger = LoggerFactory.getLogger(AccountDatabase.class);
+    private static final Logger logger = LoggerFactory.getLogger(StockData.class);
     private final DataSource dataSource;
-    private static final String dbPath = DatabaseFactory.getConfig("accountdb.uri");
+    private static final String dbPath = DatabaseFactory.getConfig("stockdb.uri");
 
     private static class StaticContainer
     {
-        private static final AccountDatabase Instance = new AccountDatabase();
+        private static final StockDatabase Instance = new StockDatabase();
     }
 
-    private static AccountDatabase getInstance() { return AccountDatabase.StaticContainer.Instance; }
+    private static StockDatabase getInstance() { return StaticContainer.Instance; }
 
-    private AccountDatabase()
+    private StockDatabase()
     {
         dataSource = DatabaseFactory.getDatabase(dbPath);
     }
@@ -30,4 +31,5 @@ public class AccountDatabase
     {
         return getInstance().dataSource.getConnection();
     }
+
 }
