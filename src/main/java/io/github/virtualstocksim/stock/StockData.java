@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 public class StockData extends DatabaseItem
@@ -16,14 +17,19 @@ public class StockData extends DatabaseItem
 
     // Table columns
     private String data;
-    protected StockData(int id, String data)
+    private Timestamp lastUpdated;
+    protected StockData(int id, String data, Timestamp lastUpdated)
     {
         super(id);
         this.data = data;
+        this.lastUpdated = lastUpdated;
     }
 
     public String getData() { return data; }
     public void setData(String data) { this.data = data; }
+
+    public Timestamp getLastUpdated() { return lastUpdated; }
+    public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
 
     static Optional<StockData> Find(int id)
     {
@@ -35,7 +41,7 @@ public class StockData extends DatabaseItem
     {
         logger.info("Searching for stock data...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT data FROM stocks_data WHERE %s = ?", searchCol), colValue)
+            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", searchCol), colValue)
         )
         {
 
@@ -44,7 +50,8 @@ public class StockData extends DatabaseItem
 
             return Optional.of(new StockData(
                     crs.getInt("id"),
-                    crs.getString("data")
+                    crs.getString("data"),
+                    crs.getTimestamp("last_updated")
             ));
         }
         catch (SQLException e)
@@ -54,14 +61,14 @@ public class StockData extends DatabaseItem
         return Optional.empty();
     }
 
-    static Optional<StockData> Create(String data)
+    static Optional<StockData> Create(String data, Timestamp lastUpdated)
     {
         logger.info("Creating new stock data...");
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks_data(data) VALUES(?)", data);
-            return Optional.of(new StockData(id, data));
+            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks_data(data, last_updated) VALUES(?, ?)", data, lastUpdated);
+            return Optional.of(new StockData(id, data, lastUpdated));
         }
         catch (SQLException e)
         {
@@ -77,7 +84,7 @@ public class StockData extends DatabaseItem
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            SqlCmd.executeUpdate(conn, "UPDATE stocks_data SET data = ? WHERE id = ?", data, id);
+            SqlCmd.executeUpdate(conn, "UPDATE stocks_data SET data = ?, last_updated = ? WHERE id = ?", data, lastUpdated, id);
         }
     }
 }
