@@ -11,6 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 public class Stock extends DatabaseItem
@@ -20,13 +21,15 @@ public class Stock extends DatabaseItem
     private String symbol;
     private BigDecimal currPrice;
     private final Lazy<StockData> stockData;
+    private Timestamp lastUpdated;
 
-    protected Stock(int id, String symbol, BigDecimal currPrice, int stockData)
+    protected Stock(int id, String symbol, BigDecimal currPrice, int stockData, Timestamp lastUpdated)
     {
         super(id);
         this.symbol = symbol;
         this.currPrice = currPrice;
         this.stockData = new Lazy<>(() -> StockData.Find(stockData).orElse(null));
+        this.lastUpdated = lastUpdated;
     }
 
     public String getSymbol() { return symbol; }
@@ -48,6 +51,9 @@ public class Stock extends DatabaseItem
         return null;
     }
 
+    public Timestamp getLastUpdated() { return lastUpdated; }
+    public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
+
     // Search database for stock entry based on param
     public static Optional<Stock> Find(int id)
     {
@@ -68,7 +74,7 @@ public class Stock extends DatabaseItem
     {
         logger.info("Searching for stock...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, symbol, curr_price, data_id FROM stocks WHERE %s = ?", searchCol), colValue)
+            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", searchCol), colValue)
             )
         {
             // Return empty if nothing was found
@@ -79,7 +85,8 @@ public class Stock extends DatabaseItem
                             crs.getInt("id"),
                             crs.getString("symbol"),
                             crs.getBigDecimal("curr_price"),
-                            crs.getInt("data_id")
+                            crs.getInt("data_id"),
+                            crs.getTimestamp("last_updated")
                     )
             );
         }
@@ -97,7 +104,7 @@ public class Stock extends DatabaseItem
      * @param stockData Data for the new stock
      * @return Stock instance of the newly created
      */
-    private static Optional<Stock> Create(String symbol, BigDecimal currPrice, String stockData)
+    private static Optional<Stock> Create(String symbol, BigDecimal currPrice, String stockData, Timestamp lastUpdated)
     {
         try(Connection conn = StockDatabase.getConnection())
         {
@@ -106,9 +113,9 @@ public class Stock extends DatabaseItem
             Optional<StockData> data = StockData.Create(stockData);
             if(!data.isPresent()) return Optional.empty();
 
-            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, data_id) VALUES(?, ?, ?)", symbol, currPrice, data.get().getId());
+            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, data_id, last_updated) VALUES(?, ?, ?, ?)", symbol, currPrice, data.get().getId(), lastUpdated);
 
-            return Optional.of(new Stock(id, symbol, currPrice, data.get().getId()));
+            return Optional.of(new Stock(id, symbol, currPrice, data.get().getId(), lastUpdated));
         }
         catch (SQLException e)
         {
@@ -126,7 +133,7 @@ public class Stock extends DatabaseItem
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ? WHERE id = ?", symbol, currPrice, id);
+            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ?, last_updated = ? WHERE id = ?", symbol, currPrice, id, lastUpdated);
         }
     }
 }
