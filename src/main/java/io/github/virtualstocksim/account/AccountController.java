@@ -14,8 +14,10 @@ import java.util.Optional;
 public class AccountController {
     // account instance
     private Account acc;
-
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
+
+
+
     public void setModel (Account acc){
         this.acc=acc;
     }
@@ -47,6 +49,22 @@ public class AccountController {
 
         }
         return Optional.empty();
+    }
+
+
+
+    /**
+     *
+     * @param accountID Account id to update
+     * @param newPicturePath Updated picture name
+     */
+    public void updateProfilePicture(int accountID, String newPicturePath, byte[] picture) {
+        throw new UnsupportedOperationException("Not implemented yet");
+
+        // allow user to provide a new picture and update it
+        // convert picture name to UUID
+        // how to upload picture to server (could be bytes?)
+
     }
 
 

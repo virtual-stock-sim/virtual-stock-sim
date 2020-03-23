@@ -161,14 +161,7 @@ public class Account extends DatabaseItem {
         this.profilePicture = profilePicture;
     }
 
-    /**
-     *
-     * @param accountID Account id to update
-     * @param newPicturePath Updated picture
-     */
-    public void updateProfilePicture(int accountID, String newPicturePath) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+
 
     // Static methods to search database based on given parameter
     public static Optional<Account> Find(int id){return Find("id", id);}
