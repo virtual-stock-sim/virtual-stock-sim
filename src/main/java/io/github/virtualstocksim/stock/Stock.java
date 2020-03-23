@@ -1,31 +1,38 @@
 package io.github.virtualstocksim.stock;
 
-import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.database.DatabaseItem;
+import io.github.virtualstocksim.database.SqlCmd;
 import io.github.virtualstocksim.util.Lazy;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class Stock extends DatabaseItem
 {
     private static final Logger logger = LoggerFactory.getLogger(Stock.class);
-    private static StockCache cache = StockCache.Instance();
 
     private String symbol;
     private BigDecimal currPrice;
     private final Lazy<StockData> stockData;
+    private Timestamp lastUpdated;
 
-    protected Stock(int id, String symbol, BigDecimal currPrice, int stockData)
+    protected Stock(int id, String symbol, BigDecimal currPrice, int stockData, Timestamp lastUpdated)
     {
         super(id);
         this.symbol = symbol;
         this.currPrice = currPrice;
-        this.stockData = Lazy.lazily(() -> StockData.Find(stockData).orElse(null));
+        this.stockData = new Lazy<>(() -> StockData.Find(stockData).orElse(null));
+        this.lastUpdated = lastUpdated;
     }
 
     public String getSymbol() { return symbol; }
@@ -34,52 +41,87 @@ public class Stock extends DatabaseItem
     public BigDecimal getCurrPrice() { return currPrice; }
     public void setCurrPrice(BigDecimal currPrice) { this.currPrice = currPrice; }
 
-    public StockData getStockData() { return stockData.get(); }
+    public StockData getStockData()
+    {
+        try
+        {
+            return stockData.get();
+        }
+        catch (ConcurrentException e)
+        {
+            logger.error("Error accessing StockData\n", e);
+        }
+        return null;
+    }
+
+    public Timestamp getLastUpdated() { return lastUpdated; }
+    public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
 
     // Search database for stock entry based on param
     public static Optional<Stock> Find(int id)
     {
-        return find("id", id);
+        return Find("id", id);
     }
     public static Optional<Stock> Find(String symbol)
     {
-        return find("symbol", symbol);
+        return Find("symbol", symbol);
     }
 
     /**
      * Find an existing stock in the database
-     * @param searchCol Column to use in the `where` clause of the search
-     * @param colValue Value to search for `where` clause of the search
+     * @param key Column to use in the `where` clause of the search
+     * @param value Value to search for `where` clause of the search
      * @return Stock instance if found, otherwise empty if not
      */
-    private static Optional<Stock> find(String searchCol, Object colValue)
+    public static Optional<Stock> Find(String key, Object value)
     {
-        try
+        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
+        if (stocks.isEmpty())
         {
-            logger.info("Searching for stock...");
-            ResultSet rs = cache.executeQuery(String.format("SELECT id, symbol, curr_price, data_id FROM stocks WHERE %s = ?", searchCol), colValue);
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(stocks.get(0));
+        }
+    }
 
-            // Return empty if nothing was found
-            if(!rs.next()) return Optional.empty();
+    /**
+     * Search for one or more stocks with a custom SQL command
+     * @param sql SQL command
+     * @param params SQL command parameters
+     * @return List of Stock instances
+     */
+    public static List<Stock> FindCustom(String sql, Object... params)
+    {
+        logger.info("Searching for stock(s)...");
+        try(Connection conn = StockDatabase.getConnection();
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
+        )
+        {
+            List<Stock> stocks = new ArrayList<>(crs.size());
 
-            return Optional.of(
-                    new Stock(
-                            rs.getInt("id"),
-                            rs.getString("symbol"),
-                            rs.getBigDecimal("curr_price"),
-                            rs.getInt("data_id")
-                    )
-            );
+            while(crs.next())
+            {
+                stocks.add(
+                        new Stock(
+                                crs.getInt("id"),
+                                crs.getString("symbol"),
+                                crs.getBigDecimal("curr_price"),
+                                crs.getInt("data_id"),
+                                crs.getTimestamp("last_updated")
+                        )
+                );
+            }
+
+            return stocks;
         }
-        catch (DatabaseException e)
+        catch (SQLException e)
         {
-            logger.error(String.format("Stock with search parameter %s not found\n", colValue), e);
+            logger.error("Exception occurred while finding stock(s) in database\n", e);
         }
-        catch(SQLException e)
-        {
-            logger.error("Error while parsing result from stock cache\n", e);
-        }
-        return Optional.empty();
+
+        return Collections.emptyList();
     }
 
     /**
@@ -89,17 +131,21 @@ public class Stock extends DatabaseItem
      * @param stockData Data for the new stock
      * @return Stock instance of the newly created
      */
-    private static Optional<Stock> Create(String symbol, BigDecimal currPrice, String stockData)
+    private static Optional<Stock> Create(String symbol, BigDecimal currPrice, String stockData, Timestamp lastUpdated)
     {
-        try
+        try(Connection conn = StockDatabase.getConnection())
         {
             logger.info("Creating new stock...");
-            Optional<StockData> data = StockData.Create(stockData);
+
+            // Find associated StockData
+            Optional<StockData> data = StockData.Create(stockData, lastUpdated);
             if(!data.isPresent()) return Optional.empty();
-            int id = cache.executeInsert("INSERT INTO stocks(symbol, curr_price, data_id) VALUES(?, ?, ?)", symbol, currPrice, data.get().getId());
-            return Optional.of(new Stock(id, symbol, currPrice, data.get().getId()));
+
+            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, data_id, last_updated) VALUES(?, ?, ?, ?)", symbol, currPrice, data.get().getId(), lastUpdated);
+
+            return Optional.of(new Stock(id, symbol, currPrice, data.get().getId(), lastUpdated));
         }
-        catch (DatabaseException e)
+        catch (SQLException e)
         {
             logger.error("Stock creation failed\n", e);
             return Optional.empty();
@@ -107,15 +153,15 @@ public class Stock extends DatabaseItem
     }
 
     @Override
-    public void commit() throws DatabaseException
+    public void commit() throws SQLException
     {
         if(stockData.hasEvaluated()) getStockData().commit();
+
         logger.info("Committing stock changes to database");
-        cache.executeUpdate(
-                "UPDATE stocks SET symbol = ?, curr_price = ? WHERE id = ?",
-                symbol,
-                currPrice,
-                id
-        );
+
+        try(Connection conn = StockDatabase.getConnection())
+        {
+            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ?, last_updated = ? WHERE id = ?", symbol, currPrice, lastUpdated, id);
+        }
     }
 }

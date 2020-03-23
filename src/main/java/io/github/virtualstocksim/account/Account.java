@@ -1,31 +1,21 @@
 package io.github.virtualstocksim.account;
 
-import io.github.virtualstocksim.database.DatabaseException;
 import io.github.virtualstocksim.database.DatabaseItem;
+import io.github.virtualstocksim.database.SqlCmd;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.Transaction;
-import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
+import javax.sql.rowset.CachedRowSet;
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Account extends DatabaseItem {
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
-    private static AccountDatabase accountDatabase = AccountDatabase.Instance();
 
     private String uname;
     private String pword;
@@ -180,63 +170,73 @@ public class Account extends DatabaseItem {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    // Static methods to search database based on given parameter
+    public static Optional<Account> Find(int id){return Find("id", id);}
+    public static Optional<Account> Find(String username){return Find("username", username);}
+    public static Optional<Account> Find(String key, Object value)
+    {
+        List<Account> accounts = FindCustom(String.format("SELECT id, uuid, type, username, email, password_hash, " +
+                "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
+                "FROM accounts WHERE %s = ?", key), value);
+
+        if (accounts.isEmpty())
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(accounts.get(0));
+        }
+    }
 
 
     /**
-     * @param searchCol Column of DB to use in the WHERE portion of the SQL statement
-     * @param colValue Value of column to search by
-     * @return returned account, if any. (Could be empty if account does not exist)
+     * Search for one or more accounts with a custom SQL command
+     * @param sql SQL command
+     * @param params SQL command parameters
+     * @return List of Account instances
      */
-    public static Optional<Account> Find(String searchCol, Object colValue) {
+    public static List<Account> FindCustom(String sql, Object... params) {
         /**
          * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
          * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in
          * for testing. - Dan
          */
-        try {
-            logger.info("Searching for account...");
-            ResultSet rs = accountDatabase.executeQuery(String.format("SELECT id, uuid, type, username, email, password_hash, " +
-                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
-                    "FROM accounts WHERE %s = ?", searchCol), colValue);
-
-            // Return empty if nothing was found
-            if(!rs.next()) return Optional.empty();
-
-            // else return the account found
-            return Optional.of(
-                    new Account(
-                            rs.getInt("id"),
-                            rs.getString("uuid"),
-                            rs.getString("type"),
-                            rs.getString("username"),
-                            rs.getString("email"),
-                            rs.getBytes("password_hash"),
-                            rs.getBytes("password_salt"),
-                            rs.getString("followed_stocks"),
-                            rs.getString("transaction_history"),
-                            rs.getInt("leaderboard_rank"),
-                            rs.getString("bio"),
-                            rs.getString("profile_picture"),
-                            rs.getTimestamp("creation_date")
-                    )
-            );
-        }
-        catch (DatabaseException e)
+        logger.info("Searching for account(s)...");
+        try(Connection conn = AccountDatabase.getConnection();
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
+        )
         {
-            logger.error(String.format("Account with search parameter %s not found\n", colValue), e);
+            List<Account> accounts = new ArrayList<>(crs.size());
+
+            while(crs.next())
+            {
+                accounts.add(
+                        new Account(
+                                crs.getInt("id"),
+                                crs.getString("uuid"),
+                                crs.getString("type"),
+                                crs.getString("username"),
+                                crs.getString("email"),
+                                crs.getBytes("password_hash"),
+                                crs.getBytes("password_salt"),
+                                crs.getString("followed_stocks"),
+                                crs.getString("transaction_history"),
+                                crs.getInt("leaderboard_rank"),
+                                crs.getString("bio"),
+                                crs.getString("profile_picture"),
+                                crs.getTimestamp("creation_date")
+                        )
+                );
+            }
+            return accounts;
         }
-        catch(SQLException e)
+        catch (SQLException e)
         {
-            logger.error("Error while parsing result from account database\n", e);
+            logger.error("Exception occurred while finding account(s) in database\n", e);
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
-
-
-    // Static methods to search database based on given parameter
-    public static Optional<Account> find (int id){return Find("id", id);}
-    public static Optional<Account> find (String username){return Find("username", username);}
-
 
     /**
      * @param username username of user
@@ -256,8 +256,9 @@ public class Account extends DatabaseItem {
         int defaultLeaderboardRank = -1;
         logger.info("Attempting to create a new account in account database...");
 
-        try {
-            int id = accountDatabase.executeInsert(
+        try(Connection conn = AccountDatabase.getConnection())
+        {
+            int id = SqlCmd.executeInsert(conn,
                     "INSERT INTO accounts (uuid, type, username, email, password_hash, password_salt, " +
                             " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 
@@ -268,8 +269,8 @@ public class Account extends DatabaseItem {
             return Optional.of(new Account(id, uuid, accountType, username, email, hash, salt, "",
                     "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
 
-        } catch (DatabaseException e){
-            logger.info("Account creation failed");
+        } catch (SQLException e){
+            logger.info("Account creation failed\n", e);
             return Optional.empty();
         }
     }

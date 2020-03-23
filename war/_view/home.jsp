@@ -6,15 +6,21 @@
 <html>
 <head>
     <style><%@include file="cssfiles/homePageStyle.css"%></style>
+    <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
+
 
     <title>Home - VSS: Virtual Stock Sim</title>
 </head>
 <body>
 
-<t:header/>
+<div class = "header">
+    <t:header/>
+
+</div>
+
 
 <div class = "createAccountBtn">
-    <button onClick="redirectAccount()">Create an Account</button>
+    <button onClick="redirectAccount()">CREATE AN ACCOUNT</button>
     <script>
         function redirectAccount() {
             location.href = "createAccount";
@@ -22,7 +28,10 @@
     </script>
 </div>
 
-<t:navbar/>
+<div class = "navbar">
+    <t:navbar/>
+</div>
+
 
 <div class="leaderboard">
     <h1>Leading Investors</h1>
@@ -35,19 +44,6 @@
     <p>1) TSLA - $620.91 - UP 11%</p>
     <p>2) Google - $1214.27 - UP 9%</p>
     <p>3) Amazon - $1785.00 - UP 7%</p>
-</div>
-
-<div class = "about">
-    <h1>About Us</h1>
-    <p>Virtual Stock Sim is a stock investment simulation website that uses real-world stock data and prices
-    for users' personal investments in order to provide the most authentic experience possible.</p>
-
-    <h2>The Team</h2>
-    <u1>
-        <li class="dev-name" type="none">Brett Kearney</li>
-        <li class="dev-name" type="none">Dan Palmieri</li>
-        <li class="dev-name" type="none">Earl Kennedy</li>
-    </u1>
 </div>
 
 </body>

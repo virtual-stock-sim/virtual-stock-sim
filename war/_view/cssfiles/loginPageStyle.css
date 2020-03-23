@@ -1,23 +1,138 @@
+
 body {
-    color: white;
+    color: whitesmoke;
     background-color: #404040;
     text-align: center;
-    font-family: "Lato", sans-serif;
+    font-family: 'Bebas Neue';font-size: 25px;
+    letter-spacing: 3px;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /*Image retrieved from https://wallpaperaccess.com/skyline-at-night*/
+    background-image: url("../../_view/resources/images/login/nyc2.jpg");
+}
+.header {
+    font-size: 20px;
 }
 
-.header {
-    font-size: 30px;
-}
 
 .login-credentials {
-    padding:50px;
+    padding-bottom: 100px;
+    padding-top: 50px;
 }
 
 .create-account {
-    font-size: 30px;
-    margin-top:7%;
+    color:white;
+    font-size: 20px;
+    padding-bottom: 50px;
 }
 
 .error {
     color: red;
 }
+
+
+input::-webkit-input-placeholder {
+    color: rgba(255,255,255,0.7);
+    }
+input::-moz-placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+input::-ms-input-placeholder {
+    color: rgba(255,255,255,0.7);
+    }
+input:focus {
+    outline: 0 transparent solid;
+}
+
+::-webkit-input-placeholder {
+    color: rgba(0,0,0,0.7);
+}
+::-moz-placeholder {
+    color: rgba(0,0,0,0.7);
+}
+:-ms-input-placeholder {
+    color: rgba(0,0,0,0.7);
+    }
+button {
+    background-color: #e7e7e7;
+    color: black;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Bebas Neue';font-size: 25px;
+
+}
+
+button:hover{
+    background-color: gray;
+    color:white;
+}
+
+input[type=submit] {
+    background-color: #e7e7e7;
+    color: black;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Bebas Neue';font-size: 25px;
+}
+
+input[type=submit]:hover {
+    background-color: gray;
+    color:white;
+}
+
+
+.login-form {
+    background: #222;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.3);
+    min-height: 10rem;
+    margin: auto;
+    max-width: 50%;
+    padding: .5rem;
+    padding-bottom: 40px!important;
+    width: 20%;
+    font-family: 'Open Sans';
+    font-weight: 100;
+    display: compact;
+    overflow: hidden;
+}
+
+.username, .password {
+    background: transparent;
+    border: 0 solid;
+    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    color: white;
+    display: block;
+    margin: 1rem;
+    padding: .5rem;
+    transition: 250ms background ease-in;
+    width: calc(100% - 3rem);
+}
+
+.username .password:hover,:focus{
+    background: white;
+    transition: 250ms background ease-in;
+}
+
+
+.login-text {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 auto;
+    max-width: 50%;
+    padding: .5rem;
+    text-align: center;
+    text-shadow: 1px -1px 0 rgba(0,0,0,0.3);
+}
+.fa-stack-1x {
+    color: black;
+}
+
+

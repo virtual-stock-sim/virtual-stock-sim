@@ -2,11 +2,9 @@ package io.github.virtualstocksim.transactionHistory;
 
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.stock.StockCacheConnection;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionType;
 import io.github.virtualstocksim.util.Util;
-import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -17,9 +15,6 @@ import static org.junit.Assert.assertNotEquals;
 
 public class TransactionTest
 {
-    @ClassRule
-    public static StockCacheConnection conn = new StockCacheConnection();
-
    private LinkedList<Transaction> transactions = new LinkedList<>();
     public void setUp() {
         transactions.add(new Transaction(TransactionType.BUY,  Util.GetTimeStamp(), new BigDecimal(1252.2), 1, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));

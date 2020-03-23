@@ -72,9 +72,11 @@ public class LoginServlet extends HttpServlet
           }
         } catch (NumberFormatException e){
             errorMessage = "Invalid credentials. Please enter a valid username and password";
+            req.setAttribute("errorMessage", errorMessage);
+            req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
+            return;
         }
 
-        req.setAttribute("errorMessage", errorMessage);
 
 
         // login is valid, redirect user

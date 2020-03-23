@@ -1,0 +1,22 @@
+create table STOCKS_DATA(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+						data LONG VARCHAR NOT NULL,
+						last_updated TIMESTAMP);
+						
+create table STOCKS(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+					symbol VARCHAR(10) NOT NULL UNIQUE,
+					curr_price DECIMAL(12, 2),
+					data_id INT NOT NULL REFERENCES stocks_data(id),
+					last_updated TIMESTAMP);
+
+insert into STOCKS_DATA(DATA, LAST_UPDATED) values ('amazon test data','2020-01-21 21:18:07.233'),
+                                                   ('tesla test data','2020-02-21 21:18:07.233'),
+                                                   ('google test data','2020-03-21 21:18:07.233'),
+                                                   ('ford test data','2020-04-21 21:18:07.233'),
+                                                   ('bd test data','2020-05-21 21:18:07.233');
+
+
+insert into STOCKS(symbol, curr_price, data_id, last_updated) VALUES ('AMZN',100.00,1,'2020-01-21 21:18:07.233'),
+                                                                     ('TSLA',200.00,2,'2020-02-21 21:18:07.233'),
+                                                                     ('GOOGL',300.00,3,'2020-03-21 21:18:07.233'),
+                                                                     ('F',400.00,4,'2020-04-21 21:18:07.233'),
+                                                                     ('BDX',500.00,5,'2020-05-21 21:18:07.233');

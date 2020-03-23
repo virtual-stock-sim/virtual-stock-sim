@@ -23,8 +23,18 @@ h2 {
     font-size: 40px;
 }
 
+input {
+    border: none;
+    padding: 10px;
+    background-color: white;
+}
 input.sign-up, label.sign-up {
     padding: 20px;
+    border-radius: 25px;
+}
+
+input:focus {
+    outline: 0 transparent solid;
 }
 
 .return-to-home {
@@ -34,7 +44,7 @@ input.sign-up, label.sign-up {
 }
 
 .sign-up {
-    padding-top:100px;
+    padding-top:50px;
 }
 
 label{

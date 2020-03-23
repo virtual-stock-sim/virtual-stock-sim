@@ -1,28 +1,20 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.Transaction;
-import io.github.virtualstocksim.transaction.TransactionHistory;
-import io.github.virtualstocksim.transaction.TransactionType;
 import io.github.virtualstocksim.util.Util;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class AccountTest
 {
-    @ClassRule
-    public static AccountDatabaseConnection conn = new AccountDatabaseConnection();
-
     private Account account;
    // StocksFollowed stocksFollowed;
     Stock Amazon;
@@ -168,7 +160,7 @@ public class AccountTest
     public void testCreateAccountInDB(){
         Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret","ADMIN");
         if(!new_acc.isPresent()){ fail(); }
-        Optional<Account> find_acc = Account.Find("email",  "test@test.com");
+        Optional<Account> find_acc = Account.Find("DanPalm5");
         if(!find_acc.isPresent()){ fail(); }
         assertEquals(new_acc.get().getId(), find_acc.get().getId());
         assertEquals(new_acc.get().getUUID(), find_acc.get().getUUID());
