@@ -173,11 +173,11 @@ public class Stock extends DatabaseItem
      * @throws SQLException
      */
     @Override
-    public void commit() throws SQLException
+    public void update() throws SQLException
     {
         try(Connection conn = StockDatabase.getConnection())
         {
-            commit(conn);
+            update(conn);
         }
     }
 
@@ -187,9 +187,9 @@ public class Stock extends DatabaseItem
      * @throws SQLException
      */
     @Override
-    public void commit(Connection conn) throws SQLException
+    public void update(Connection conn) throws SQLException
     {
-        if(stockData.hasEvaluated()) getStockData().commit();
+        if(stockData.hasEvaluated()) getStockData().update();
 
         logger.info(String.format("Committing stock changes to database for Stock ID %d", id));
 
@@ -255,6 +255,7 @@ public class Stock extends DatabaseItem
     @Override
     public void delete(Connection conn) throws SQLException
     {
-
+        logger.info(String.format("Removing Stock with ID %d from database", id));
+        SqlCmd.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
     }
 }

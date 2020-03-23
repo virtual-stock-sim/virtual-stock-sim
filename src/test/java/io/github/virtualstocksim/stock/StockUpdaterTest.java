@@ -37,7 +37,7 @@ public class StockUpdaterTest
             conn.setAutoCommit(false);
             for(Stock s : originalValues)
             {
-                s.commit(conn);
+                s.update(conn);
             }
             conn.commit();
         }

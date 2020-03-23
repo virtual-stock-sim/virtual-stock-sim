@@ -99,7 +99,7 @@ public class StockData extends DatabaseItem
     }
 
     @Override
-    public void commit() throws SQLException
+    public void update() throws SQLException
     {
         logger.info("Committing stock data changes to database");
 
@@ -110,7 +110,7 @@ public class StockData extends DatabaseItem
     }
 
     @Override
-    public void commit(Connection connection) throws SQLException
+    public void update(Connection connection) throws SQLException
     {
         throw new UnsupportedOperationException("Not implemented yet");
     }

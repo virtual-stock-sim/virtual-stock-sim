@@ -269,13 +269,13 @@ public class Account extends DatabaseItem {
     }
 
     @Override
-    public void commit()
+    public void update()
     {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void commit(Connection connection) throws SQLException
+    public void update(Connection connection) throws SQLException
     {
         throw new UnsupportedOperationException("Not implemented yet");
     }

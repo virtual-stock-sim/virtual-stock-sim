@@ -91,7 +91,7 @@ public class StockUpdater
         {
             for(Stock s : stocks)
             {
-                s.commit();
+                s.update();
             }
         }
         catch (SQLException e)
