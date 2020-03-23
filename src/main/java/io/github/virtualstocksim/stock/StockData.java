@@ -9,6 +9,9 @@ import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class StockData extends DatabaseItem
@@ -33,32 +36,50 @@ public class StockData extends DatabaseItem
 
     static Optional<StockData> Find(int id)
     {
-        return find("id", id);
+        return Find("id", id);
+    }
+    static Optional<StockData> Find(String key, Object value)
+    {
+        List<StockData> stockDatas = CustomFind(String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", key), value);
+
+        if(stockDatas.isEmpty())
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(stockDatas.get(0));
+        }
     }
 
     // Search database for entry based on id
-    private static Optional<StockData> find(String searchCol, Object colValue)
+    static List<StockData> CustomFind(String sql, Object... params)
     {
         logger.info("Searching for stock data...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", searchCol), colValue)
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params)
         )
         {
+            List<StockData> stockDatas = new ArrayList<>(crs.size());
 
-            // Return empty if nothing was found
-            if(!crs.next()) return Optional.empty();
+            while(crs.next())
+            {
+                stockDatas.add(
+                        new StockData(
+                                crs.getInt("id"),
+                                crs.getString("data"),
+                                crs.getTimestamp("last_updated")
+                        )
+                );
+            }
 
-            return Optional.of(new StockData(
-                    crs.getInt("id"),
-                    crs.getString("data"),
-                    crs.getTimestamp("last_updated")
-            ));
+            return stockDatas;
         }
         catch (SQLException e)
         {
-            logger.error(String.format("Unable to retrieve stock data from database with search parameters %s = %s\n", searchCol, colValue), e);
+            logger.error("Exception occurred while finding stock data(s) in database\n", e);
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
 
     static Optional<StockData> Create(String data, Timestamp lastUpdated)

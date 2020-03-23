@@ -11,8 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Account extends DatabaseItem {
@@ -171,61 +170,73 @@ public class Account extends DatabaseItem {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    // Static methods to search database based on given parameter
+    public static Optional<Account> Find(int id){return Find("id", id);}
+    public static Optional<Account> Find(String username){return Find("username", username);}
+    public static Optional<Account> Find(String key, Object value)
+    {
+        List<Account> accounts = CustomFind(String.format("SELECT id, uuid, type, username, email, password_hash, " +
+                "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
+                "FROM accounts WHERE %s = ?", key), value);
+
+        if (accounts.isEmpty())
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(accounts.get(0));
+        }
+    }
 
 
     /**
-     * @param searchCol Column of DB to use in the WHERE portion of the SQL statement
-     * @param colValue Value of column to search by
-     * @return returned account, if any. (Could be empty if account does not exist)
+     * Search for one or more accounts with a custom SQL command
+     * @param sql SQL command
+     * @param params SQL command parameters
+     * @return List of Account instances
      */
-    private static Optional<Account> Find(String searchCol, Object colValue) {
+    public static List<Account> CustomFind(String sql, Object... params) {
         /**
          * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
          * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in
          * for testing. - Dan
          */
-        logger.info("Searching for account...");
+        logger.info("Searching for account(s)...");
         try(Connection conn = AccountDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, uuid, type, username, email, password_hash, " +
-                    "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
-                    "FROM accounts WHERE %s = ?", searchCol), colValue);
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
         )
         {
+            List<Account> accounts = new ArrayList<>(crs.size());
 
-            // Return empty if nothing was found
-            if(!crs.next()) return Optional.empty();
-
-            // else return the account found
-            return Optional.of(
-                    new Account(
-                            crs.getInt("id"),
-                            crs.getString("uuid"),
-                            crs.getString("type"),
-                            crs.getString("username"),
-                            crs.getString("email"),
-                            crs.getBytes("password_hash"),
-                            crs.getBytes("password_salt"),
-                            crs.getString("followed_stocks"),
-                            crs.getString("transaction_history"),
-                            crs.getInt("leaderboard_rank"),
-                            crs.getString("bio"),
-                            crs.getString("profile_picture"),
-                            crs.getTimestamp("creation_date")
-                    )
-            );
+            while(crs.next())
+            {
+                accounts.add(
+                        new Account(
+                                crs.getInt("id"),
+                                crs.getString("uuid"),
+                                crs.getString("type"),
+                                crs.getString("username"),
+                                crs.getString("email"),
+                                crs.getBytes("password_hash"),
+                                crs.getBytes("password_salt"),
+                                crs.getString("followed_stocks"),
+                                crs.getString("transaction_history"),
+                                crs.getInt("leaderboard_rank"),
+                                crs.getString("bio"),
+                                crs.getString("profile_picture"),
+                                crs.getTimestamp("creation_date")
+                        )
+                );
+            }
+            return accounts;
         }
         catch (SQLException e)
         {
-            logger.error(String.format("Unable to retrieve account from database with search parameters %s = %s\n", searchCol, colValue), e);
+            logger.error("Exception occurred while finding account(s) in database\n", e);
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
-
-
-    // Static methods to search database based on given parameter
-    public static Optional<Account> Find(int id){return Find("id", id);}
-    public static Optional<Account> Find(String username){return Find("username", username);}
-
 
     /**
      * @param username username of user

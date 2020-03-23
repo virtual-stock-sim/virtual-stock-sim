@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class Stock extends DatabaseItem
@@ -57,44 +60,68 @@ public class Stock extends DatabaseItem
     // Search database for stock entry based on param
     public static Optional<Stock> Find(int id)
     {
-        return find("id", id);
+        return Find("id", id);
     }
     public static Optional<Stock> Find(String symbol)
     {
-        return find("symbol", symbol);
+        return Find("symbol", symbol);
     }
 
     /**
      * Find an existing stock in the database
-     * @param searchCol Column to use in the `where` clause of the search
-     * @param colValue Value to search for `where` clause of the search
+     * @param key Column to use in the `where` clause of the search
+     * @param value Value to search for `where` clause of the search
      * @return Stock instance if found, otherwise empty if not
      */
-    private static Optional<Stock> find(String searchCol, Object colValue)
+    public static Optional<Stock> Find(String key, Object value)
     {
-        logger.info("Searching for stock...");
-        try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", searchCol), colValue)
-            )
+        List<Stock> stocks = CustomFind(String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
+        if (stocks.isEmpty())
         {
-            // Return empty if nothing was found
-            if(!crs.next()) return Optional.empty();
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(stocks.get(0));
+        }
+    }
 
-            return Optional.of(
-                    new Stock(
-                            crs.getInt("id"),
-                            crs.getString("symbol"),
-                            crs.getBigDecimal("curr_price"),
-                            crs.getInt("data_id"),
-                            crs.getTimestamp("last_updated")
-                    )
-            );
-        }
-        catch(SQLException e)
+    /**
+     * Search for one or more stocks with a custom SQL command
+     * @param sql SQL command
+     * @param params SQL command parameters
+     * @return List of Stock instances
+     */
+    public static List<Stock> CustomFind(String sql, Object... params)
+    {
+        logger.info("Searching for stock(s)...");
+        try(Connection conn = StockDatabase.getConnection();
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
+        )
         {
-            logger.error(String.format("Unable to retrieve stock from database with search parameters %s = %s\n", searchCol, colValue), e);
+            List<Stock> stocks = new ArrayList<>(crs.size());
+
+            while(crs.next())
+            {
+                stocks.add(
+                        new Stock(
+                                crs.getInt("id"),
+                                crs.getString("symbol"),
+                                crs.getBigDecimal("curr_price"),
+                                crs.getInt("data_id"),
+                                crs.getTimestamp("last_updated")
+                        )
+                );
+            }
+
+            return stocks;
         }
-        return Optional.empty();
+        catch (SQLException e)
+        {
+            logger.error("Exception occurred while finding stock(s) in database\n", e);
+        }
+
+        return Collections.emptyList();
     }
 
     /**
@@ -110,6 +137,7 @@ public class Stock extends DatabaseItem
         {
             logger.info("Creating new stock...");
 
+            // Find associated StockData
             Optional<StockData> data = StockData.Create(stockData, lastUpdated);
             if(!data.isPresent()) return Optional.empty();
 
