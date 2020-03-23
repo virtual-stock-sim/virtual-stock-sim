@@ -30,19 +30,6 @@ public class DatabaseFactory
     private DatabaseFactory()
     {
         dataSources = new ConcurrentHashMap<>();
-
-        try
-        {
-            // Read database configurations from properties file
-            String configStr = IOUtils.toString(this.getClass().getResourceAsStream("/config"), StandardCharsets.UTF_8);
-            config = new Properties();
-            config.load(new StringReader(configStr));
-        }
-        catch (IOException e)
-        {
-            logger.error("Unable to read database.config", e);
-            System.exit(-1);
-        }
     }
 
     /**
@@ -69,10 +56,4 @@ public class DatabaseFactory
             return getInstance().dataSources.get(databaseURI);
         }
     }
-
-    public static String getConfig(String key)
-    {
-        return getInstance().config.getProperty(key);
-    }
-
 }

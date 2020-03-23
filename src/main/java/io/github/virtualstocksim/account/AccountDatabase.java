@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.database.DatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ public class AccountDatabase
 {
     private static final Logger logger = LoggerFactory.getLogger(AccountDatabase.class);
     private final DataSource dataSource;
-    private static final String dbPath = DatabaseFactory.getConfig("accountdb.uri");
+    private static final String dbPath = Config.getConfig("accountdb.uri");
 
     private static class StaticContainer
     {
