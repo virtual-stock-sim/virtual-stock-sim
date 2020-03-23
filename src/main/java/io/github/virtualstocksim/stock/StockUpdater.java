@@ -31,9 +31,9 @@ public class StockUpdater
 
     }
 
-    public void update()
+    public void update() throws IOException
     {
-        List<Stock> stocks = Stock.FindCustom("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks");
+        List<Stock> stocks = Stock.FindCustom("SELECT id, symbol FROM stocks");
 
         // Create String of all stock symbols separated by commas
         StringBuilder sb = new StringBuilder();

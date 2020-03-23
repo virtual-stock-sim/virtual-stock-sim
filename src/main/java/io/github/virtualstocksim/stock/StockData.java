@@ -108,4 +108,22 @@ public class StockData extends DatabaseItem
             SqlCmd.executeUpdate(conn, "UPDATE stocks_data SET data = ?, last_updated = ? WHERE id = ?", data, lastUpdated, id);
         }
     }
+
+    @Override
+    public void commit(Connection connection) throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void delete() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void delete(Connection conn) throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
