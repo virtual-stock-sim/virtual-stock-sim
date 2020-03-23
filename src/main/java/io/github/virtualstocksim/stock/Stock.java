@@ -75,7 +75,7 @@ public class Stock extends DatabaseItem
      */
     public static Optional<Stock> Find(String key, Object value)
     {
-        List<Stock> stocks = CustomFind(String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
+        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
         if (stocks.isEmpty())
         {
             return Optional.empty();
@@ -92,7 +92,7 @@ public class Stock extends DatabaseItem
      * @param params SQL command parameters
      * @return List of Stock instances
      */
-    public static List<Stock> CustomFind(String sql, Object... params)
+    public static List<Stock> FindCustom(String sql, Object... params)
     {
         logger.info("Searching for stock(s)...");
         try(Connection conn = StockDatabase.getConnection();
@@ -161,7 +161,7 @@ public class Stock extends DatabaseItem
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ?, last_updated = ? WHERE id = ?", symbol, currPrice, id, lastUpdated);
+            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ?, last_updated = ? WHERE id = ?", symbol, currPrice, lastUpdated, id);
         }
     }
 }

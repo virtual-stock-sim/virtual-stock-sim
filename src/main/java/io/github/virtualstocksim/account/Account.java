@@ -175,7 +175,7 @@ public class Account extends DatabaseItem {
     public static Optional<Account> Find(String username){return Find("username", username);}
     public static Optional<Account> Find(String key, Object value)
     {
-        List<Account> accounts = CustomFind(String.format("SELECT id, uuid, type, username, email, password_hash, " +
+        List<Account> accounts = FindCustom(String.format("SELECT id, uuid, type, username, email, password_hash, " +
                 "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
                 "FROM accounts WHERE %s = ?", key), value);
 
@@ -196,7 +196,7 @@ public class Account extends DatabaseItem {
      * @param params SQL command parameters
      * @return List of Account instances
      */
-    public static List<Account> CustomFind(String sql, Object... params) {
+    public static List<Account> FindCustom(String sql, Object... params) {
         /**
          * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
          * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in

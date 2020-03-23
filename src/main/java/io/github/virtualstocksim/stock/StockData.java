@@ -40,7 +40,7 @@ public class StockData extends DatabaseItem
     }
     static Optional<StockData> Find(String key, Object value)
     {
-        List<StockData> stockDatas = CustomFind(String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", key), value);
+        List<StockData> stockDatas = FindCustom(String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", key), value);
 
         if(stockDatas.isEmpty())
         {
@@ -53,7 +53,7 @@ public class StockData extends DatabaseItem
     }
 
     // Search database for entry based on id
-    static List<StockData> CustomFind(String sql, Object... params)
+    static List<StockData> FindCustom(String sql, Object... params)
     {
         logger.info("Searching for stock data...");
         try(Connection conn = StockDatabase.getConnection();
