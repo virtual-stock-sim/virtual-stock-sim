@@ -1,0 +1,13 @@
+create table ACCOUNTS (id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+                    uuid VARCHAR(36) NOT NULL UNIQUE,
+                    type VARCHAR(16) NOT NULL,
+                    username VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL UNIQUE,
+                    password_hash VARCHAR(256) FOR BIT DATA NOT NULL,
+                    password_salt VARCHAR(16) FOR BIT DATA NOT NULL,
+                    followed_stocks LONG VARCHAR,
+                    transaction_history LONG VARCHAR,
+                    leaderboard_rank INT,
+                    bio LONG VARCHAR,
+                    profile_picture LONG VARCHAR,
+                    creation_date TIMESTAMP);

@@ -1,12 +1,17 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.database.SqlCmd;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.util.Util;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +20,7 @@ import static org.junit.Assert.*;
 
 public class AccountTest
 {
+    private static final Logger logger = LoggerFactory.getLogger(AccountTest.class);
     private Account account;
    // StocksFollowed stocksFollowed;
     Stock Amazon;
@@ -158,6 +164,15 @@ public class AccountTest
 
     @Test
     public void testCreateAccountInDB(){
+        try(Connection conn = AccountDatabase.getConnection())
+        {
+            SqlCmd.executeUpdate(conn, "DELETE FROM accounts WHERE username = ? ", "DanPalm5");
+        }
+        catch (SQLException e)
+        {
+           fail();
+        }
+
         Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret","ADMIN");
         if(!new_acc.isPresent()){ fail(); }
         Optional<Account> find_acc = Account.Find("DanPalm5");

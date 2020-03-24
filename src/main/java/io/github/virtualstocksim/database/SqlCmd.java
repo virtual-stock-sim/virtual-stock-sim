@@ -123,13 +123,16 @@ public class SqlCmd
      */
     public static int executeInsert(Connection conn, String sql, Object... params) throws SQLException
     {
-        try(PreparedStatement stmt = conn.prepareStatement(sql))
+        logger.info(formatSqlExecute(sql, params));
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
         {
             fillStmtParams(stmt, params);
             stmt.executeUpdate();
 
             try(ResultSet rs = stmt.getGeneratedKeys())
             {
+                //logger.info(String.valueOf(rs.getInt(1)));
                 return rs.next() ? rs.getInt(1) : 0;
             }
         }

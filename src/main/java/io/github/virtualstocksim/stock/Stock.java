@@ -10,12 +10,10 @@ import org.slf4j.LoggerFactory;
 import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Stock extends DatabaseItem
 {
@@ -87,7 +85,9 @@ public class Stock extends DatabaseItem
     }
 
     /**
-     * Search for one or more stocks with a custom SQL command
+     * Search for one or more stocks with a custom SQL command.
+     * Any empty fields are set to null or -1
+     * Query MUST include a returned ID
      * @param sql SQL command
      * @param params SQL command parameters
      * @return List of Stock instances
@@ -96,20 +96,36 @@ public class Stock extends DatabaseItem
     {
         logger.info("Searching for stock(s)...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
+            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params)
         )
         {
             List<Stock> stocks = new ArrayList<>(crs.size());
 
+            ResultSetMetaData rsmd = crs.getMetaData();
+
+            // HashMap of column names returned in result
+            HashMap<String, Void> columns = new HashMap<>();
+            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
+            {
+                columns.put(rsmd.getColumnName(i).toLowerCase(), null);
+            }
+
+            // Make sure that the query returned an ID
+            if(!columns.containsKey("id"))
+            {
+                throw new SQLException("Query must return ID");
+            }
+
+            // Iterate through all returned stocks and create a stock instance for each
             while(crs.next())
             {
                 stocks.add(
                         new Stock(
                                 crs.getInt("id"),
-                                crs.getString("symbol"),
-                                crs.getBigDecimal("curr_price"),
-                                crs.getInt("data_id"),
-                                crs.getTimestamp("last_updated")
+                                columns.containsKey("symbol") ? crs.getString("symbol") : null,
+                                columns.containsKey("curr_price") ? crs.getBigDecimal("curr_price") : null,
+                                columns.containsKey("data_id") ? crs.getInt("data_id") : -1,
+                                columns.containsKey("last_updated") ? crs.getTimestamp("last_updated") : null
                         )
                 );
             }
@@ -152,16 +168,94 @@ public class Stock extends DatabaseItem
         }
     }
 
+    /**
+     * Commit stock to stock database
+     * @throws SQLException
+     */
     @Override
-    public void commit() throws SQLException
+    public void update() throws SQLException
     {
-        if(stockData.hasEvaluated()) getStockData().commit();
-
-        logger.info("Committing stock changes to database");
-
         try(Connection conn = StockDatabase.getConnection())
         {
-            SqlCmd.executeUpdate(conn, "UPDATE stocks SET symbol = ?, curr_price = ?, last_updated = ? WHERE id = ?", symbol, currPrice, lastUpdated, id);
+            update(conn);
         }
+    }
+
+    /**
+     * Commit Stock to database
+     * @param conn Connection to stock database
+     * @throws SQLException
+     */
+    @Override
+    public void update(Connection conn) throws SQLException
+    {
+        if(stockData.hasEvaluated()) getStockData().update();
+
+        logger.info(String.format("Committing stock changes to database for Stock ID %d", id));
+
+        List<String> comitted = new LinkedList<>();
+        List<String> omitted = new LinkedList<>();
+        List<Object> params = new LinkedList<>();
+
+        // Add symbol to update
+        if(symbol != null && !symbol.trim().isEmpty())
+        {
+            comitted.add("symbol = ?");
+            params.add(symbol);
+        }
+        else
+        {
+            omitted.add("symbol");
+        }
+
+        // Add current price to update
+        if(currPrice != null)
+        {
+            comitted.add("curr_price = ?");
+            params.add(currPrice);
+        }
+        else
+        {
+            omitted.add("curr_price");
+        }
+
+        // Add last updated to update
+        if(lastUpdated != null)
+        {
+            comitted.add("last_updated = ?");
+            params.add(lastUpdated);
+        }
+        else
+        {
+            omitted.add("last_updated");
+        }
+
+        if(comitted.isEmpty())
+        {
+            logger.warn(String.format("Abandoning commit for Stock ID %d; Nothing to commit", id));
+        }
+        else
+        {
+            if(!omitted.isEmpty())
+            {
+                logger.info(String.format("Omitting the following empty columns from commit:\n%s", String.join(", ", omitted)));
+            }
+
+            params.add(id);
+            SqlCmd.executeUpdate(conn, String.format("UPDATE stocks SET %s WHERE id = ?", String.join(", ", comitted)), params.toArray());
+        }
+    }
+
+    @Override
+    public void delete() throws SQLException
+    {
+
+    }
+
+    @Override
+    public void delete(Connection conn) throws SQLException
+    {
+        logger.info(String.format("Removing Stock with ID %d from database", id));
+        SqlCmd.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
     }
 }

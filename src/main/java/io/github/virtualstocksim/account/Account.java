@@ -161,14 +161,7 @@ public class Account extends DatabaseItem {
         this.profilePicture = profilePicture;
     }
 
-    /**
-     *
-     * @param accountID Account id to update
-     * @param newPicturePath Updated picture
-     */
-    public void updateProfilePicture(int accountID, String newPicturePath) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+
 
     // Static methods to search database based on given parameter
     public static Optional<Account> Find(int id){return Find("id", id);}
@@ -275,9 +268,27 @@ public class Account extends DatabaseItem {
         }
     }
 
-    public void commit()
+    @Override
+    public void update()
     {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Override
+    public void update(Connection connection) throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void delete() throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void delete(Connection conn) throws SQLException
+    {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
