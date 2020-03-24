@@ -15,6 +15,7 @@
 
     </head>
     <body>
+    <div class = "bg-img"></div>
 
     <div class ="header">
         <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>

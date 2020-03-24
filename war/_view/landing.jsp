@@ -6,7 +6,7 @@
 <head>
     <title>VSS: Virtual Stock Sim</title>
     <style><%@include file="cssfiles/landingPageStyle.css"%></style>
-  <div class = "header">
+    <div class = "header">
           <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
           <h2>Simulated Investing, Reimagined</h2>
   </div>
@@ -14,7 +14,7 @@
 
 </head>
 <body>
-
+<div class = "bg-img"></div>
 
 <div class = "invest">
     <h1>Invest in something you can track</h1>
