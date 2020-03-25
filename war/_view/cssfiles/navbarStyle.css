@@ -1,5 +1,6 @@
 /* Navbar container */
 .navbar {
+    color: white;
     white-space:nowrap;
     overflow: hidden;
     background-color: #333;
@@ -12,8 +13,16 @@
     font-size: 20px;
     color: white;
     text-align: center;
-    padding: 14px 115px;
+    padding: 14px 100px;
     text-decoration: none;
+}
+
+.home-btn a{
+    padding: 14px 150px;
+}
+
+.account-btn a{
+    padding:14px 180px;
 }
 
 /* The dropdown container */
@@ -28,7 +37,7 @@
     border: none;
     outline: none;
     color: white;
-    padding: 14px 150px;
+    padding: 14px 100px;
     background-color: inherit;
     font-family: inherit; /* Important for vertical align on mobile phones */
     margin: 0; /* Important for vertical align on mobile phones */
@@ -74,4 +83,14 @@ i {
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     border-top: 10px solid #fff;
+}
+
+i.fa-home{
+    border-style: hidden;
+    font-size: 20px;
+    text-align: center;
+}
+
+.fa-home{
+    color: white;
 }

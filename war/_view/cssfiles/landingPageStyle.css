@@ -1,14 +1,33 @@
 body {
-    color: white;
+    color:white;
     text-align: center;
     font-family: "Lato", sans-serif;
-    height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+}
+
+
+.bg-img{
+    position: absolute;
+    left: 0;
+    top: 0;
     /*Obtained from shutterstock - 16504738*/
     background-image: url("../../_view/resources/images/login/VSS_Background1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: hard-light;
+    width: 100%;
+    height: 100%;
+    -webkit-filter: blur(0px);
+    z-index: -1;
+    border-style: hidden;
+    animation-name: blur-out;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+}
 
+@keyframes blur-out {
+    from {-webkit-filter: blur(0px);}
+    to {-webkit-filter: blur(8px);}
 }
 
 

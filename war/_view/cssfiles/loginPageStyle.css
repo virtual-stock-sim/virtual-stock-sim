@@ -5,13 +5,32 @@ body {
     text-align: center;
     font-family: 'Bebas Neue';font-size: 25px;
     letter-spacing: 3px;
-    height: 100%;
+}
+
+.bg-img{
+    position: absolute;
+    left: 0;
+    top: 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     /*Image retrieved from https://wallpaperaccess.com/skyline-at-night*/
     background-image: url("../../_view/resources/images/login/nyc2.jpg");
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    border-style: hidden;
+    animation-name: saturation;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
 }
+
+@keyframes saturation {
+    from {-wekit-filter: invert(0);}
+    to {-webkit-filter: invert(.2);}
+}
+
 .header {
     font-size: 20px;
 }
