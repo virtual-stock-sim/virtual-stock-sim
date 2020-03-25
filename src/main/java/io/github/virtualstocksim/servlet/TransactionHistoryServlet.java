@@ -23,7 +23,7 @@ public class TransactionHistoryServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        logger.info("Home Servlet: doGet");
+        logger.info("Transaction History Servlet Servlet: doGet");
         LinkedList<Transaction> transactions = new LinkedList<>();
         transactions.add(new Transaction(TransactionType.BUY, Util.GetTimeStamp(),new BigDecimal("1252.2"),2, Stock.Find(1).get()));
         transactions.add(new Transaction(TransactionType.BUY,Util.GetTimeStamp(),new BigDecimal("50.12"),3, Stock.Find(2).get()));
