@@ -21,6 +21,11 @@ public class Transaction {
         this.numShares = numShares;
         this.stock = stock;
     }
+    //truncates the hours:minutes:seconds.MS
+    //for a nicer experience on the website
+    public String getTruncatedDate(){
+       return this.getTimestamp().toString().substring(0,10);
+    }
 
     public TransactionType getType()
     {
@@ -61,7 +66,7 @@ public class Transaction {
         this.type = type;
     }
 
-    public void setTimeStamp(Timestamp date)
+    public void setTimestamp(Timestamp date)
     {
         this.timeStamp = date;
     }

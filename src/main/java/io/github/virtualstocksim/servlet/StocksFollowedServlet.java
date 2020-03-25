@@ -32,11 +32,6 @@ public class StocksFollowedServlet extends HttpServlet
         followingList.add(new Follow(new BigDecimal(5), Stock.Find(4).get(),Util.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(.12), Stock.Find(5).get(),Util.GetTimeStamp()));
 
-        /**
-         * TODO: This needs to be re-written to conform to new StocksFollowed class
-         */
-
-
         StocksFollowed model = new StocksFollowed(followingList);
         req.setAttribute("model",model);
 

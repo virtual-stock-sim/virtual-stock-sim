@@ -19,7 +19,6 @@
 
     <c:forEach var="followItem" items="${model.stocksFollowed}">
         <ul>   <f:followingTemplate followItem="${followItem}"></f:followingTemplate> </ul>
-
     </c:forEach>
     </div>
 </form>

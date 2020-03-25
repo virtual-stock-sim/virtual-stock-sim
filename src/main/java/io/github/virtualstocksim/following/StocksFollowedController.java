@@ -1,4 +1,6 @@
 package io.github.virtualstocksim.following;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import io.github.virtualstocksim.following.Follow;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +26,7 @@ public class StocksFollowedController {
 
 
 
-    public String buildJSON(StocksFollowed stocksFollowed){
+    public JsonArray getFollowJSON(StocksFollowed stocksFollowed){
 
         JsonArray ja = new JsonArray();
 
@@ -36,13 +39,24 @@ public class StocksFollowedController {
             ja.add(jo);
         }
 
-        return ja.toString();
+        return ja;
+    }
+   /* TODO: Here is why Follow should also probably have another constructor again to make this look better/better programming style
+    */
+    //will return a list of follow objects from a JSON string
+    public List<Follow> parseFollowFromJSON(JsonArray j){
+
+        List <Follow> Following = new LinkedList<>();
+       for (JsonElement x: j) {
+
+           Following.add(new Follow(x.getAsJsonObject().get("price").getAsBigDecimal(),  Stock.Find(x.getAsJsonObject().get("stock").getAsString()).get(),    Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
+       }
+        return Following;
     }
 
-
     public static void main(String[] args){
-        //This runner is just for checking if buildJSON is goin good
-        //sorry :)
+        //This driver code is for testing only
+        //will remove after debugging
         List<Follow>followList = new LinkedList<Follow>();
         followList.add(new Follow(new BigDecimal(100), Stock.Find(1).get(), Util.GetTimeStamp()));
         followList.add(new Follow(new BigDecimal(498), Stock.Find(2).get(),Util.GetTimeStamp()));
@@ -51,11 +65,18 @@ public class StocksFollowedController {
         followList.add(new Follow(new BigDecimal(498), Stock.Find(5).get(),Util.GetTimeStamp()));
         StocksFollowed model = new StocksFollowed(followList);
         StocksFollowedController testController = new StocksFollowedController();
-        //logger.info(testController.buildJSON(model));
+        //this should parse the follows to JSON, back to follows, and then print
+
+        /*uncomment here to print!
+           List<Follow> exampleList = testController.parseFollowFromJSON(testController.getFollowJSON(model));
+        //logger.info(testController.getFollowJSON(model));
+       for(Follow x : exampleList){
+            logger.info(x.getInitialPrice().toString() + " " + x.getStock().getSymbol() + " "+x.getTimeStamp());
+        }
+       */
+
     }
 
 
-    //StocksFollowed model = new StocksFollowed();
-    //iterate over all followed stocks, and create json obects
-    //JSON.add()
+
 }

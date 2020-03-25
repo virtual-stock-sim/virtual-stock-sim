@@ -1,15 +1,62 @@
 body {
     background-color: #404040;
+}
+
+.navigation {
     color:white;
     text-align: center;
     font-family: "Lato", sans-serif;
 }
-h3{
-    color:green;
-    text-align: center;
+h1{
+    font-weight: bold;
+}
+
+.subhead{
+    flex: 0 0 70px;
+}
+
+h4{
+
+    color:white;
+    display: flex;
+    justify-content:space-between;
+    font-family: "Lato", sans-serif;
+    padding-left: 540px;
+    padding-right: 530px;
+}
+
+.transactionItem{
+
+    border-color:#333;
+   border-style: solid;
+    border-radius: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    color:white;
+
+
+    display: flex;
+    justify-content:space-between;
+
+}
+a { color: inherit; }
+.sub{
+
+    text-decoration: none;
+    flex: 0 0 100px;
+}
+.parent{
+    padding-left: 530px;
+    padding-right: 530px;
+}
+.wrapper{
+   padding-bottom: 3px;
 }
 
 
-.bodytext{
-    text-align: center;
-}
+
+
+
+
+

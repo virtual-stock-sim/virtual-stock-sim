@@ -8,6 +8,7 @@ import io.github.virtualstocksim.util.Util;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
@@ -16,12 +17,14 @@ import static org.junit.Assert.assertNotEquals;
 public class TransactionTest
 {
    private LinkedList<Transaction> transactions = new LinkedList<>();
+
     public void setUp() {
-        transactions.add(new Transaction(TransactionType.BUY,  Util.GetTimeStamp(), new BigDecimal(1252.2), 1, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));
-        transactions.add(new Transaction(TransactionType.BUY,  Util.GetTimeStamp(), new BigDecimal(50.12), 7, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
-        transactions.add(new Transaction(TransactionType.SELL,  Util.GetTimeStamp(), new BigDecimal(500.7), 8, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
-        transactions.add(new Transaction(TransactionType.BUY,  Util.GetTimeStamp(), new BigDecimal(123.8), 100, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
-        transactions.add(new Transaction(TransactionType.SELL, Util.GetTimeStamp(), new BigDecimal(65.2), 12, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
+
+        transactions.add(new Transaction(TransactionType.BUY,  Timestamp.valueOf("2020-03-23 04:46:05.123456"), new BigDecimal(1252.2), 1, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON)));
+        transactions.add(new Transaction(TransactionType.BUY, Timestamp.valueOf("1977-05-08 01:15:30.123456"), new BigDecimal(50.12), 7, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        transactions.add(new Transaction(TransactionType.SELL,  Timestamp.valueOf("2018-05-18 04:46:05.123456"), new BigDecimal(500.7), 8, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
+        transactions.add(new Transaction(TransactionType.BUY,  Timestamp.valueOf("2016-03-23 04:46:05.123456"), new BigDecimal(123.8), 100, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
+        transactions.add(new Transaction(TransactionType.SELL, Timestamp.valueOf("2008-11-22 04:46:05.123456"), new BigDecimal(65.2), 12, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
     }
 
 
@@ -36,13 +39,13 @@ public class TransactionTest
     }
 
     @Test
-    public void testGetDate(){
+    public void testGetTimestamp(){
         this.setUp();
-        assertEquals("3/13/20",transactions.get(0).getTimestamp());
-        assertEquals("5/8/77",transactions.get(1).getTimestamp());
-        assertEquals("5/18/18",transactions.get(2).getTimestamp());
-        assertEquals("3/13/20",transactions.get(3).getTimestamp());
-        assertEquals("3/13/20",transactions.get(4).getTimestamp());
+        assertEquals("2020-03-23 04:46:05.123456",transactions.get(0).getTimestamp().toString());
+        assertEquals("1977-05-08 01:15:30.123456",transactions.get(1).getTimestamp().toString());
+        assertEquals("2018-05-18 04:46:05.123456",transactions.get(2).getTimestamp().toString());
+        assertEquals("2016-03-23 04:46:05.123456",transactions.get(3).getTimestamp().toString());
+        assertEquals("2008-11-22 04:46:05.123456",transactions.get(4).getTimestamp().toString());
     }
 
     @Test
@@ -95,14 +98,18 @@ public class TransactionTest
         assertEquals("BUY",transactions.get(4).getType().toString());
     }
 
-  //  @Test
-    public void testSetDate(){
+    @Test
+    public void testSetTimestamp(){
         this.setUp();
-      //  transactions.get(0).setDate("HI :)");
-        //assertEquals("HI :)",transactions.get(0).getDate());
+        transactions.get(0).setTimestamp(Timestamp.valueOf("1212-12-12 12:12:34.123456"));
+        assertEquals("1212-12-12 12:12:34.123456",transactions.get(0).getTimestamp().toString());
 
-        //transactions.get(3).setDate("3/14/20");
-        //assertEquals("3/14/20",transactions.get(3).getDate());
+        transactions.get(1).setTimestamp(Timestamp.valueOf("2020-04-24 01:26:48.123456"));
+        assertEquals("2020-04-24 01:26:48.123456",transactions.get(1).getTimestamp().toString());
+
+        Timestamp curTime = (Util.GetTimeStamp());
+        transactions.get(3).setTimestamp(curTime);
+        assertEquals(curTime.toString(),transactions.get(3).getTimestamp().toString());
     }
 
 
