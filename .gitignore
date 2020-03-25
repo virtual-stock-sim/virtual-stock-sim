@@ -13,3 +13,4 @@ logs/**
 derby.log
 
 *.db
+*.zip
