@@ -35,10 +35,10 @@
             </a>
             <hr>
             <ul class="menu">
-                <li><i class="material-icons fa fa-lock"></i><p id="tab-creds" onclick="openTab('creds')">Change Login</p></li>
-                <li><i class="material-icons fa fa-commenting-o"></i><p id="tab-bio" onclick="openTab('bio')">Bio</p></li>
-                <li><i class="material-icons fa fa-user"></i><p id="tab-picture" onclick="openTab('picture')">Profile Picture</p></li>
-                <li><i class="material-icons fa fa-cog"></i><p id="tab-settings" onclick="openTab('settings')">Settings</p></li>
+                <li onclick="openTab('creds')"><i class="material-icons fa fa-lock"></i><p id="tab-creds">Change Login</p></li>
+                <li onclick="openTab('bio')"><i class="material-icons fa fa-commenting-o"></i><p id="tab-bio">Bio</p></li>
+                <li onclick="openTab('picture')"><i class="material-icons fa fa-user"></i><p id="tab-picture" >Profile Picture</p></li>
+                <li onclick="openTab('settings')"><i class="material-icons fa fa-cog"></i><p id="tab-settings">Settings</p></li>
             </ul>
         </div>
     </div>
