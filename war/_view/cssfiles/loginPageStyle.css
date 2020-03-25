@@ -18,9 +18,17 @@ body {
     background-image: url("../../_view/resources/images/login/nyc2.jpg");
     width: 100%;
     height: 100%;
-    -webkit-filter: blur(5px);
     z-index: -1;
     border-style: hidden;
+    animation-name: saturation;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes saturation {
+    from {-wekit-filter: invert(0);}
+    to {-webkit-filter: invert(.2);}
 }
 
 .header {

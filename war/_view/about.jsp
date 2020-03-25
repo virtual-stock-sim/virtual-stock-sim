@@ -13,6 +13,7 @@
 </head>
 <body>
 
+<t:navbar/>
 <div class = container style="padding:10px 16px" id ="about">
     <h3 class = "center">ABOUT VSS</h3>
     <p class ="center">What we bring to the table</p>
