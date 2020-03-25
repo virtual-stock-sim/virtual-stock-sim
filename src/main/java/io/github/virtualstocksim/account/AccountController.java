@@ -1,6 +1,6 @@
 package io.github.virtualstocksim.account;
 
-import io.github.virtualstocksim.database.SqlCmd;
+import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class AccountController {
         logger.info("Logging user " + username + " in...");
 
         try(Connection conn = AccountDatabase.getConnection();
-            CachedRowSet passwordCheckRS = SqlCmd.executeQuery(conn, String.format("SELECT password_hash, password_salt " +
+            CachedRowSet passwordCheckRS = SQL.executeQuery(conn, String.format("SELECT password_hash, password_salt " +
                     "from accounts " +
                     " where username = ? "), username);)
         {

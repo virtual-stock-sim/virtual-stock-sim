@@ -1,9 +1,7 @@
 package io.github.virtualstocksim.stock;
 
 import io.github.virtualstocksim.database.DatabaseItem;
-import io.github.virtualstocksim.database.SqlCmd;
-import io.github.virtualstocksim.util.Lazy;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
+import io.github.virtualstocksim.database.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,15 +19,30 @@ public class Stock extends DatabaseItem
 
     private String symbol;
     private BigDecimal currPrice;
-    private final Lazy<StockData> stockData;
+    private BigDecimal prevClose;
+    private int currVolume;
+    private int prevVolume;
+    private int stockDataId;
     private Timestamp lastUpdated;
 
-    protected Stock(int id, String symbol, BigDecimal currPrice, int stockData, Timestamp lastUpdated)
+    protected Stock(
+            int id,
+            String symbol,
+            BigDecimal currPrice,
+            BigDecimal prevClose,
+            int currVolume,
+            int prevVolume,
+            int stockDataId,
+            Timestamp lastUpdated
+    )
     {
         super(id);
         this.symbol = symbol;
         this.currPrice = currPrice;
-        this.stockData = new Lazy<>(() -> StockData.Find(stockData).orElse(null));
+        this.prevClose = prevClose;
+        this.currVolume = currVolume;
+        this.prevVolume = prevVolume;
+        this.stockDataId = stockDataId;
         this.lastUpdated = lastUpdated;
     }
 
@@ -39,18 +52,17 @@ public class Stock extends DatabaseItem
     public BigDecimal getCurrPrice() { return currPrice; }
     public void setCurrPrice(BigDecimal currPrice) { this.currPrice = currPrice; }
 
-    public StockData getStockData()
-    {
-        try
-        {
-            return stockData.get();
-        }
-        catch (ConcurrentException e)
-        {
-            logger.error("Error accessing StockData\n", e);
-        }
-        return null;
-    }
+    public BigDecimal getPrevClose() { return prevClose; }
+    public void setPrevClose(BigDecimal prevClose) { this.prevClose = prevClose; }
+
+    public int getCurrVolume() { return currVolume; }
+    public void setCurrVolume(int currVolume) { this.currVolume = currVolume; }
+
+    public int getPrevVolume() { return prevVolume; }
+    public void setPrevVolume(int prevVolume) { this.prevVolume = prevVolume; }
+
+    public int getStockDataId() { return this.stockDataId; }
+    public void setStockDataId(int stockDataId) { this.stockDataId = stockDataId; }
 
     public Timestamp getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
@@ -73,7 +85,7 @@ public class Stock extends DatabaseItem
      */
     public static Optional<Stock> Find(String key, Object value)
     {
-        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
+        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
         if (stocks.isEmpty())
         {
             return Optional.empty();
@@ -96,7 +108,7 @@ public class Stock extends DatabaseItem
     {
         logger.info("Searching for stock(s)...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params)
+            CachedRowSet crs = SQL.executeQuery(conn, sql, params)
         )
         {
             List<Stock> stocks = new ArrayList<>(crs.size());
@@ -122,10 +134,13 @@ public class Stock extends DatabaseItem
                 stocks.add(
                         new Stock(
                                 crs.getInt("id"),
-                                columns.containsKey("symbol") ? crs.getString("symbol") : null,
-                                columns.containsKey("curr_price") ? crs.getBigDecimal("curr_price") : null,
-                                columns.containsKey("data_id") ? crs.getInt("data_id") : -1,
-                                columns.containsKey("last_updated") ? crs.getTimestamp("last_updated") : null
+                                columns.containsKey("symbol")           ? crs.getString("symbol")           : null,
+                                columns.containsKey("curr_price")       ? crs.getBigDecimal("curr_price")   : null,
+                                columns.containsKey("prev_close")       ? crs.getBigDecimal("prev_close")   : null,
+                                columns.containsKey("curr_volume")      ? crs.getInt("curr_volume")         : -1,
+                                columns.containsKey("prev_volume")      ? crs.getInt("prev_volume")         : -1,
+                                columns.containsKey("data_id")          ? crs.getInt("data_id")             : -1,
+                                columns.containsKey("last_updated")     ? crs.getTimestamp("last_updated")  : null
                         )
                 );
             }
@@ -141,25 +156,33 @@ public class Stock extends DatabaseItem
     }
 
     /**
-     * Create a new stock and stock data in the database
-     * @param symbol Symbol for the new stock
-     * @param currPrice Current price for the new stock
-     * @param stockData Data for the new stock
-     * @return Stock instance of the newly created
+     * Create a new stock
+     * @param symbol Stock symbol
+     * @param currPrice Current price
+     * @param prevClose Previous closing price
+     * @param currVolume Current market volume
+     * @param prevVolume Previous market volume
+     * @param stockDataId ID of referenced StockData
+     * @return Stock instance of the newly created stock
      */
-    private static Optional<Stock> Create(String symbol, BigDecimal currPrice, String stockData, Timestamp lastUpdated)
+    private static Optional<Stock> Create(
+            String symbol,
+            BigDecimal currPrice,
+            BigDecimal prevClose,
+            int currVolume,
+            int prevVolume,
+            int stockDataId,
+            Timestamp lastUpdated
+    )
     {
         try(Connection conn = StockDatabase.getConnection())
         {
             logger.info("Creating new stock...");
 
-            // Find associated StockData
-            Optional<StockData> data = StockData.Create(stockData, lastUpdated);
-            if(!data.isPresent()) return Optional.empty();
+            int id = SQL.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                    symbol, currPrice, prevClose, currVolume, prevVolume, stockDataId, lastUpdated);
 
-            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, data_id, last_updated) VALUES(?, ?, ?, ?)", symbol, currPrice, data.get().getId(), lastUpdated);
-
-            return Optional.of(new Stock(id, symbol, currPrice, data.get().getId(), lastUpdated));
+            return Optional.of(new Stock(id, symbol, currPrice, prevClose, currVolume, prevVolume, stockDataId, lastUpdated));
         }
         catch (SQLException e)
         {
@@ -189,73 +212,55 @@ public class Stock extends DatabaseItem
     @Override
     public void update(Connection conn) throws SQLException
     {
-        if(stockData.hasEvaluated()) getStockData().update();
-
         logger.info(String.format("Committing stock changes to database for Stock ID %d", id));
 
-        List<String> comitted = new LinkedList<>();
-        List<String> omitted = new LinkedList<>();
+        List<String> updated = new LinkedList<>();
         List<Object> params = new LinkedList<>();
 
-        // Add symbol to update
-        if(symbol != null && !symbol.trim().isEmpty())
-        {
-            comitted.add("symbol = ?");
-            params.add(symbol);
-        }
-        else
-        {
-            omitted.add("symbol");
-        }
+        // Map of column names and values
+        Map<String, Object> columns = new HashMap<>();
+        columns.put("symbol", symbol);
+        columns.put("curr_price", currPrice);
+        columns.put("prev_close", prevClose);
+        columns.put("curr_volume", currVolume);
+        columns.put("prev_volume", prevVolume);
+        columns.put("data_id", stockDataId);
+        columns.put("last_updated", lastUpdated);
 
-        // Add current price to update
-        if(currPrice != null)
+        // Check each column name and add it to the update list if its been updated
+        for(Map.Entry<String, Object> c : columns.entrySet())
         {
-            comitted.add("curr_price = ?");
-            params.add(currPrice);
-        }
-        else
-        {
-            omitted.add("curr_price");
-        }
-
-        // Add last updated to update
-        if(lastUpdated != null)
-        {
-            comitted.add("last_updated = ?");
-            params.add(lastUpdated);
-        }
-        else
-        {
-            omitted.add("last_updated");
-        }
-
-        if(comitted.isEmpty())
-        {
-            logger.warn(String.format("Abandoning commit for Stock ID %d; Nothing to commit", id));
-        }
-        else
-        {
-            if(!omitted.isEmpty())
+            if(c.getValue() != null)
             {
-                logger.info(String.format("Omitting the following empty columns from commit:\n%s", String.join(", ", omitted)));
+                updated.add(c.getKey() + " = ?");
+                params.add(c.getValue());
             }
+        }
 
+        if(updated.isEmpty())
+        {
+            logger.warn(String.format("Abandoning update for Stock ID %d; Nothing to update", id));
+        }
+        else
+        {
             params.add(id);
-            SqlCmd.executeUpdate(conn, String.format("UPDATE stocks SET %s WHERE id = ?", String.join(", ", comitted)), params.toArray());
+            SQL.executeUpdate(conn, String.format("UPDATE stocks SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
         }
     }
 
     @Override
     public void delete() throws SQLException
     {
-
+        try(Connection conn = StockDatabase.getConnection())
+        {
+            delete(conn);
+        }
     }
 
     @Override
     public void delete(Connection conn) throws SQLException
     {
         logger.info(String.format("Removing Stock with ID %d from database", id));
-        SqlCmd.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
+        SQL.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
     }
 }

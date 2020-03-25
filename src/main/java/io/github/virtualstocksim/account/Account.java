@@ -1,16 +1,13 @@
 package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.DatabaseItem;
-import io.github.virtualstocksim.database.SqlCmd;
+import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.*;
 
 
@@ -197,28 +194,54 @@ public class Account extends DatabaseItem {
          */
         logger.info("Searching for account(s)...");
         try(Connection conn = AccountDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params);
+            CachedRowSet crs = SQL.executeQuery(conn, sql, params);
         )
         {
             List<Account> accounts = new ArrayList<>(crs.size());
 
+            ResultSetMetaData rsmd = crs.getMetaData();
+
+            // HashMap of column names returned in result
+            HashMap<String, Void> columns = new HashMap<>();
+            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
+            {
+                columns.put(rsmd.getColumnName(i).toLowerCase(), null);
+            }
+
+            // Make sure query returned an ID
+            if(!columns.containsKey("id"))
+            {
+                throw new SQLException("Query must return ID");
+            }
+
             while(crs.next())
             {
+                // Attempt to read clob
+                String transactionHistory = null;
+                if(columns.containsKey("transaction_history"))
+                {
+                    Clob clob = crs.getClob("transaction_history");
+                    if(clob.length() > 0)
+                    {
+                        transactionHistory = clob.getSubString(1, (int) clob.length());
+                    }
+                }
+
                 accounts.add(
                         new Account(
                                 crs.getInt("id"),
-                                crs.getString("uuid"),
-                                crs.getString("type"),
-                                crs.getString("username"),
-                                crs.getString("email"),
-                                crs.getBytes("password_hash"),
-                                crs.getBytes("password_salt"),
-                                crs.getString("followed_stocks"),
-                                crs.getString("transaction_history"),
-                                crs.getInt("leaderboard_rank"),
-                                crs.getString("bio"),
-                                crs.getString("profile_picture"),
-                                crs.getTimestamp("creation_date")
+                                columns.containsKey("uuid")                 ? crs.getString("uuid")                 : null,
+                                columns.containsKey("type")                 ? crs.getString("type")                 : null,
+                                columns.containsKey("username")             ? crs.getString("username")             : null,
+                                columns.containsKey("email")                ? crs.getString("email")                : null,
+                                columns.containsKey("password_hash")        ? crs.getBytes("password_hash")         : null,
+                                columns.containsKey("password_salt")        ? crs.getBytes("password_salt")         : null,
+                                columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")      : null,
+                                columns.containsKey("transaction_history")  ? transactionHistory                                : null,
+                                columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")        : -1,
+                                columns.containsKey("bio")                  ? crs.getString("bio")                  : null,
+                                columns.containsKey("profile_picture")      ? crs.getString("profile_picture")      : null,
+                                columns.containsKey("creation_date")        ? crs.getTimestamp("creation_date")     : null
                         )
                 );
             }
@@ -241,7 +264,7 @@ public class Account extends DatabaseItem {
     public static Optional<Account> Create(String username, String email, String password, String accountType)
     {
         byte[] salt, hash;
-        Timestamp timestamp = Util.GetTimeStamp();
+        Timestamp timestamp = SQL.GetTimeStamp();
         String uuid = UUID.randomUUID().toString();
         salt = Encryption.getNextSalt();
         hash = Encryption.hash(password.toCharArray(), salt);
@@ -251,7 +274,7 @@ public class Account extends DatabaseItem {
 
         try(Connection conn = AccountDatabase.getConnection())
         {
-            int id = SqlCmd.executeInsert(conn,
+            int id = SQL.executeInsert(conn,
                     "INSERT INTO accounts (uuid, type, username, email, password_hash, password_salt, " +
                             " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 

@@ -1,18 +1,13 @@
 package io.github.virtualstocksim.stock;
 
 import io.github.virtualstocksim.database.DatabaseItem;
-import io.github.virtualstocksim.database.SqlCmd;
+import io.github.virtualstocksim.database.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 
 public class StockData extends DatabaseItem
 {
@@ -34,11 +29,12 @@ public class StockData extends DatabaseItem
     public Timestamp getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
 
-    static Optional<StockData> Find(int id)
+    // Search database for stock data entry based on param
+    public static Optional<StockData> Find(int id)
     {
         return Find("id", id);
     }
-    static Optional<StockData> Find(String key, Object value)
+    public static Optional<StockData> Find(String key, Object value)
     {
         List<StockData> stockDatas = FindCustom(String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", key), value);
 
@@ -52,23 +48,57 @@ public class StockData extends DatabaseItem
         }
     }
 
-    // Search database for entry based on id
-    static List<StockData> FindCustom(String sql, Object... params)
+    /**
+     * Search for one or more stock datas with a custom SQL command
+     * Any empty fields are set to null or -1
+     * Query MUST include a returned ID
+     * @param sql SQL command
+     * @param params SQL command parameters
+     * @return List of StockData instances
+     */
+    public static List<StockData> FindCustom(String sql, Object... params)
     {
         logger.info("Searching for stock data...");
         try(Connection conn = StockDatabase.getConnection();
-            CachedRowSet crs = SqlCmd.executeQuery(conn, sql, params)
+            CachedRowSet crs = SQL.executeQuery(conn, sql, params)
         )
         {
             List<StockData> stockDatas = new ArrayList<>(crs.size());
 
+            ResultSetMetaData rsmd = crs.getMetaData();
+
+            // HashMap of column names returned in result
+            HashMap<String, Void> columns = new HashMap<>();
+            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
+            {
+                columns.put(rsmd.getColumnName(i).toLowerCase(), null);
+            }
+
+            // Make sure query returned an ID
+            if(!columns.containsKey("id"))
+            {
+                throw new SQLException("Query must return ID");
+            }
+
+            // Iterate through all returned stock datas and create a StockData instance for each one
             while(crs.next())
             {
+                // Attempt to get clob
+                String data = null;
+                if(columns.containsKey("data"))
+                {
+                    Clob clob = crs.getClob("data");
+                    if(clob.length() > 0)
+                    {
+                        data = clob.getSubString(1, (int) clob.length());
+                    }
+                }
+
                 stockDatas.add(
                         new StockData(
                                 crs.getInt("id"),
-                                crs.getString("data"),
-                                crs.getTimestamp("last_updated")
+                                data,
+                                columns.containsKey("last_updated") ? crs.getTimestamp("last_updated") : null
                         )
                 );
             }
@@ -82,18 +112,24 @@ public class StockData extends DatabaseItem
         return Collections.emptyList();
     }
 
+    /**
+     * Create a new stock data in the database
+     * @param data Bulk stock data
+     * @param lastUpdated Timestamp of when this was last updated
+     * @return StockData instance of the newly created stock
+     */
     static Optional<StockData> Create(String data, Timestamp lastUpdated)
     {
         logger.info("Creating new stock data...");
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            int id = SqlCmd.executeInsert(conn, "INSERT INTO stocks_data(data, last_updated) VALUES(?, ?)", data, lastUpdated);
+            int id = SQL.executeInsert(conn, "INSERT INTO stocks_data(data, last_updated) VALUES(?, ?)", data, lastUpdated);
             return Optional.of(new StockData(id, data, lastUpdated));
         }
         catch (SQLException e)
         {
-            logger.error("Stock data creation failed\n",e);
+            logger.error("Stock data creation failed\n", e);
             return Optional.empty();
         }
     }
@@ -105,25 +141,56 @@ public class StockData extends DatabaseItem
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            SqlCmd.executeUpdate(conn, "UPDATE stocks_data SET data = ?, last_updated = ? WHERE id = ?", data, lastUpdated, id);
+            update(StockDatabase.getConnection());
         }
     }
 
     @Override
-    public void update(Connection connection) throws SQLException
+    public void update(Connection conn) throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        logger.info(String.format("Committing stock data changes to database for Stock data ID %d", id));
+
+        List<String> updated = new LinkedList<>();
+        List<Object> params = new LinkedList<>();
+        HashMap<String, Object> columns = new HashMap<>();
+        columns.put("data", data);
+        columns.put("last_updated", lastUpdated);
+
+        // Map of column names and values
+        for(Map.Entry<String, Object> c : columns.entrySet())
+        {
+            if(c.getValue() != null)
+            {
+                updated.add(c.getKey() + " = ?");
+                params.add(c.getValue());
+            }
+        }
+
+        // Check each column name and add it to the update list if its been updated
+        if(updated.isEmpty())
+        {
+            logger.warn(String.format("Abandoning update for Stock data ID %d; Nothing to update", id));
+        }
+        else
+        {
+            params.add(id);
+            SQL.executeUpdate(conn, String.format("UPDATE stock_data SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
+        }
     }
 
     @Override
     public void delete() throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try(Connection conn = StockDatabase.getConnection())
+        {
+            delete(conn);
+        }
     }
 
     @Override
     public void delete(Connection conn) throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        logger.info(String.format("Removing Stock data with ID %d from database", id));
+        SQL.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
     }
 }

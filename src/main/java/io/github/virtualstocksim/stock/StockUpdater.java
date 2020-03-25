@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.virtualstocksim.config.Config;
-import io.github.virtualstocksim.util.Util;
+import io.github.virtualstocksim.database.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class StockUpdater
 
     }
 
-    public void update() throws IOException
+    public void update()
     {
         List<Stock> stocks = Stock.FindCustom("SELECT id, symbol FROM stocks");
 
@@ -78,29 +80,45 @@ public class StockUpdater
             return;
         }
 
-
+        Timestamp lastUpdated = SQL.GetTimeStamp();
+        JsonElement volume;
         for(Stock stock : stocks)
         {
             JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
 
             stock.setCurrPrice(data.get("latestPrice").getAsBigDecimal());
-            stock.setLastUpdated(Util.GetTimeStamp());
+            stock.setPrevClose(data.get("previousClose").getAsBigDecimal());
+            volume = data.get("volume");
+            if(!volume.isJsonNull())
+            {
+                stock.setCurrVolume(volume.getAsInt());
+            }
+            stock.setPrevVolume(data.get("previousVolume").getAsInt());
+            stock.setLastUpdated(lastUpdated);
         }
 
-        try
+        try(Connection conn = StockDatabase.getConnection())
         {
+            conn.setAutoCommit(false);
+
             for(Stock s : stocks)
             {
-                s.update();
+                s.update(conn);
             }
+
+            conn.commit();
         }
         catch (SQLException e)
         {
             logger.error("Failed to commit some or all updated stock information\n", e);
+            return;
         }
 
     }
 
-
+    Integer t()
+    {
+        return null;
+    }
 
 }

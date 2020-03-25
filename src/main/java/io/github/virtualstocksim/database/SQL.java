@@ -7,14 +7,15 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
 import java.sql.*;
+import java.time.Instant;
 import java.util.Arrays;
 
 /**
  * Static methods for executing SQL
  */
-public class SqlCmd
+public class SQL
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqlCmd.class);
+    private static final Logger logger = LoggerFactory.getLogger(SQL.class);
     private static final RowSetFactory rowSetFac = getRowSetFactory();
 
     private static RowSetFactory getRowSetFactory()
@@ -202,5 +203,14 @@ public class SqlCmd
     public static String formatSqlExecute(String sql, Object... params)
     {
         return String.format("Executing SQL... \n\t SQL Command: %s \n\t Parameters: %s", sql, Arrays.toString(params));
+    }
+
+    /**
+     *
+     * @return Timestamp of current Instant
+     */
+    public static Timestamp GetTimeStamp()
+    {
+        return Timestamp.from(Instant.now());
     }
 }

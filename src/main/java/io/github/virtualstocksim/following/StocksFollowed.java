@@ -1,9 +1,5 @@
 package io.github.virtualstocksim.following;
 
-import io.github.virtualstocksim.stock.Stock;
-
-import java.math.BigDecimal;
-import java.util.LinkedList;
 import java.util.List;
 
 public class StocksFollowed {

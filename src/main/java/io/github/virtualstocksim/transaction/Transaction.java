@@ -3,7 +3,6 @@ package io.github.virtualstocksim.transaction;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Transaction {

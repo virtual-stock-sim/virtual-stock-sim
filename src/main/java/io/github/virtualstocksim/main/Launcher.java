@@ -1,11 +1,11 @@
 package io.github.virtualstocksim.main;
 
-import java.lang.management.ManagementFactory;
-
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
+
+import java.lang.management.ManagementFactory;
 
 public class Launcher {
     /**

@@ -41,11 +41,11 @@ public class DummyStocks
         /*
          * Add new stocks below
          */
-        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), StockSymbol.AMAZON.getID(), Timestamp.valueOf("2020-01-21 21:18:07.233")));
-        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), StockSymbol.TESLA.getID(), Timestamp.valueOf("2020-02-21 21:18:07.233")));
-        stocks.put(StockSymbol.GOOGLE, new Stock(StockSymbol.GOOGLE.getID(), StockSymbol.GOOGLE.getSymbol(), new BigDecimal("300.0"), StockSymbol.GOOGLE.getID(), Timestamp.valueOf("2020-03-21 21:18:07.233")));
-        stocks.put(StockSymbol.FORD, new Stock(StockSymbol.FORD.getID(), StockSymbol.FORD.getSymbol(), new BigDecimal("400.0"), StockSymbol.FORD.getID(), Timestamp.valueOf("2020-04-21 21:18:07.233")));
-        stocks.put(StockSymbol.APPLE, new Stock(StockSymbol.APPLE.getID(), StockSymbol.APPLE.getSymbol(), new BigDecimal("500.0"), StockSymbol.APPLE.getID(), Timestamp.valueOf("2020-05-21 21:18:07.233")));
+        stocks.put(StockSymbol.AMAZON, new Stock(StockSymbol.AMAZON.getID(), StockSymbol.AMAZON.getSymbol(), new BigDecimal("100.0"), new BigDecimal("0.0"), 10000, 0, StockSymbol.AMAZON.getID(), Timestamp.valueOf("2020-01-21 21:18:07.233")));
+        stocks.put(StockSymbol.TESLA, new Stock(StockSymbol.TESLA.getID(), StockSymbol.TESLA.getSymbol(), new BigDecimal("200.0"), new BigDecimal("100.0"), 20000, 10000, StockSymbol.TESLA.getID(), Timestamp.valueOf("2020-02-21 21:18:07.233")));
+        stocks.put(StockSymbol.GOOGLE, new Stock(StockSymbol.GOOGLE.getID(), StockSymbol.GOOGLE.getSymbol(), new BigDecimal("300.0"), new BigDecimal("200.0"), 30000, 20000, StockSymbol.GOOGLE.getID(), Timestamp.valueOf("2020-03-21 21:18:07.233")));
+        stocks.put(StockSymbol.FORD, new Stock(StockSymbol.FORD.getID(), StockSymbol.FORD.getSymbol(), new BigDecimal("400.0"), new BigDecimal("300.0"), 40000, 30000, StockSymbol.FORD.getID(), Timestamp.valueOf("2020-04-21 21:18:07.233")));
+        stocks.put(StockSymbol.APPLE, new Stock(StockSymbol.APPLE.getID(), StockSymbol.APPLE.getSymbol(), new BigDecimal("500.0"), new BigDecimal("400.0"), 50000, 40000, StockSymbol.APPLE.getID(), Timestamp.valueOf("2020-05-21 21:18:07.233")));
         return stocks;
     }
 

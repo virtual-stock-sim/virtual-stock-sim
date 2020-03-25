@@ -1,10 +1,10 @@
 package io.github.virtualstocksim.transactionHistory;
 
+import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionType;
-import io.github.virtualstocksim.util.Util;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -107,7 +107,7 @@ public class TransactionTest
         transactions.get(1).setTimestamp(Timestamp.valueOf("2020-04-24 01:26:48.123456"));
         assertEquals("2020-04-24 01:26:48.123456",transactions.get(1).getTimestamp().toString());
 
-        Timestamp curTime = (Util.GetTimeStamp());
+        Timestamp curTime = (SQL.GetTimeStamp());
         transactions.get(3).setTimestamp(curTime);
         assertEquals(curTime.toString(),transactions.get(3).getTimestamp().toString());
     }

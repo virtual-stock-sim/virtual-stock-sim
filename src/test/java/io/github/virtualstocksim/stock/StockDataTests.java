@@ -19,7 +19,7 @@ public class StockDataTests
         StockData stockData = dataOptional.get();
 
         assertEquals(stockData.getId(), expected.getId());
-        assertTrue(stockData.getData().equals(expected.getData()));
+        assertEquals(stockData.getData(), expected.getData());
     }
 
 /*    @Test

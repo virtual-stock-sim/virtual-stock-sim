@@ -1,6 +1,4 @@
 package io.github.virtualstocksim.transaction;
-import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.Transaction;
 
 import java.util.Arrays;
 import java.util.LinkedList;

@@ -1,7 +1,8 @@
 package io.github.virtualstocksim.following;
+
 import io.github.virtualstocksim.stock.Stock;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 
