@@ -1,4 +1,4 @@
-html, body {
+body {
     margin: 0;
     font-family: 'Roboto';
     background: #404040;
@@ -15,6 +15,14 @@ html, body {
     display: block;
 }
 
+
+.page
+{
+    padding-left: 2em;
+    float: left;
+    width: fit-content;
+}
+
 .bg-img{
     position: absolute;
     left: 0;
@@ -22,26 +30,26 @@ html, body {
     /*Obtained from */
     background-repeat: no-repeat;
     background-size: cover;
+    background-image: url("../../_view/resources/images/account/accountPageBG.png");
     width: 100%;
     height: 100%;
     z-index: -1;
-    border-style: hidden;
 }
 
 
-#cont:target > menu-fixed {
+#tab-cont:target > menu-fixed {
     width: 120px;
     background: #111;
     transition: all 0.3s;
 }
-#cont:target > menu-fixed > a .material-icons.back {
+#tab-cont:target > menu-fixed > a .material-icons.back {
     display: none;
 }
-#cont:target > menu-fixed > .menu li {
+#tab-cont:target > menu-fixed > .menu li {
     text-align: center;
     width: 40%;
 }
-#cont:target > menu-fixed > .menu li > p {
+#tab-cont:target > menu-fixed > .menu li > p {
     display: none;
 }
 #menu-fixed {
@@ -210,8 +218,9 @@ html, body {
 #menu-fixed .menu li .material-icons {
     color: #999;
 }
-#menu-fixed .menu li a {
+#menu-fixed .menu li p {
     text-decoration: none;
+    display: none;
     margin: auto;
     color: #888;
     font-size: 14px;

@@ -5,42 +5,25 @@
 <html lang="en">
 <head>
     <style><%@include file="cssfiles/profilePageStyle.css"%></style>
+    <script src="js_files/tabscript.js"></script>
     <title>My Account - VSS: Virtual Stock Sim</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="bg-img"></div>
-    <script>
-        function openTab(evt, tabName) {
-            // Declare all variables
-            var i, tabcontent, tablinks;
 
-            // Get all elements with class="tabcontent" and hide them
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-
-            // Get all elements with class="tablinks" and remove the class "active"
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-    </script>
 
 </head>
 <body>
-    <t:header/>
+
     <t:navbar/>
+    <div class="built-by">
+        <h1>MY ACCOUNT</h1>
+        <h2>BUILT BY YOU, FROM THE GROUND UP.</h2>
+    </div>
 
-
-    <div id="cont">
+    <div id="tab-cont">
         <div id="menu-fixed">
-            <a href="#cont">
+            <a href="#tab-cont">
                 <i class="material-icons back"></i>
             </a>
             <a href="#menu-fixed">
@@ -52,29 +35,29 @@
             </a>
             <hr>
             <ul class="menu">
-                <li><i class="material-icons fa fa-lock"></i><a href="#user-update-creds">Change Login</a></li>
-                <li><i class="material-icons fa fa-commenting-o"></i><a href="#user-bio">Bio</a></li>
-                <li><i class="material-icons fa fa-user"></i><a href="#user-update-picture">Profile Picture</a></li>
-                <li><i class="material-icons fa fa-cog"></i><a href="#user-settings">Settings</a></li>
+                <li><i class="material-icons fa fa-lock"></i><p id="tab-creds" onclick="openTab('creds')">Change Login</p></li>
+                <li><i class="material-icons fa fa-commenting-o"></i><p id="tab-bio" onclick="openTab('bio')">Bio</p></li>
+                <li><i class="material-icons fa fa-user"></i><p id="tab-picture" onclick="openTab('picture')">Profile Picture</p></li>
+                <li><i class="material-icons fa fa-cog"></i><p id="tab-settings" onclick="openTab('settings')">Settings</p></li>
             </ul>
         </div>
     </div>
 
 
     <div id ="contents">
-        <div id ="user-bio">
+        <div id ="page-bio" class="page">
             <h2>Edit your bio</h2>
         </div>
 
-        <div id ="user-update-picture">
+        <div id ="page-picture" class="page">
             <h2>Update Your Profile Picture</h2>
         </div>
 
-        <div id="user-update-creds">
+        <div id="page-creds" class="page">
             <h2>Update your Login Credentials</h2>
         </div>
 
-        <div id="user-settings">
+        <div id="page-settings" class="page">
             <h2>Update your Settings</h2>
         </div>
     </div>
