@@ -3,6 +3,7 @@ package io.github.virtualstocksim.account;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.stock.StockDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -292,26 +293,69 @@ public class Account extends DatabaseItem {
     }
 
     @Override
-    public void update()
+    public void update() throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try(Connection conn = AccountDatabase.getConnection())
+        {
+            update(conn);
+        }
     }
 
     @Override
     public void update(Connection connection) throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        logger.info(String.format("Committing stock changes to database for account ID %d", id));
+
+        List<String> updated = new LinkedList<>();
+        List<Object> params = new LinkedList<>();
+
+        // Map of column names and values
+        Map<String, Object> columns = new HashMap<>();
+        columns.put("type", accountType);
+        columns.put("username", uname);
+        columns.put("email", email);
+        columns.put("password_hash", passwordHash);
+        columns.put("password_salt", passwordSalt);
+        columns.put("followed_stocks", stocksFollowed);
+        columns.put("transaction_history", transactionHistory);
+        columns.put("leaderboard_rank", leaderboardRank);
+        columns.put("profile_picture", profilePicture);
+
+        // Check each column name and add it to the update list if its been updated
+        for(Map.Entry<String, Object> c : columns.entrySet())
+        {
+            if(c.getValue() != null)
+            {
+                updated.add(c.getKey() + " = ?");
+                params.add(c.getValue());
+            }
+        }
+
+        if(updated.isEmpty())
+        {
+            logger.warn(String.format("Abandoning update for Account ID %d; Nothing to update", id));
+        }
+        else
+        {
+            params.add(id);
+            SQL.executeUpdate(connection, String.format("UPDATE accounts SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
+        }
     }
 
     @Override
     public void delete() throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try(Connection conn = AccountDatabase.getConnection())
+        {
+            delete(conn);
+        }
     }
 
     @Override
     public void delete(Connection conn) throws SQLException
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // deleting an account from database
+        logger.info(String.format("Removing Account with ID %d from database", id));
+        SQL.executeUpdate(conn, "DELETE FROM accounts WHERE id = ?", id);
     }
 }

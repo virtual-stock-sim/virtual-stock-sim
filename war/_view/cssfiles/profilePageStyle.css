@@ -1,6 +1,5 @@
 body {
     margin: 0;
-    font-family: 'Roboto';
     background: #404040;
     overflow: auto;
     font-family: "Raleway", sans-serif;
@@ -10,11 +9,28 @@ body {
 
 #contents div {
     display: none;
+    text-align: center;
 }
+
 #contents div:target{
     display: block;
 }
 
+#page-bio{
+    margin-left: 45%;
+}
+
+#page-creds{
+    margin-left: 40%;
+}
+
+#page-picture{
+    margin-left: 41%;
+}
+
+#page-settings{
+     margin-left: 42%;
+ }
 
 .page
 {

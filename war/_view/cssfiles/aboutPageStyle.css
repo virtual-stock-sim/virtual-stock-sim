@@ -90,3 +90,7 @@ body {
     display:block;
     width:100%;
 }
+
+.card i{
+    border-style: hidden;
+}

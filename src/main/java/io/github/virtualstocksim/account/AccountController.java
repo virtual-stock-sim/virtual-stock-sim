@@ -59,7 +59,7 @@ public class AccountController {
      * @param newPicturePath Updated picture name
      */
     public void updateProfilePicture(int accountID, String newPicturePath, byte[] picture) {
-        throw new UnsupportedOperationException("Not implemented yet");
+
 
         // allow user to provide a new picture and update it
         // convert picture name to UUID
@@ -67,6 +67,12 @@ public class AccountController {
 
     }
 
+
+    public void updateUserBio(int accountID, String newBio){
+        throw new UnsupportedOperationException("Not implemented yet");
+        //acc = Account.Find(accountID).get();
+       // acc.setBio(newBio);
+    }
 
 
 }

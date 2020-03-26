@@ -21,7 +21,7 @@ body {
     z-index: -1;
     border-style: hidden;
     animation-name: saturation;
-    animation-duration: 5s;
+    animation-duration: 6s;
     animation-iteration-count: infinite;
     animation-direction: alternate-reverse;
 }

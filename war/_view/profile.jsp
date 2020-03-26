@@ -47,6 +47,10 @@
     <div id ="contents">
         <div id ="page-bio" class="page">
             <h2>Edit your bio</h2>
+            <form action=${pageContext.servletContext.contextPath}/profile" class="bio-form" method="post">
+            <!--<input type="text"-->
+
+            </form>
         </div>
 
         <div id ="page-picture" class="page">
