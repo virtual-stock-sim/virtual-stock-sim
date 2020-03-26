@@ -219,22 +219,19 @@ public class Stock extends DatabaseItem
 
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
-        columns.put("symbol", symbol);
-        columns.put("curr_price", currPrice);
-        columns.put("prev_close", prevClose);
-        columns.put("curr_volume", currVolume);
-        columns.put("prev_volume", prevVolume);
-        columns.put("data_id", stockDataId);
-        columns.put("last_updated", lastUpdated);
+        if(symbol != null && !symbol.trim().isEmpty())  columns.put("symbol",       symbol);
+        if(currPrice != null)                           columns.put("curr_price",   currPrice);
+        if(prevClose != null)                           columns.put("prev_close",   prevClose);
+        if(currVolume > -1)                             columns.put("curr_volume",  currVolume);
+        if(prevVolume > -1)                             columns.put("prev_volume",  prevVolume);
+        if(stockDataId > 0)                             columns.put("data_id",      stockDataId);
+        if(lastUpdated != null)                         columns.put("last_updated", lastUpdated);
 
         // Check each column name and add it to the update list if its been updated
         for(Map.Entry<String, Object> c : columns.entrySet())
         {
-            if(c.getValue() != null)
-            {
-                updated.add(c.getKey() + " = ?");
-                params.add(c.getValue());
-            }
+            updated.add(c.getKey() + " = ?");
+            params.add(c.getValue());
         }
 
         if(updated.isEmpty())

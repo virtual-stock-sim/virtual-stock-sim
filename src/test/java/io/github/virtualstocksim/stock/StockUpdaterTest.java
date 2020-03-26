@@ -24,7 +24,8 @@ public class StockUpdaterTest
         }
 
         StockUpdater updater = new StockUpdater();
-        updater.update();
+        updater.updateNow();
+        updater.stop();
 
         for(Stock s : Stock.FindCustom("SELECT * FROM stocks"))
         {

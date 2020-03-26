@@ -153,17 +153,14 @@ public class StockData extends DatabaseItem
         List<String> updated = new LinkedList<>();
         List<Object> params = new LinkedList<>();
         HashMap<String, Object> columns = new HashMap<>();
-        columns.put("data", data);
-        columns.put("last_updated", lastUpdated);
+        if(data != null && !data.trim().isEmpty())  columns.put("data", data);
+        if(data != null)                            columns.put("last_updated", lastUpdated);
 
         // Map of column names and values
         for(Map.Entry<String, Object> c : columns.entrySet())
         {
-            if(c.getValue() != null)
-            {
-                updated.add(c.getKey() + " = ?");
-                params.add(c.getValue());
-            }
+            updated.add(c.getKey() + " = ?");
+            params.add(c.getValue());
         }
 
         // Check each column name and add it to the update list if its been updated
