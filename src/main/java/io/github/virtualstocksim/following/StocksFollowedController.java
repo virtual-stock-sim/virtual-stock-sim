@@ -49,7 +49,7 @@ public class StocksFollowedController {
        }
         return Following;
     }
-
+/*
     public static void main(String[] args){
         //This driver code is for testing only
         //will remove after debugging
@@ -69,9 +69,11 @@ public class StocksFollowedController {
        for(Follow x : exampleList){
             logger.info(x.getInitialPrice().toString() + " " + x.getStock().getSymbol() + " "+x.getTimeStamp());
         }
-       */
 
-    }
+
+
+
+    }*/
 
 
 

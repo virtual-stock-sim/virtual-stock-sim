@@ -46,7 +46,7 @@ public class TransactionHistoryController {
         return tempList;
     }
 
-
+/*
     public static void main(String[] args) {
         //This driver code is for testing only
         //will remove after debugging & ensured will stick with this JSON format
@@ -62,6 +62,6 @@ public class TransactionHistoryController {
         List <Transaction> testList = testController.parseTransactionFromJSON(testController.getTransactionJSON(model));
         for (Transaction x : testList){
             logger.info(x.getStock().getSymbol());
-        }*/
-    }
+        }
+    }*/
 }
