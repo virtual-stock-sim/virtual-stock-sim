@@ -11,7 +11,7 @@
         <span class = "sub">$${followItem.currentPrice}</span>
         <span class = "percentSub"
                 <c:choose>
-        <c:when test="${followItem.percentChange gt 0.0}">
+        <c:when test="${followItem.percentChange ge 0.0}">
             style="color:green";
         </c:when>
         <c:otherwise>

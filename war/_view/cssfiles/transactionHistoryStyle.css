@@ -24,7 +24,7 @@ h1{
     background-repeat: no-repeat;
     background-size: cover;
     background-image: url("../../_view/resources/images/transactionHistory/transactionHistoryBG.jpg");
-    filter: grayscale(95%) blur(6px) sepia(20%);
+    -webkit-filter: grayscale(95%) blur(6px) sepia(20%);
     width: 100%;
     height: 100%;
     z-index: -1;
