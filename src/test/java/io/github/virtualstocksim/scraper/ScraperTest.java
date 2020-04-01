@@ -3,7 +3,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -13,28 +17,50 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 public class ScraperTest {
-    List<String> stressTickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "ABMD", "ACN", "ATVI", "ADBE", "AMD", "AAP", "AES",
+    private static final Logger logger = LoggerFactory.getLogger(ScraperTest.class);
+
+    private static List<String> stressTickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "ABMD", "ACN", "ATVI", "ADBE", "AMD", "AAP", "AES",
             "AFL", "AMZN", "TSLA", "T", "F", "ABC", "AME", "BA", "BR", "COG",
             "CAT", "CE", "CTL", "SCHW", "CB", "CHD", "C", "ORCL", "IBM", "PH",
             "PYPL", "PEP", "PPL", "RL", "LUV", "AAL", "WU", "WHR", "GE", "GM"));      //fourty example Stocks to search for
 
 
-    List<String> tickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "GOOGL", "LUV"));
-    List<String> descriptions = new LinkedList<String>();
-    List<JsonArray> JsonArrays = new LinkedList<JsonArray>();
-    List<JsonArray> stressJsonArrays = new LinkedList<JsonArray>();
-    List<BigDecimal> openingPrices = new LinkedList<BigDecimal>();
+    private static List<String> tickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "GOOGL", "LUV"));
+    private static List<String> descriptions = new LinkedList<String>();
+    private static List<JsonArray> JsonArrays = new LinkedList<JsonArray>();
+    private static List<JsonArray> stressJsonArrays = new LinkedList<JsonArray>();
+    private static List<BigDecimal> openingPrices = new LinkedList<BigDecimal>();
 
-    Scraper scraper = new Scraper();
-    @Before //used for every test but stress test
-    public void setUp() throws IOException, InterruptedException {
+    /**
+     * Pause program execution
+     * @param baseTime Base time for pause
+     * @param variationUpperBound Upper bound of variation added to baseTime
+     * @throws InterruptedException
+     */
+    private static void pause(int baseTime, int variationUpperBound) throws InterruptedException
+    {
+        Random r = new Random();
+        int variation = r.nextInt(variationUpperBound);
+        logger.info("Pausing execution for " + (baseTime+variation) + " seconds");
+
+        TimeUnit.SECONDS.sleep(baseTime + variation);
+    }
+
+    private static void pause() throws InterruptedException
+    {
+        pause(10, 6);
+    }
+
+    private static Scraper scraper = new Scraper();
+    @BeforeClass //used for every test but stress test
+    public static void setUp() throws IOException, InterruptedException {
+        logger.info("Setting up scraper tests");
         Random r = new Random();
 
         for (int i = 0; i < tickers.size(); i++) {
             JsonObject jo = new JsonObject();
-            int y = r.nextInt(6);
             if (i != 0 && i != tickers.size()) {
-                TimeUnit.SECONDS.sleep(10+y);
+                pause();
             }
             JsonArrays.add(scraper.getDescriptionAndHistory(tickers.get(i), TimeInterval.ONEMONTH));
 
@@ -45,11 +71,12 @@ public class ScraperTest {
 
     @Test
     public void checkStockOnYahooFinance() throws IOException {
-       assertTrue(scraper.checkStockExists("googl"));
-       assertTrue(scraper.checkStockExists("appl"));
-       assertTrue(scraper.checkStockExists("msft"));
+        logger.info("Running stock existence checks");
+        assertTrue(scraper.checkStockExists("googl"));
+        assertTrue(scraper.checkStockExists("appl"));
+        assertTrue(scraper.checkStockExists("msft"));
 
-       assertFalse(scraper.checkStockExists("Brett"));
+        assertFalse(scraper.checkStockExists("Brett"));
         assertFalse(scraper.checkStockExists("java"));
     }
 
@@ -60,11 +87,12 @@ public class ScraperTest {
         int x = 0, y = 0;
         for (JsonArray ja : JsonArrays) {
             x++;
-            ArrayList temp = new ArrayList();
+            ArrayList<BigDecimal> temp = new ArrayList<>();
             for (JsonElement je : ja) {
                 y++;
-                if(je.getAsJsonObject().get("open") != null) {
-                    temp.add(je.getAsJsonObject().get("open").getAsBigDecimal());
+                JsonElement openPrice = je.getAsJsonObject().get("open");
+                if(openPrice != null && !openPrice.isJsonNull() && !openPrice.toString().contains("null")) {
+                    temp.add(openPrice.getAsBigDecimal());
 
                 }
                 priceMap.put(tickers.get(x-1),temp);
