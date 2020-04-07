@@ -67,13 +67,13 @@ input:focus {
 }
 
 ::-webkit-input-placeholder {
-    color: rgba(0,0,0,0.7);
+    color: rgba(255,255,255,0.7);
 }
 ::-moz-placeholder {
-    color: rgba(0,0,0,0.7);
+    color: rgba(255,255,255,0.7);
 }
 :-ms-input-placeholder {
-    color: rgba(0,0,0,0.7);
+    color: rgba(255,255,255,0.7);
     }
 button {
     background-color: #e7e7e7;
@@ -127,7 +127,7 @@ input[type=submit]:hover {
     background: transparent;
     border: 0 solid;
     border-bottom: 1px solid rgba(255, 255, 255, .5);
-    color: black;
+    color: rgba(255,255,255,0.7);
     display: block;
     margin: 1rem;
     padding: .5rem;
@@ -138,6 +138,7 @@ input[type=submit]:hover {
 .username .password:hover,:focus{
     background: white;
     transition: 250ms background ease-in;
+    color:black;
 }
 
 

@@ -19,6 +19,13 @@ body {
 }
 
 
+/* Profile dropdown menu styling (if logged in) */
+.profile-dropdown {
+    position: absolute;
+    top: 30px!important;
+    right: 50px!important;
+}
+
 
 .leaderboard {
     float: left;

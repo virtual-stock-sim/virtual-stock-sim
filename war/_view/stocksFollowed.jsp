@@ -4,6 +4,7 @@
 <%@taglib prefix="f" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page session = "false" %>
 
 <html>
 <head>

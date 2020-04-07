@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ public class LoginServlet extends HttpServlet
     {
         logger.info("Login Servlet: doGet");
 
+        // do not create a new session until the user logs in
+        HttpSession session = req.getSession(false);
+
         req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
     }
 
@@ -28,7 +32,6 @@ public class LoginServlet extends HttpServlet
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         logger.info("Login Servlet: doPost");
-
         // create account model
 
         //List<Transaction> transactions = new LinkedList<Transaction>();
@@ -70,6 +73,9 @@ public class LoginServlet extends HttpServlet
 
 
         // login is valid, redirect user
+        // create session, if one doesn't exist
+        HttpSession session = req.getSession(true);
+
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
 
     }

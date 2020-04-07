@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ page session = "false" %>
 <html>
 <head>
     <title>VSS: Virtual Stock Sim</title>

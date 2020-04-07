@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-
+<%@ page session = "false" %>
 <html>
 <head>
     <style><%@include file="cssfiles/homePageStyle.css"%></style>
@@ -17,7 +17,17 @@
     <t:header/>
 </div>
 
-
+<% HttpSession session = request.getSession(false);
+    if(session != null) {
+        // login button
+    %>
+<div class = "profile-dropdown">
+    <button>Test</button>
+</div>
+<%
+}
+else  {
+%>
 <div class = "createAccountBtn">
     <button onClick="redirectAccount()">CREATE AN ACCOUNT</button>
     <script>
@@ -26,6 +36,10 @@
         }
     </script>
 </div>
+
+<%
+    }
+%>
 
 <div class = "navbar">
     <t:navbar/>
