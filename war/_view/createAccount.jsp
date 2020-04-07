@@ -39,7 +39,7 @@
                 <button onClick="redirectHome()">HOME</button>
                 <script>
                         function redirectHome() {
-                                location.href = "landing";
+                                location.href = "home";
                         }
                 </script>
         </div>

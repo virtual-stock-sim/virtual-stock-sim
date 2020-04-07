@@ -3,32 +3,40 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
+<script>
+    function logout() {
+        location.href = "landing";
+    }
+</script>
+
 <html>
 <head>
     <style><%@include file="cssfiles/homePageStyle.css"%></style>
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
 
-
     <title>Home - VSS: Virtual Stock Sim</title>
 </head>
 <body>
-
-<div class = "header">
-    <t:header/>
-</div>
-
 <% HttpSession session = request.getSession(false);
     if(session != null) {
-        // login button
-    %>
-<div class = "profile-dropdown">
-    <button>Test</button>
+        // User is logged in, display menu dropdown
+%>
+<div class="profile-menu">
+   <!--Profile menu dropdown, simple logout button for now-->
+    <button onclick="logout()">LOGOUT</button>
 </div>
+
 <%
 }
 else  {
 %>
 <div class = "createAccountBtn">
+    <button onClick="redirectLogin()">LOGIN</button>
+    <script>
+        function redirectLogin() {
+            location.href = "login";
+        }
+    </script>
     <button onClick="redirectAccount()">CREATE AN ACCOUNT</button>
     <script>
         function redirectAccount() {
@@ -40,6 +48,13 @@ else  {
 <%
     }
 %>
+
+
+<div class = "header">
+    <t:header/>
+</div>
+
+
 
 <div class = "navbar">
     <t:navbar/>

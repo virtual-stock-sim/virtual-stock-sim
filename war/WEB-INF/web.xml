@@ -8,7 +8,7 @@
     
     <display-name>Virtual Stock Sim</display-name>
     <welcome-file-list>
-        <welcome-file>/landing</welcome-file>
+        <welcome-file>/home</welcome-file>
     </welcome-file-list>
 
 

@@ -75,6 +75,7 @@ public class LoginServlet extends HttpServlet
         // login is valid, redirect user
         // create session, if one doesn't exist
         HttpSession session = req.getSession(true);
+        session.setAttribute("username",req.getParameter("umame"));
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
 

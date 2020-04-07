@@ -84,7 +84,7 @@ button {
     text-decoration: none;
     display: inline-block;
     font-family: 'Bebas Neue';font-size: 25px;
-
+    cursor: pointer;
 }
 
 button:hover{

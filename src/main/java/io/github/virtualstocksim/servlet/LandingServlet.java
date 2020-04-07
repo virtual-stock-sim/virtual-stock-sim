@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LandingServlet extends HttpServlet {
@@ -16,6 +17,12 @@ public class LandingServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         logger.info("Landing Servlet: doGet");
+
+        // logout user if they were logged in
+        HttpSession session = req.getSession(false);
+        if(session!=null){
+            session.invalidate();
+        }
 
         req.getRequestDispatcher("/_view/landing.jsp").forward(req, resp);
     }
