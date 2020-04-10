@@ -71,6 +71,20 @@
 
         <div id="page-creds" class="page">
             <h2>Update your Login Credentials</h2>
+
+            <c:if test="${! empty errorMsg}">
+                <div class="error">${errorMsg}</div>
+            </c:if>
+
+            <form action= ${pageContext.servletContext.contextPath}/profile  class="form-group" method="post" id = "creds-form">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name ="username" class="form-control" placeholder="Enter a new username"><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
+                    <input type="submit" value="SAVE">
+            </form>
+
+
         </div>
 
         <div id="page-settings" class="page">

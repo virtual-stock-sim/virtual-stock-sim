@@ -28,12 +28,10 @@ i{
     color:black;
     position: absolute;
     top:30px;
-    right:100px;
+    right:150px;
 }
 
-.dropdown-menu{
-    width: 100px!important;
-}
+
 
 li.link{
     cursor: pointer;

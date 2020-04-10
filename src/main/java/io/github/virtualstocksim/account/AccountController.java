@@ -48,6 +48,7 @@ public class AccountController {
             logger.error("Error while parsing result from accounts database\n", e);
 
         }
+        logger.info("Couldn't find account with username "+username);
         return Optional.empty();
     }
 
@@ -67,9 +68,31 @@ public class AccountController {
 
     }
 
+    public void updateUsername(int accountID, String newUsername){
+        acc = Account.Find(accountID).get();
+        acc.setUname(newUsername);
+        try{
+            acc.update();
+            logger.info("Username updated successfully!");
+        } catch(SQLException e){
+            logger.error("Error: " + e.toString());
+        }
+    }
+
+    public void updatePassword(int accountID, byte[] passwordhash, byte[] passwordsalt){
+        acc = Account.Find(accountID).get();
+        acc.setPasswordHash(passwordhash);
+        acc.setPasswordSalt(passwordsalt);
+        try{
+            acc.update();
+            logger.info("Password updated successfully!");
+        } catch(SQLException e){
+            logger.error("Error: " + e.toString());
+        }
+    }
 
     public void updateUserBio(int accountID, String newBio){
-       Account acc = Account.Find(accountID).get();
+       acc = Account.Find(accountID).get();
        acc.setBio(newBio);
        try{
            acc.update();

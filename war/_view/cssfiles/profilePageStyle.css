@@ -7,6 +7,11 @@ body {
     color: white;
 }
 
+
+.error {
+    color: red;
+}
+
 #contents div {
     display: none;
     text-align: center;
@@ -16,12 +21,14 @@ body {
     display: block;
 }
 
-#page-bio {
-  margin-left: 25%;
-    padding: 100px;
+#page-bio{
+  margin-left: 30%;
+}
+#page-bio h2{
+    padding-bottom: 70px;
 }
 
-#page-bio input{
+input[type=submit]{
     background-color: #e7e7e7;
     color:black;
     border: none;
@@ -40,15 +47,19 @@ body {
 }
 
 #page-creds{
-    margin-left: 40%;
+    margin-left: 39%;
+}
+
+#creds-form{
+    margin-top: 10%;
 }
 
 #page-picture{
-    margin-left: 41%;
+    margin-left: 40%;
 }
 
 #page-settings{
-     margin-left: 42%;
+     margin-left: 41%;
  }
 
 .page

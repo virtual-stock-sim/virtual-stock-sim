@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 public class CreateAccountServlet extends HttpServlet {
 
@@ -66,8 +69,17 @@ public class CreateAccountServlet extends HttpServlet {
             errorMessage = "Invalid credentials. Please enter a valid username and password.";
             req.setAttribute("errorMessage", errorMessage);
         }
+        String uname = req.getParameter("uname");
+        String pword = req.getParameter("pword");
+        Optional<Account> acc = AccountController.login(uname,pword);
+        // login is valid, redirect user
+        // create session
+        HttpSession session = req.getSession(true);
+        String username = req.getParameter("uname");
+        session.setAttribute("username", uname);
+        logger.info("Logging user" +uname+ " in....");
 
-        req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
+        resp.sendRedirect("/home");
 
 
     }

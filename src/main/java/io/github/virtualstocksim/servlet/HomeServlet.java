@@ -24,7 +24,7 @@ public class HomeServlet extends HttpServlet
         if(session!=null) {
             String username = (String) session.getAttribute("username");
             req.setAttribute("username",username);
-           logger.info(username);
+           logger.info(username+" is logged in");
         }else{
             logger.info("Session was null - user not logged in");
         }
