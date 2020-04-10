@@ -18,6 +18,12 @@ body {
     right: 10px;
 }
 
+i{
+    text-decoration: none;
+    border-style:hidden;
+
+}
+
 .profile-menu{
     color:black;
     position: absolute;
@@ -31,7 +37,10 @@ body {
 
 li.link{
     cursor: pointer;
+
 }
+
+
 
 .leaderboard {
     float: left;

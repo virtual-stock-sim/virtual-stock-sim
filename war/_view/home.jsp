@@ -44,8 +44,8 @@
         <u1 class="dropdown-menu">
             <li class="dropdown-header" style="font-size:large;">Hi, ${username}</li>
             <li class="divider"></li>
-            <li class="link"><a onclick="redirectProfile()">MY ACCOUNT</a></li>
-            <li class="link"><a onclick="logout()">SIGN OUT</a></li>
+            <li class="link"><a onclick="redirectProfile()">My Account<i class="fa fa-user"></i></a></li>
+            <li class="link"><a onclick="logout()">Sign out<i class="fa fa-sign-out"></i></a></li>
         </u1>
     </div>
 </div>

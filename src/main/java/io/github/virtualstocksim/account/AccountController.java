@@ -69,9 +69,15 @@ public class AccountController {
 
 
     public void updateUserBio(int accountID, String newBio){
-        throw new UnsupportedOperationException("Not implemented yet");
-        //acc = Account.Find(accountID).get();
-       // acc.setBio(newBio);
+       Account acc = Account.Find(accountID).get();
+       acc.setBio(newBio);
+       try{
+           acc.update();
+           logger.info("Bio updated successfully!");
+       } catch(SQLException e){
+           logger.error("Error: " + e.toString());
+       }
+
     }
 
 

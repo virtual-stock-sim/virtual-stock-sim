@@ -5,13 +5,24 @@
 <%@ page session = "false" %>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
     <style><%@include file="cssfiles/profilePageStyle.css"%></style>
     <script src="js_files/tabscript.js"></script>
-    <title>My Account - VSS: Virtual Stock Sim</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <div class="bg-img"></div>
 
+    <title>My Account - VSS: Virtual Stock Sim</title>
+
+    <div class="bg-img"></div>
 
 </head>
 <body>
@@ -37,7 +48,7 @@
             <hr>
             <ul class="menu">
                 <li onclick="openTab('creds')"><i class="material-icons fa fa-lock"></i><p id="tab-creds">Change Login</p></li>
-                <li onclick="openTab('bio')"><i class="material-icons fa fa-commenting-o"></i><p id="tab-bio">Bio</p></li>
+                <li onclick="openTab('bio')"><i class="material-icons fa fa-commenting-o"></i><p id="tab-bio">Edit Bio</p></li>
                 <li onclick="openTab('picture')"><i class="material-icons fa fa-user"></i><p id="tab-picture" >Profile Picture</p></li>
                 <li onclick="openTab('settings')"><i class="material-icons fa fa-cog"></i><p id="tab-settings">Settings</p></li>
             </ul>
@@ -48,9 +59,9 @@
     <div id ="contents">
         <div id ="page-bio" class="page">
             <h2>Edit your bio</h2>
-            <form action=${pageContext.servletContext.contextPath}/profile" class="bio-form" method="post">
-            <!--<input type="text"-->
-
+            <form action=${pageContext.servletContext.contextPath}/profile class="bio-form" method="post" id="bio-form">
+            <textarea class="form-control" form="bio-form" rows="5" cols="100" placeholder="Tell us about yourself" id="bio" name="bio">${bio}</textarea><br>
+                <input type="submit" value="SAVE">
             </form>
         </div>
 

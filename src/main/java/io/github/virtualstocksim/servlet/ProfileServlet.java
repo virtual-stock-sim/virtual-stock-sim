@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,11 @@ public class ProfileServlet extends HttpServlet {
             logger.warn("Not logged in. Please login");
             resp.sendRedirect("/login");
         }else{
+            Account acc = Account.Find(session.getAttribute("username").toString()).get();
+            String bio = acc.getBio();
+            req.setAttribute("bio", bio);
+            logger.info("User "+acc.getUname()+ " account settings");
+            logger.info("Bio: "+bio);
             req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
         }
 
@@ -36,12 +42,14 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountController controller = new AccountController();
-
+        HttpSession session = req.getSession(false);
+        Account acc = Account.Find(session.getAttribute("username").toString()).get();
         logger.info("Profile Servlet: doPost");
 
             if(req.getParameter("bio") !=null) {
-                // User is editing bio
-                String newBio = req.getParameter("newBio");
+                //Update user bio
+                String bio = req.getParameter("bio");
+                controller.updateUserBio(acc.getId(), bio);
 
 
             }else if (req.getParameter("profilePic")!=null) {
@@ -52,7 +60,7 @@ public class ProfileServlet extends HttpServlet {
 
             }
 
-
+        req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
 
 
 

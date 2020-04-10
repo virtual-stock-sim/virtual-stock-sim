@@ -233,8 +233,8 @@ public class Account extends DatabaseItem {
                                 crs.getInt("id"),
                                 columns.containsKey("uuid")                 ? crs.getString("uuid")                 : null,
                                 columns.containsKey("type")                 ? crs.getString("type")                 : null,
-                                columns.containsKey("username")             ? crs.getString("username")             : null,
-                                columns.containsKey("email")                ? crs.getString("email")                : null,
+                                columns.containsKey("email")             ? crs.getString("email")             : null,
+                                columns.containsKey("username")                ? crs.getString("username")                : null,
                                 columns.containsKey("password_hash")        ? crs.getBytes("password_hash")         : null,
                                 columns.containsKey("password_salt")        ? crs.getBytes("password_salt")         : null,
                                 columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")      : null,
@@ -276,10 +276,10 @@ public class Account extends DatabaseItem {
         try(Connection conn = AccountDatabase.getConnection())
         {
             int id = SQL.executeInsert(conn,
-                    "INSERT INTO accounts (uuid, type, username, email, password_hash, password_salt, " +
+                    "INSERT INTO accounts (uuid, type, email, username, password_hash, password_salt, " +
                             " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType, username, email, hash, salt, blank_string,
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType, email, username, hash, salt, blank_string,
                     blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
 
             logger.info("Account with new id " + id + " successfully created!");
@@ -312,13 +312,14 @@ public class Account extends DatabaseItem {
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
         columns.put("type", accountType);
-        columns.put("username", uname);
         columns.put("email", email);
+        columns.put("username", uname);
         columns.put("password_hash", passwordHash);
         columns.put("password_salt", passwordSalt);
         columns.put("followed_stocks", stocksFollowed);
         columns.put("transaction_history", transactionHistory);
         columns.put("leaderboard_rank", leaderboardRank);
+        columns.put("bio", bio);
         columns.put("profile_picture", profilePicture);
 
         // Check each column name and add it to the update list if its been updated
