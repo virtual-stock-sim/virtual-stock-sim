@@ -7,12 +7,27 @@
     function logout() {
         location.href = "landing";
     }
+
+    function redirectProfile() {
+        location.href="profile";
+    }
 </script>
 
 <html>
 <head>
-    <style><%@include file="cssfiles/homePageStyle.css"%></style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
+
+    <style><%@include file="cssfiles/homePageStyle.css"%></style>
 
     <title>Home - VSS: Virtual Stock Sim</title>
 </head>
@@ -23,7 +38,16 @@
 %>
 <div class="profile-menu">
    <!--Profile menu dropdown, simple logout button for now-->
-    <button onclick="logout()">LOGOUT</button>
+    <div class = "dropdown">
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src="../_view/resources/images/about/dan.jpg">
+            <span class="caret"></span></button>
+        <u1 class="dropdown-menu">
+            <li class="dropdown-header" style="font-size:large;">Hi, ${sessionScope.username}</li>
+            <li class="divider"></li>
+            <li class="link"><a onclick="redirectProfile()">MY ACCOUNT</a></li>
+            <li class="link"><a onclick="logout()">SIGN OUT</a></li>
+        </u1>
+    </div>
 </div>
 
 <%

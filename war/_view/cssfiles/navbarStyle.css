@@ -1,5 +1,5 @@
 /* Navbar container */
-.navbar {
+.navigationbar {
     color: white;
     white-space:nowrap;
     overflow: hidden;
@@ -8,7 +8,7 @@
 }
 
 /* Links inside the navbar */
-.navbar a {
+.navigationbar a {
     float: left;
     font-size: 20px;
     color: white;
@@ -47,7 +47,7 @@
 }
 
 /* Add a red background color to navbar links on hover */
-.navbar a:hover, .dropdown1:hover .dropBtn {
+.navigationbar a:hover, .dropdown1:hover .dropBtn {
     background-color: gray;
 }
 

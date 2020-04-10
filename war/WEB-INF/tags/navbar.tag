@@ -5,7 +5,7 @@
 
 
 
-<div class = "navbar">
+<div class = "navigationbar">
     <a href="about">About Us</a>
     <div class = "dropdown1">
         <button class = "dropBtn">Stocks
