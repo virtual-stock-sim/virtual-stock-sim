@@ -77,10 +77,9 @@ public class LoginServlet extends HttpServlet
         HttpSession session = req.getSession(true);
         String username = req.getParameter("uname");
         session.setAttribute("username", username);
-        logger.info(username);
+        logger.info("Logging user" +username+ " in....");
 
-        req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
-        return;
+        resp.sendRedirect("/home");
 
     }
 

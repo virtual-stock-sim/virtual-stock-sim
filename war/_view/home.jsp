@@ -42,7 +42,7 @@
         <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src="../_view/resources/images/about/dan.jpg">
             <span class="caret"></span></button>
         <u1 class="dropdown-menu">
-            <li class="dropdown-header" style="font-size:large;">Hi, ${sessionScope.username}</li>
+            <li class="dropdown-header" style="font-size:large;">Hi, ${username}</li>
             <li class="divider"></li>
             <li class="link"><a onclick="redirectProfile()">MY ACCOUNT</a></li>
             <li class="link"><a onclick="logout()">SIGN OUT</a></li>
