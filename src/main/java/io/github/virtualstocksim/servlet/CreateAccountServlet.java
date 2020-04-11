@@ -2,6 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
+import io.github.virtualstocksim.account.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class CreateAccountServlet extends HttpServlet {
@@ -62,8 +64,16 @@ public class CreateAccountServlet extends HttpServlet {
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
             }
+            List<Account> accs = Account.FindCustom("SELECT id FROM accounts WHERE username LIKE '%?%' OR email LIKE '%?%'", uname, email);
+            if(accs.isEmpty()){
+                //username exists
+                errorMessage= "That username or email is already in use.";
+                req.setAttribute("errorMessage", errorMessage);
+                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+                return;
+            }
 
-            Account.Create(uname,email,pword,"ADMIN");
+            Account.Create(uname,email,pword, AccountType.ADMIN);
 
         } catch (NumberFormatException e){
             errorMessage = "Invalid credentials. Please enter a valid username and password.";
@@ -76,7 +86,7 @@ public class CreateAccountServlet extends HttpServlet {
         // create session
         HttpSession session = req.getSession(true);
         String username = req.getParameter("uname");
-        session.setAttribute("username", uname);
+        session.setAttribute("username", username);
         logger.info("Logging user" +uname+ " in....");
 
         resp.sendRedirect("/home");

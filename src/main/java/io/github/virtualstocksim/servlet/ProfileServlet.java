@@ -69,12 +69,15 @@ public class ProfileServlet extends HttpServlet {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
                 InputStream fileContent = filePart.getInputStream(); // convert to image stream
                 File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
+                if(!uploadDir.exists()){
+                    uploadDir.mkdirs();
+                }
                 File file = File.createTempFile(fileName,".tmp", uploadDir); // write file to directory
                 logger.info(file.toString());
                 Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-                controller.updateProfilePicture(acc.getId(),fileName);
-                logger.info("Profile Picture successfully updated to " +fileName);
+                controller.updateProfilePicture(acc.getId(),file.toString());
+                logger.info("Profile Picture successfully updated to " +file.toString());
 
 
             }

@@ -50,7 +50,7 @@ public class AccountTest
        // transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
         // create and populate account with objects
-     account = new Account(0, uuid, "ADMIN", "VSSAdmin@vss.com",
+     account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
              "VSSAdmin", hash, salt, "", "",-1,"Fun text",
              "my-picture.jpg", SQL.GetTimeStamp());
         // giving account a password for hashing
@@ -81,7 +81,7 @@ public class AccountTest
 
     @Test
     public void testGetAccountType(){
-        assertEquals("ADMIN", account.getAccountType());
+        assertEquals(AccountType.ADMIN, account.getAccountType());
     }
 
     @Test
@@ -169,10 +169,10 @@ public class AccountTest
         }
         catch (SQLException e)
         {
-           fail();
+            fail();
         }
 
-        Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret","ADMIN");
+        Optional<Account> new_acc =  Account.Create("DanPalm5", "test@test.com","topsecret",AccountType.ADMIN);
         if(!new_acc.isPresent()){ fail(); }
         Optional<Account> find_acc = Account.Find("DanPalm5");
         if(!find_acc.isPresent()){ fail(); }

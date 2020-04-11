@@ -67,7 +67,14 @@ public class AccountController {
      */
     public void updateProfilePicture(int accountID, String newPicturePath) {
         acc = Account.Find(accountID).get();
+        acc.setProfilePicture(newPicturePath);
 
+        try{
+            acc.update();
+            logger.info("ProfilePicture updated successfully!");
+        } catch(SQLException e){
+            logger.error("Error: " + e.toString());
+        }
 
         // allow user to provide a new picture and update it
         // convert picture name to UUID

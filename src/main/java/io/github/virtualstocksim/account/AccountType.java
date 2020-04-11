@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 
 public enum AccountType
 {
-    ADMIN("Admin"), USER("User");
+    ADMIN("ADMIN"), USER("USER");
 
     public static AccountType getByID(int id) throws NoSuchElementException
     {

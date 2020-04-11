@@ -31,7 +31,7 @@ public class Account extends DatabaseItem {
      */
     private String stocksFollowed;
     private String transactionHistory;
-    private String accountType;
+    private AccountType accountType;
     private String profilePicture;
     private final Timestamp timestamp;
 
@@ -51,7 +51,7 @@ public class Account extends DatabaseItem {
      * @param profilePicture String Path to profile picture locally on server
      * @param timestamp time the account was created (java.time)
      */
-    public Account(int id, String uuid, String accountType, String email, String username, byte[] passwordHash, byte[] passwordSalt,
+    public Account(int id, String uuid, AccountType accountType, String email, String username, byte[] passwordHash, byte[] passwordSalt,
                    String stocksFollowed, String transactionHistory,
                    int leaderboardRank, String bio, String profilePicture, Timestamp timestamp) {
         super(id);
@@ -87,7 +87,7 @@ public class Account extends DatabaseItem {
         return this.uuid;
     }
 
-    public String getAccountType() {
+    public AccountType getAccountType() {
         return this.accountType;
     }
 
@@ -232,9 +232,9 @@ public class Account extends DatabaseItem {
                         new Account(
                                 crs.getInt("id"),
                                 columns.containsKey("uuid")                 ? crs.getString("uuid")                 : null,
-                                columns.containsKey("type")                 ? crs.getString("type")                 : null,
-                                columns.containsKey("email")             ? crs.getString("email")             : null,
-                                columns.containsKey("username")                ? crs.getString("username")                : null,
+                                columns.containsKey("type")                 ? AccountType.valueOf(crs.getString("type"))                       : null,
+                                columns.containsKey("email")                ? crs.getString("email")                : null,
+                                columns.containsKey("username")             ? crs.getString("username")             : null,
                                 columns.containsKey("password_hash")        ? crs.getBytes("password_hash")         : null,
                                 columns.containsKey("password_salt")        ? crs.getBytes("password_salt")         : null,
                                 columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")      : null,
@@ -262,7 +262,7 @@ public class Account extends DatabaseItem {
      * @param accountType AccountType (Admin or User)
      * @return Either a newly created account, or empty if creation fails.
      */
-    public static Optional<Account> Create(String username, String email, String password, String accountType)
+    public static Optional<Account> Create(String username, String email, String password, AccountType accountType)
     {
         byte[] salt, hash;
         Timestamp timestamp = SQL.GetTimeStamp();
@@ -279,11 +279,11 @@ public class Account extends DatabaseItem {
                     "INSERT INTO accounts (uuid, type, email, username, password_hash, password_salt, " +
                             " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType, email, username, hash, salt, blank_string,
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType.getText(), email, username, hash, salt, blank_string,
                     blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
 
             logger.info("Account with new id " + id + " successfully created!");
-            return Optional.of(new Account(id, uuid, accountType, username, email, hash, salt, "",
+            return Optional.of(new Account(id, uuid, accountType, email, username, hash, salt, "",
                     "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
 
         } catch (SQLException e){

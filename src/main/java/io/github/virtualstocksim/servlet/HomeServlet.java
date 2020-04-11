@@ -25,18 +25,19 @@ public class HomeServlet extends HttpServlet
         HttpSession session = req.getSession(false);
         if(session!=null) {
             String username = (String) session.getAttribute("username");
-            String profilePicture = Account.Find(username).get().getProfilePicture();
-            // if the user has not uploaded a profile picture, default it to Dan
-            if(profilePicture.length() == 0){
-               profilePicture = "../_view/resources/images/about/dan.jpg";
-                logger.info("profile picture was null - defaulted to Dan");
+            if(Account.Find(username).isPresent()) {
+                String profilePicture = Account.Find(username).get().getProfilePicture();
+                if(profilePicture.length() == 0){
+                    // if the user has not uploaded a profile picture, default it to question mark
+                    profilePicture = "../_view/resources/images/home/question-mark.jpg";
+                    logger.info("profile picture was null - defaulted to Question Mark");
+                }else {
+                    req.setAttribute("picturepath", profilePicture);
+                    req.setAttribute("username", username);
+                    logger.info(username + " is logged in");
+                }
             }
-            req.setAttribute("picturepath", profilePicture);
-            req.setAttribute("username",username);
-           logger.info(username+" is logged in");
-        }else{
-            logger.info("Session was null - user not logged in");
-        }
+        }else logger.info("Session was null - user not logged in");
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
         return;
