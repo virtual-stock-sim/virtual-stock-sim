@@ -51,7 +51,7 @@ public class AccountTest
 
         // create and populate account with objects
      account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
-             "VSSAdmin", hash, salt, "", "",-1,"Fun text",
+             "VSSAdmin", hash, salt, "", "", "",-1,"Fun text",
              "my-picture.jpg", SQL.GetTimeStamp());
         // giving account a password for hashing
      account.setPword("virtualstocksim");

@@ -10,15 +10,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
-import java.util.zip.DataFormatException;
+
 @MultipartConfig
 public class ProfileServlet extends HttpServlet {
 
@@ -58,7 +52,7 @@ public class ProfileServlet extends HttpServlet {
             //Update user bio
             if(req.getParameter("bio") !=null) {
                 String bio = req.getParameter("bio"); // retrieve bio from form
-                controller.updateUserBio(acc.getId(), bio); // controller updates bio
+                controller.updateUserBio(bio); // controller updates bio
                 req.setAttribute("bio", bio);   // pass new bio back to display it in box
                 req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
                 return;
@@ -78,7 +72,7 @@ public class ProfileServlet extends HttpServlet {
             if (req.getParameter("username")!=null ){
 
                 String username = req.getParameter("username"); // retrieve username from form
-                controller.updateUsername(acc.getId(),username);    // controller updates username
+                controller.updateUsername(username);    // controller updates username
                 session.setAttribute("username", username); // bind new username to session (used for profile menu)
             }
 
@@ -89,10 +83,8 @@ public class ProfileServlet extends HttpServlet {
                 if (password.length() >= 8) {    // check to ensure password meets required length
                     logger.info("Updating password to " + password); /*** THIS WILL NOT BE HERE IN THE FINAL PRODUCT, IT IS ONLY USED FOR TESTING ***/
 
-                    // Encrypt new password, and store it in DB
-                    byte[] newSalt = Encryption.getNextSalt();
-                    byte[] newHash = Encryption.hash(password.toCharArray(), newSalt);
-                    controller.updatePassword(acc.getId(), newHash, newSalt);
+
+                    controller.updatePassword(req.getParameter("password"));
                 } else {
                     // else password did not meet required length, notify user
                     logger.info("Password must be at least 8 characters");

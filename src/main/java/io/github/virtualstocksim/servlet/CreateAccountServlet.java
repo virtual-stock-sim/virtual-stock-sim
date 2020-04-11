@@ -92,14 +92,15 @@ public class CreateAccountServlet extends HttpServlet {
         }
         String uname = req.getParameter("uname");
         String pword = req.getParameter("pword");
-        Optional<Account> acc = AccountController.login(uname,pword);
-        // login is valid, redirect user
-        // create session
-        HttpSession session = req.getSession(true);
-        session.setAttribute("username", uname);
-        logger.info("Logging user" +uname+ " in....");
-
-        resp.sendRedirect("/home");
+        if(AccountController.login(uname,pword)){
+            // login is valid, redirect user
+            // create session
+            HttpSession session = req.getSession(true);
+            session.setAttribute("username", uname);
+            logger.info("Logging user" +uname+ " in....");
+            resp.sendRedirect("/home");
+        }
+        
 
 
     }

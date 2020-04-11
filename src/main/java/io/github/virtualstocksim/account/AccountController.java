@@ -2,29 +2,19 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.scraper.Scraper;
-import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.sql.rowset.CachedRowSet;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -33,7 +23,14 @@ public class AccountController {
     private Account acc;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
 
-    private io.github.virtualstocksim.scraper.Scraper scraper;
+    public AccountController() {
+
+    }
+
+
+    public Account getModel(){
+        return this.acc;
+    }
 
     public void setModel (Account acc){
         this.acc=acc;
@@ -45,33 +42,25 @@ public class AccountController {
      * @param password  password provided - will be hashed and checked against that stored in database
      * @return Account found with specified username and password parameters, if any
      */
-    public static Optional<Account> login(String username, String password)
+    public static boolean login(String username, String password)
     {
         logger.info("Logging user " + username + " in...");
 
-        try(Connection conn = AccountDatabase.getConnection();
-            CachedRowSet passwordCheckRS = SQL.executeQuery(conn, String.format("SELECT password_hash, password_salt " +
-                    "from accounts " +
-                    " where username = ? "), username);)
-        {
-            if(!passwordCheckRS.next()){
-                return Optional.empty();
-            }
-            boolean isValid = Encryption.validateInput(password.toCharArray(), passwordCheckRS.getBytes("password_salt"), passwordCheckRS.getBytes("password_hash"));
-
-            // check if credentials are valid
-            if (isValid) {
-                return Account.Find(username);
-            }else{
-                return Optional.empty();
-            }
-
-        } catch (SQLException e){
-            logger.error("Error while parsing result from accounts database\n", e);
-
+        Optional<Account> acc = Account.Find(username);
+        if(!acc.isPresent()){
+            return false;
         }
-        logger.info("Couldn't find account with username "+username);
-        return Optional.empty();
+        // check hash and salt against login credentials
+        boolean isValid = Encryption.validateInput(password.toCharArray(), acc.get().getPasswordSalt(), acc.get().getPasswordHash());
+
+        // check if credentials are valid
+        if (isValid) {
+            logger.info("Logged user "+username+ " in successfully!");
+        }else{
+            logger.info("Couldn't find account with username "+username);
+        }
+
+        return isValid;
     }
 
 
@@ -107,12 +96,13 @@ public class AccountController {
 
     /**
      *
-     * @param accountID - account ID in database, retrieved from account object
      * @param newUsername - new username that is being stored in database
      */
-    public void updateUsername(int accountID, String newUsername){
-        acc = Account.Find(accountID).get();
+    public void updateUsername(String newUsername){
+        // change username in model
         acc.setUname(newUsername);
+
+        // update username in db
         try{
             acc.update();
             logger.info("Username updated successfully!");
@@ -123,14 +113,18 @@ public class AccountController {
 
     /**
      *
-     * @param accountID - account ID in database, retrieved from account object
-     * @param passwordhash new hash generated from password given in form
-     * @param passwordsalt new salt generated, from Encryption class
+     * @param password password given by user to be hashed and stored in db
      */
-    public void updatePassword(int accountID, byte[] passwordhash, byte[] passwordsalt){
-        acc = Account.Find(accountID).get();
-        acc.setPasswordHash(passwordhash);
-        acc.setPasswordSalt(passwordsalt);
+    public void updatePassword(String password){
+        // generate new hash and salt
+        byte[] newSalt = Encryption.getNextSalt();
+        byte[] newHash = Encryption.hash(password.toCharArray(),newSalt);
+
+        // update account with newly created hash and salt
+        acc.setPasswordHash(newHash);
+        acc.setPasswordSalt(newSalt);
+
+        /* update account in database */
         try{
             acc.update();
             logger.info("Password updated successfully!");
@@ -141,11 +135,9 @@ public class AccountController {
 
     /**
      *
-     * @param accountID - account ID in database, retrieved from account object
-     * @param newBio  updated bio given by user
+     * @param newBio  updated bio given by user to be stored in DB
      */
-    public void updateUserBio(int accountID, String newBio){
-       acc = Account.Find(accountID).get();
+    public void updateUserBio(String newBio){
        acc.setBio(newBio);
        try{
            acc.update();
@@ -153,54 +145,6 @@ public class AccountController {
        } catch(SQLException e){
            logger.error("Error: " + e.toString());
        }
-
-    }
-    //remove from follow add to invest!
-
-    /**
-     * @param type
-     * @param ticker
-     * @param numShares
-     */
-
-
-    public void trade(TransactionType type, String ticker, int numShares) throws IOException {
-        List<Stock> results = Stock.FindCustom("SELECT curr_price"+
-                "FROM stocks"+
-                "WHERE symbol LIKE ?", "'%" + ticker +"'%");
-
-
-        if(results.isEmpty()) {
-            logger.info("ERROR: no results returned (Stock probably not on Yahoo finance)");
-        }
-
-        Optional<Stock> stockOpt = Optional.ofNullable(results.get(0));
-        BigDecimal volumePrice = stockOpt.get().getCurrPrice().multiply(new BigDecimal(numShares));
-
-        if(type.equals(TransactionType.BUY)){
-            int compareRes = acc.getAccountBal().compareTo(volumePrice);
-            if(compareRes !=-1){
-                acc.setAccountBal(acc.getAccountBal().subtract(volumePrice));
-                //need to figure out how to associate investments with account in DB and then move stock from follow to invest
-                try (Connection conn = AccountDatabase.getConnection()) {
-                    SQL.executeUpdate(conn,"SELECT followed_stocks "+
-                            "FROM accounts "+
-                            "WHERE UUID = ? "
-                            );
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    logger.info("something went wrong when trying to connect. Failed to move from following to invested");
-                }
-            }else{
-                logger.info("The user does not have the funds to cover this trade!");
-            }
-        }else if(type.equals(TransactionType.SELL)){
-            acc.setAccountBal(acc.getAccountBal().add(volumePrice));
-            //then remove the stock from invested to following
-        }
-
-
-
 
     }
 

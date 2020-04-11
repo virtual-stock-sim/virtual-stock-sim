@@ -54,9 +54,7 @@ public class LoginServlet extends HttpServlet
             String pword = req.getParameter("pword");
 
 
-          Optional<Account> acc = AccountController.login(uname,pword);
-
-          if( !acc.isPresent() || !loginIsValid(uname,pword) ){
+          if(!AccountController.login(uname,pword)){
             // If user input is invalid, return error message with same page
             errorMessage = "Login Failed. Please enter a valid username and password.";
             req.setAttribute("errorMessage", errorMessage);
@@ -81,18 +79,6 @@ public class LoginServlet extends HttpServlet
 
         resp.sendRedirect("/home");
 
-    }
-
-    /*
-     * TODO: Make a function to validate uname and pword (i.e. that the input is of the correct format,
-     *  isn't empty, isn't just a bunch of spaces, etc) instead of just using *.isEmpty();
-     */
-    public boolean loginIsValid(String username, String password){
-        if(username.isEmpty() || password.isEmpty() || (username.getClass() != String.class)
-                || password.getClass() != String.class || password.contains(" ") || username.contains(" ") ) {
-            return false;
-        }
-        return true;
     }
 
 }

@@ -316,7 +316,7 @@ public class Account extends DatabaseItem {
 
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
-        columns.put("type", accountType);
+        columns.put("type", accountType.getText());
         columns.put("email", email);
         columns.put("username", uname);
         columns.put("password_hash", passwordHash);
