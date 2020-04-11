@@ -1,8 +1,12 @@
 <!doctype html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
+
+<%--@elvariable id="errorMsg" type="java.lang.String"--%>
+<%--@elvariable id="account" type="io.github.virtualstocksim.account.Account"--%>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +18,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <!-- Logout function -->
-    <script>
+    <script type="text/javascript">
         function logout() {
             location.href = "landing";
         }
@@ -74,7 +78,7 @@
         <div id ="page-bio" class="page">
             <h2>Edit your bio</h2>
             <form action=${pageContext.servletContext.contextPath}/profile class="bio-form" method="post" id="bio-form">
-            <textarea class="form-control" form="bio-form" rows="5" cols="100" placeholder="Tell us about yourself" id="bio" name="bio">${bio}</textarea><br>
+            <textarea class="form-control" form="bio-form" rows="5" cols="100" placeholder="Tell us about yourself" id="bio" name="bio">${account.bio}</textarea><br>
                 <input type="submit" value="SAVE">
             </form>
         </div>
@@ -94,7 +98,7 @@
             <!--Login Credentials form -->
             <form action= ${pageContext.servletContext.contextPath}/profile  class="form-group" method="post" id = "creds-form">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name ="username" class="form-control" placeholder="Enter a new username"><br>
+                    <input type="text" id="username" name ="username" class="form-control" placeholder="${account.username}"><br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
                     <input type="submit" value="SAVE">

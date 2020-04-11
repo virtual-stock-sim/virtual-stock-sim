@@ -12,6 +12,9 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @MultipartConfig
 public class ProfileServlet extends HttpServlet {
@@ -22,7 +25,7 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Profile Servlet: doGet");
 
-        // check if session exists, if not the user is not logged in or timedout.
+        /*// check if session exists, if not the user is not logged in or timedout.
         HttpSession session = req.getSession(false);
         if(session==null){
             logger.warn("Not logged in. Please login");
@@ -36,71 +39,135 @@ public class ProfileServlet extends HttpServlet {
             req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
         }
 
+        */
+
+        String errorMsg = null;
+
+        HttpSession session = req.getSession(false);
+        if(session == null)
+        {
+            logger.info("User isn't logged in, redirecting to login page");
+            resp.sendRedirect("/login");
+        }
+        else
+        {
+            // Make sure user is logged in
+            String sessionUsername = session.getAttribute("username").toString();
+            Optional<Account> account;
+            if(sessionUsername != null && !sessionUsername.isEmpty())
+            {
+                account = Account.Find(sessionUsername);
+            }
+            else
+            {
+                account = Optional.empty();
+            }
+
+            if(account.isPresent())
+            {
+                req.setAttribute("account", account.get());
+            }
+            else
+            {
+                req.setAttribute("errorMsg", "Whoops! Something went wrong on our end");
+            }
+
+            req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
+        }
 
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        logger.info("Profile Servlet: doPost");
+
         AccountController controller = new AccountController();
         HttpSession session = req.getSession(false);
-        String errorMsg = null;
+        String lastError;
+        List<String> errorMsgs = new LinkedList<>();
 
-       if( Account.Find(session.getAttribute("username").toString()).isPresent() ) {
-            Account acc = Account.Find(session.getAttribute("username").toString()).get();
-            logger.info("Profile Servlet: doPost");
+        // Make sure user is logged in
+        String sessionUsername = session.getAttribute("username").toString();
+        Optional<Account> account;
+        if(sessionUsername != null && !sessionUsername.isEmpty())
+        {
+            account = Account.Find(sessionUsername);
+        }
+        else
+        {
+            account = Optional.empty();
+        }
 
-            //Update user bio
-            if(req.getParameter("bio") !=null) {
-                String bio = req.getParameter("bio"); // retrieve bio from form
-                controller.updateUserBio(bio); // controller updates bio
-                req.setAttribute("bio", bio);   // pass new bio back to display it in box
-                req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
-                return;
+        if(account.isPresent())
+        {
+            controller.setModel(account.get());
 
+            // Update user bio
+            String bio = req.getParameter("bio");
+            if(bio != null)
+            {
+                logger.info("User requested bio change");
+                controller.updateUserBio(bio);
             }
+
             // User is updating profile picture
-            if (req.getPart("file")!=null ){
-                String description = req.getParameter("description"); // Retrieves <input type="text" name="description">
-                Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
-                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-                controller.updateProfilePicture(filePart.getInputStream(),fileName); // controller updates profile picture
-
-
+            Part profilePic = req.getPart("file");
+            if(profilePic != null)
+            {
+                logger.info("User requested profile picture change");
+                controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
             }
 
-            // User changing username
-            if (req.getParameter("username")!=null ){
-
-                String username = req.getParameter("username"); // retrieve username from form
-                controller.updateUsername(username);    // controller updates username
-                session.setAttribute("username", username); // bind new username to session (used for profile menu)
-            }
-
-            // User changing password
-            if(req.getParameter("password")!=null) {
-                // user changing password
-                String password = req.getParameter("password"); // retrieve password from form
-                if (password.length() >= 8) {    // check to ensure password meets required length
-                    logger.info("Updating password to " + password); /*** THIS WILL NOT BE HERE IN THE FINAL PRODUCT, IT IS ONLY USED FOR TESTING ***/
-
-
-                    controller.updatePassword(req.getParameter("password"));
-                } else {
-                    // else password did not meet required length, notify user
-                    logger.info("Password must be at least 8 characters");
-                    errorMsg = "Password must be at least 8 characters long.";
-                    req.setAttribute("errorMsg", errorMsg);
+             // User changing username
+            String username = req.getParameter("username");
+            if(username != null)
+            {
+                logger.info("User requested username change");
+                if(!Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ?", "'%" + username + "%'").isEmpty())
+                {
+                    lastError = "Username already exists";
+                    logger.warn(lastError);
+                    errorMsgs.add(lastError);
+                }
+                else
+                {
+                    controller.updateUsername(username);
                 }
             }
 
-    }else{
-           logger.error("Error finding account with username "+session.getAttribute("username").toString());
-           errorMsg="Whoops! something went wrong. Error: 404";
-           req.setAttribute("errorMsg", errorMsg);
+            String password = req.getParameter("password");
+            if(password != null)
+            {
+                logger.info("User requested password change");
+
+                if(password.length() < 8)
+                {
+                    lastError = "Password must be at least 8 characters long";
+                    logger.warn(lastError);
+                    errorMsgs.add(lastError);
+                }
+                else
+                {
+                    controller.updatePassword(password);
+                }
+            }
+
+        }
+        else
+        {
+            logger.error("Error finding account with username " + sessionUsername);
+            errorMsgs.add("Whoops! Something went wrong on our end");
+        }
+
+        if(!errorMsgs.isEmpty())
+        {
+            req.setAttribute("errorMsg", String.join("<br>"));
+        }
+
+        req.setAttribute("account", controller.getModel());
+        req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
+
        }
 
-            req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
-
-       }
-
-    }
+}
