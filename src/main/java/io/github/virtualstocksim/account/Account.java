@@ -359,7 +359,7 @@ public class Account extends DatabaseItem {
                                                "profile_picture, " +
                                                "creation_date" +
                                                ") " +
-                                               "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                                               "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                                        uuid,
                                        accountType.getText(),
                                        email,
