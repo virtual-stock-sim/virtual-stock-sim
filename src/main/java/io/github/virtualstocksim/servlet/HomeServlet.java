@@ -1,5 +1,7 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,13 @@ public class HomeServlet extends HttpServlet
         HttpSession session = req.getSession(false);
         if(session!=null) {
             String username = (String) session.getAttribute("username");
+            String profilePicture = Account.Find(username).get().getProfilePicture();
+            // if the user has not uploaded a profile picture, default it to Dan
+            if(profilePicture.length() == 0){
+               profilePicture = "../_view/resources/images/about/dan.jpg";
+                logger.info("profile picture was null - defaulted to Dan");
+            }
+            req.setAttribute("picturepath", profilePicture);
             req.setAttribute("username",username);
            logger.info(username+" is logged in");
         }else{

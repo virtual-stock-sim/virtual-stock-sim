@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -22,7 +23,12 @@ public class AccountController {
         this.acc=acc;
     }
 
-
+    /**
+     *
+     * @param username username provided
+     * @param password  password provided - will be hashed and checked against that stored in database
+     * @return Account found with specified username and password parameters, if any
+     */
     public static Optional<Account> login(String username, String password)
     {
         logger.info("Logging user " + username + " in...");
@@ -57,9 +63,10 @@ public class AccountController {
     /**
      *
      * @param accountID Account id to update
-     * @param newPicturePath Updated picture name
+     * @param newPicturePath Updated picture path
      */
-    public void updateProfilePicture(int accountID, String newPicturePath, byte[] picture) {
+    public void updateProfilePicture(int accountID, String newPicturePath) {
+        acc = Account.Find(accountID).get();
 
 
         // allow user to provide a new picture and update it
@@ -68,6 +75,11 @@ public class AccountController {
 
     }
 
+    /**
+     *
+     * @param accountID - account ID in database, retrieved from account object
+     * @param newUsername - new username that is being stored in database
+     */
     public void updateUsername(int accountID, String newUsername){
         acc = Account.Find(accountID).get();
         acc.setUname(newUsername);
@@ -79,6 +91,12 @@ public class AccountController {
         }
     }
 
+    /**
+     *
+     * @param accountID - account ID in database, retrieved from account object
+     * @param passwordhash new hash generated from password given in form
+     * @param passwordsalt new salt generated, from Encryption class
+     */
     public void updatePassword(int accountID, byte[] passwordhash, byte[] passwordsalt){
         acc = Account.Find(accountID).get();
         acc.setPasswordHash(passwordhash);
@@ -91,6 +109,11 @@ public class AccountController {
         }
     }
 
+    /**
+     *
+     * @param accountID - account ID in database, retrieved from account object
+     * @param newBio  updated bio given by user
+     */
     public void updateUserBio(int accountID, String newBio){
        acc = Account.Find(accountID).get();
        acc.setBio(newBio);

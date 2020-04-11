@@ -41,6 +41,11 @@
         <h2>BUILT BY YOU, FROM THE GROUND UP.</h2>
     </div>
 
+    <!-- Display error message, if any-->
+    <c:if test="${! empty errorMsg}">
+        <div class="error">${errorMsg}</div>
+    </c:if>
+
     <div id="tab-cont">
         <div id="menu-fixed">
             <a href="#tab-cont">
@@ -76,15 +81,17 @@
 
         <div id ="page-picture" class="page">
             <h2>Update Your Profile Picture</h2>
+            <form action=${pageContext.servletContext.contextPath}/profile class="form-group" method="post" enctype="multipart/form-data">
+                <input type="text" name="description" />
+                <input type="file" name="file" />
+                <input type="submit" value="UPLOAD"/>
+            </form>
         </div>
 
         <div id="page-creds" class="page">
             <h2>Update your Login Credentials</h2>
 
-            <c:if test="${! empty errorMsg}">
-                <div class="error">${errorMsg}</div>
-            </c:if>
-
+            <!--Login Credentials form -->
             <form action= ${pageContext.servletContext.contextPath}/profile  class="form-group" method="post" id = "creds-form">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name ="username" class="form-control" placeholder="Enter a new username"><br>
@@ -92,7 +99,6 @@
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
                     <input type="submit" value="SAVE">
             </form>
-
 
         </div>
 

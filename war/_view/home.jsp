@@ -39,7 +39,7 @@
 <div class="profile-menu">
    <!--Profile menu dropdown, simple logout button for now-->
     <div class = "dropdown">
-        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src="../_view/resources/images/about/dan.jpg">
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src=${picturepath}>
             <span class="caret"></span></button>
         <u1 class="dropdown-menu">
             <li class="dropdown-header" style="font-size:large;">Hi, ${username}</li>
