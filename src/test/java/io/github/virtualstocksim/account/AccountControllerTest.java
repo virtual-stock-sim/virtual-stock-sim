@@ -29,6 +29,8 @@ public class AccountControllerTest
     List<Stock> stocks;
     String uuid;
 
+    private static final String TEST_PASSWORD = "virtualstocksim";
+
     @Before
     public void setup() {
         conn = new AccountController();
@@ -62,7 +64,7 @@ public class AccountControllerTest
         Optional<Account> find_acc = Account.Find("TestAdmin");
         if(!find_acc.isPresent()){ fail(); }
         assertEquals(find_acc.get().getUUID(),conn.getModel().getUUID());
-        assertEquals(find_acc.get().getAccountType().getText(),conn.getModel().getAccountType().getText());
+        assertEquals(find_acc.get().getType().getText(),conn.getModel().getType().getText());
         assertEquals(find_acc.get().getEmail(),conn.getModel().getEmail());
         assertArrayEquals(find_acc.get().getPasswordHash(), conn.getModel().getPasswordHash());
         assertArrayEquals(find_acc.get().getPasswordSalt(), conn.getModel().getPasswordSalt());
@@ -75,7 +77,7 @@ public class AccountControllerTest
 
     @Test
     public void testLogin() {
-        assertTrue((AccountController.login(conn.getModel().getUname(),conn.getModel().getPword())));
+        assertTrue((AccountController.login(conn.getModel().getUsername(), TEST_PASSWORD)));
 
     }
 
@@ -88,7 +90,7 @@ public class AccountControllerTest
     @Test
     public void testUpdateUsername() {
         conn.updateUsername("DanPalm5");
-        assertEquals(conn.getModel().getUname(), "DanPalm5");
+        assertEquals(conn.getModel().getUsername(), "DanPalm5");
     }
 
     @Test

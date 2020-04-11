@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,6 +30,8 @@ public class AccountTest
     String uuid;
     byte[] hash;
     byte[] salt;
+
+    private static final String TEST_PASSWORD = "virtualstocksim";
 
     @Before
     public void setup() {
@@ -51,22 +54,20 @@ public class AccountTest
 
         // create and populate account with objects
      account = new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com",
-             "VSSAdmin", hash, salt, "", "", "",-1,"Fun text",
-             "my-picture.jpg", SQL.GetTimeStamp());
-        // giving account a password for hashing
-     account.setPword("virtualstocksim");
+                           "VSSAdmin", hash, salt, "", "", "", new BigDecimal("0.0"),  -1, "Fun text",
+                           "my-picture.jpg", SQL.GetTimeStamp());
 
     }
 
     @Test
     public void testGetUsername() {
-        assertEquals("VSSAdmin", account.getUname());
+        assertEquals("VSSAdmin", account.getUsername());
     }
 
-    @Test
+/*    @Test
     public void testGetPassword() {
         assertEquals("virtualstocksim", account.getPword());
-    }
+    }*/
 
     @Test
     public void testGetEmail() {
@@ -81,7 +82,7 @@ public class AccountTest
 
     @Test
     public void testGetAccountType(){
-        assertEquals(AccountType.ADMIN, account.getAccountType());
+        assertEquals(AccountType.ADMIN, account.getType());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class AccountTest
 
     @Test
     public void testGetStocksFollowed() {
-        assertEquals("", account.getStocksFollowed() );
+        assertEquals("", account.getFollowedStocks());
     }
 
     @Test
@@ -124,12 +125,12 @@ public class AccountTest
         assertEquals("my-picture.jpg", account.getProfilePicture());
     }
 
-    @Test
+/*    @Test
     public void testSetUUID(){
         String test_uuid = UUID.randomUUID().toString();
-        account.setUuid(test_uuid);
+        account.set(test_uuid);
         assertEquals(test_uuid, account.getUUID());
-    }
+    }*/
 
     @Test
     public void testSetPasswordHash(){
@@ -178,7 +179,7 @@ public class AccountTest
         if(!find_acc.isPresent()){ fail(); }
         assertEquals(new_acc.get().getId(), find_acc.get().getId());
         assertEquals(new_acc.get().getUUID(), find_acc.get().getUUID());
-        assertEquals(new_acc.get().getUname(),find_acc.get().getUname());
+        assertEquals(new_acc.get().getUsername(),find_acc.get().getUsername());
         assertEquals(new_acc.get().getEmail(), find_acc.get().getEmail());
         assertArrayEquals(new_acc.get().getPasswordHash(), find_acc.get().getPasswordHash());
         assertArrayEquals(new_acc.get().getPasswordSalt(), find_acc.get().getPasswordSalt());

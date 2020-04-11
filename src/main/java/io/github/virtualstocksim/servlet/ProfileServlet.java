@@ -31,7 +31,7 @@ public class ProfileServlet extends HttpServlet {
             Account acc = Account.Find(session.getAttribute("username").toString()).get();
             String bio = acc.getBio();
             req.setAttribute("bio", bio);
-            logger.info("User "+acc.getUname()+ " account settings");
+            logger.info("User "+acc.getUsername()+ " account settings");
             logger.info("Bio: "+bio);
             req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
         }

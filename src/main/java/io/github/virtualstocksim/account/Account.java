@@ -3,7 +3,6 @@ package io.github.virtualstocksim.account;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.stock.StockDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,27 +14,24 @@ import java.util.*;
 
 public class Account extends DatabaseItem {
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
+    private static final String EMPTY_STRING = "";
+    private static final BigDecimal EMPTY_BD = new BigDecimal("0.0");
 
-    private String uname;
-    private String pword;
+    private final String uuid;
+    private AccountType type;
+    private String username;
     private String email;
-    private String bio;
-    private String uuid;
     private byte[] passwordHash;
     private byte[] passwordSalt;
-    private int leaderboardRank;
-    //private StocksFollowed stocksFollowed;
-   // private TransactionHistory transactionHistory;
-    /**
-     * IMPORTANT: These are being changed to strings for the time being, as we are still testing. They will
-     * eventually be objects again
-     */
-    private String stocksFollowed;
+    private String followedStocks;
+    private String investedStocks;
     private String transactionHistory;
-    private AccountType accountType;
+    private BigDecimal walletBalance;
+    private int leaderboardRank;
+    private String bio;
     private String profilePicture;
-    private final Timestamp timestamp;
-    private BigDecimal accountBal;
+    private final Timestamp creationDate;
+
 
     /**
      *
@@ -50,129 +46,199 @@ public class Account extends DatabaseItem {
      * @param leaderboardRank  User's rank, among other users, of total profit gained. Initially set to -1
      * @param bio User's bio (string)
      * @param profilePicture String Path to profile picture locally on server
-     * @param timestamp time the account was created (java.time)
+     * @param creationDate time the account was created (java.time)
      */
-    public Account(int id, String uuid, AccountType accountType, String email, String username, byte[] passwordHash, byte[] passwordSalt,
-                   String stocksFollowed, String transactionHistory,
-                   int leaderboardRank, String bio, String profilePicture, Timestamp timestamp) {
+    public Account(
+            int id,
+            String uuid,
+            AccountType accountType,
+            String email,
+            String username,
+            byte[] passwordHash,
+            byte[] passwordSalt,
+            String stocksFollowed,
+            String investedStocks,
+            String transactionHistory,
+            BigDecimal walletBalance,
+            int leaderboardRank,
+            String bio,
+            String profilePicture,
+            Timestamp creationDate
+                  ) {
         super(id);
         this.uuid = uuid;
-        this.accountType = accountType;
-        this.uname = username;
+        this.type = accountType;
+        this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
-        this.stocksFollowed = stocksFollowed;
+        this.followedStocks = stocksFollowed;
+        this.investedStocks = investedStocks;
         this.transactionHistory = transactionHistory;
+        this.walletBalance = walletBalance;
         this.leaderboardRank = leaderboardRank;
         this.bio = bio;
         this.profilePicture = profilePicture;
-        this.timestamp = timestamp;
-        this.accountBal = new BigDecimal(500.50); //Brett is adding this for now, will change constructor later
-    }                          //Just for laying down ground work of AccountController.trade
+        this.creationDate = creationDate;
 
-
-    public String getUname(){
-        return this.uname;
     }
 
-    public String getPword(){
-        return this.pword;
+    public String getUUID()
+    {
+        return uuid;
     }
 
-    public String getEmail(){
-        return this.email;
+    public AccountType getType()
+    {
+        return type;
     }
 
-    public String getUUID() {
-        return this.uuid;
+    public void setType(AccountType type)
+    {
+        this.type = type;
     }
 
-    public AccountType getAccountType() {
-        return this.accountType;
+    public String getUsername()
+    {
+        return username;
     }
 
-    public byte[] getPasswordHash() {
-        return this.passwordHash;
+    public void setUsername(String username)
+    {
+        this.username = username;
     }
 
-    public byte[] getPasswordSalt() {
-        return this.passwordSalt;
+    public String getEmail()
+    {
+        return email;
     }
 
-    public BigDecimal getAccountBal(){return this.accountBal;}
-
-    /**
-     * THESE SHOULD EVENTUALLY BE CHANGED BACK TO THEIR RESPECTIVE OBJECTS AFTER TESTING
-     * @return stocks user is following in a StocksFollowed object
-     */
-    public String getStocksFollowed(){return this.stocksFollowed;}
-
-    /**
-     * THESE SHOULD EVENTUALLY BE CHANGED BACK TO THEIR RESPECTIVE OBJECTS AFTER TESTING
-     * @return User's transactions in a transactionHistory object
-     */
-    public String getTransactionHistory() {return this.transactionHistory; }
-
-    public int getLeaderboardRank() {return this.leaderboardRank;}
-
-    public String getBio() {
-        return this.bio;
-    }
-
-    public String getProfilePicture(){
-        return this.profilePicture;
-    }
-
-    public Timestamp getCreationDate(){
-        return this.timestamp;
-    }
-
-    public void setUname(String uname){
-        this.uname = uname;
-    }
-
-    public void setPword(String pword){
-        this.pword = pword;
-    }
-
-    public void setEmail(String email){
+    public void setEmail(String email)
+    {
         this.email = email;
     }
 
-    public void setUuid(String UUID){
-        this.uuid = UUID;
+    public byte[] getPasswordHash()
+    {
+        return passwordHash;
     }
-    public void setAccountBal(BigDecimal newBalance){ this.accountBal = newBalance;}
 
-    public void setPasswordHash(byte[] passwordHash){
+    public void setPasswordHash(byte[] passwordHash)
+    {
         this.passwordHash = passwordHash;
     }
 
-    public void setPasswordSalt(byte[] passwordSalt){this.passwordSalt = passwordSalt;}
+    public byte[] getPasswordSalt()
+    {
+        return passwordSalt;
+    }
 
-    public void setLeaderboardRank(int leaderboardRank){
+    public void setPasswordSalt(byte[] passwordSalt)
+    {
+        this.passwordSalt = passwordSalt;
+    }
+
+    public String getFollowedStocks()
+    {
+        return followedStocks;
+    }
+
+    public void setFollowedStocks(String followedStocks)
+    {
+        this.followedStocks = followedStocks;
+    }
+
+    public String getInvestedStocks()
+    {
+        return investedStocks;
+    }
+
+    public void setInvestedStocks(String investedStocks)
+    {
+        this.investedStocks = investedStocks;
+    }
+
+    public String getTransactionHistory()
+    {
+        return transactionHistory;
+    }
+
+    public void setTransactionHistory(String transactionHistory)
+    {
+        this.transactionHistory = transactionHistory;
+    }
+
+    public BigDecimal getWalletBalance()
+    {
+        return walletBalance;
+    }
+
+    public void setWalletBalance(BigDecimal walletBalance)
+    {
+        this.walletBalance = walletBalance;
+    }
+
+    public int getLeaderboardRank()
+    {
+        return leaderboardRank;
+    }
+
+    public void setLeaderboardRank(int leaderboardRank)
+    {
         this.leaderboardRank = leaderboardRank;
     }
 
-    public void setBio(String bio) {
+    public String getBio()
+    {
+        return bio;
+    }
+
+    public void setBio(String bio)
+    {
         this.bio = bio;
     }
 
-    public void setProfilePicture(String profilePicture) {
+    public String getProfilePicture()
+    {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture)
+    {
         this.profilePicture = profilePicture;
     }
 
-
+    public Timestamp getCreationDate()
+    {
+        return creationDate;
+    }
 
     // Static methods to search database based on given parameter
     public static Optional<Account> Find(int id){return Find("id", id);}
     public static Optional<Account> Find(String username){return Find("username", username);}
     public static Optional<Account> Find(String key, Object value)
     {
-        List<Account> accounts = FindCustom(String.format("SELECT id, uuid, type, username, email, password_hash, " +
-                "password_salt, followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date " +
-                "FROM accounts WHERE %s = ?", key), value);
+        List<Account> accounts = FindCustom(
+                String.format(
+                        "SELECT " +
+                                "id, " +
+                                "uuid, " +
+                                "type, " +
+                                "username, " +
+                                "email, " +
+                                "password_hash, " +
+                                "password_salt, " +
+                                "followed_stocks, " +
+                                "invested_stocks, " +
+                                "transaction_history, " +
+                                "leaderboard_rank, " +
+                                "wallet_balance, " +
+                                "bio, " +
+                                "profile_picture, " +
+                                "creation_date " +
+                                "FROM accounts WHERE %s = ?",
+                        key),
+                value);
 
         if (accounts.isEmpty())
         {
@@ -191,12 +257,8 @@ public class Account extends DatabaseItem {
      * @param params SQL command parameters
      * @return List of Account instances
      */
-    public static List<Account> FindCustom(String sql, Object... params) {
-        /**
-         * IMPORTANT: This is not finished and needs constructors from transactionHistory and stocks followed to pull
-         * a string from the DB and parse it into the respective objects. Right now there are hardcoded values placed in
-         * for testing. - Dan
-         */
+    public static List<Account> FindCustom(String sql, Object... params)
+    {
         logger.info("Searching for account(s)...");
         try(Connection conn = AccountDatabase.getConnection();
             CachedRowSet crs = SQL.executeQuery(conn, sql, params);
@@ -232,24 +294,25 @@ public class Account extends DatabaseItem {
                     }
                 }
 
-
                 accounts.add(
                         new Account(
                                 crs.getInt("id"),
-                                columns.containsKey("uuid")                 ? crs.getString("uuid")                 : null,
-                                columns.containsKey("type")                 ? AccountType.valueOf(crs.getString("type"))                       : null,
-                                columns.containsKey("email")                ? crs.getString("email")                : null,
-                                columns.containsKey("username")             ? crs.getString("username")             : null,
-                                columns.containsKey("password_hash")        ? crs.getBytes("password_hash")         : null,
-                                columns.containsKey("password_salt")        ? crs.getBytes("password_salt")         : null,
-                                columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")      : null,
-                                columns.containsKey("transaction_history")  ? transactionHistory                                : null,
-                                columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")        : -1,
-                                columns.containsKey("bio")                  ? crs.getString("bio")                  : null,
-                                columns.containsKey("profile_picture")      ? crs.getString("profile_picture")      : null,
-                                columns.containsKey("creation_date")        ? crs.getTimestamp("creation_date")     : null
+                                columns.containsKey("uuid")                 ? crs.getString("uuid")                         : null,
+                                columns.containsKey("type")                 ? AccountType.valueOf(crs.getString("type"))    : null,
+                                columns.containsKey("email")                ? crs.getString("email")                        : null,
+                                columns.containsKey("username")             ? crs.getString("username")                     : null,
+                                columns.containsKey("password_hash")        ? crs.getBytes("password_hash")                 : null,
+                                columns.containsKey("password_salt")        ? crs.getBytes("password_salt")                 : null,
+                                columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")              : null,
+                                columns.containsKey("invested_stocks")      ? crs.getString("invested_stocks")              : null,
+                                columns.containsKey("transaction_history")  ? crs.getString("transaction_history")          : null,
+                                columns.containsKey("wallet_balance")       ? crs.getBigDecimal("wallet_balance")           : null,
+                                columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")                : -1,
+                                columns.containsKey("bio")                  ? crs.getString("bio")                          : null,
+                                columns.containsKey("profile_picture")      ? crs.getString("profile_picture")              : null,
+                                columns.containsKey("creation_date")        ? crs.getTimestamp("creation_date")             : null
                         )
-                );
+                            );
             }
             return accounts;
         }
@@ -274,22 +337,66 @@ public class Account extends DatabaseItem {
         String uuid = UUID.randomUUID().toString();
         salt = Encryption.getNextSalt();
         hash = Encryption.hash(password.toCharArray(), salt);
-        String blank_string ="";
         int defaultLeaderboardRank = -1;
         logger.info("Attempting to create a new account in account database...");
 
         try(Connection conn = AccountDatabase.getConnection())
         {
             int id = SQL.executeInsert(conn,
-                    "INSERT INTO accounts (uuid, type, email, username, password_hash, password_salt, " +
-                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
-
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType.getText(), email, username, hash, salt, blank_string,
-                    blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
+                                       "INSERT INTO accounts (" +
+                                               "uuid, " +
+                                               "type, " +
+                                               "email, " +
+                                               "username, " +
+                                               "password_hash, " +
+                                               "password_salt, " +
+                                               "followed_stocks, " +
+                                               "invested_stocks, " +
+                                               "transaction_history, " +
+                                               "wallet_balance, " +
+                                               "leaderboard_rank, " +
+                                               "bio, " +
+                                               "profile_picture, " +
+                                               "creation_date" +
+                                               ") " +
+                                               "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                                       uuid,
+                                       accountType.getText(),
+                                       email,
+                                       username,
+                                       hash,
+                                       salt,
+                                       EMPTY_STRING,
+                                       EMPTY_STRING,
+                                       EMPTY_STRING,
+                                       EMPTY_BD,
+                                       defaultLeaderboardRank,
+                                       EMPTY_STRING,
+                                       EMPTY_STRING,
+                                       timestamp
+                                      );
 
             logger.info("Account with new id " + id + " successfully created!");
-            return Optional.of(new Account(id, uuid, accountType, email, username, hash, salt, "",
-                    "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
+            return Optional.of(
+                    new Account
+                            (
+                                    id,
+                                    uuid,
+                                    accountType,
+                                    email,
+                                    username,
+                                    hash,
+                                    salt,
+                                    EMPTY_STRING,
+                                    EMPTY_STRING,
+                                    EMPTY_STRING,
+                                    EMPTY_BD,
+                                    defaultLeaderboardRank,
+                                    EMPTY_STRING,
+                                    EMPTY_STRING,
+                                    timestamp
+                            )
+                              );
 
         } catch (SQLException e){
             logger.info("Account creation failed\n", e);
@@ -316,13 +423,15 @@ public class Account extends DatabaseItem {
 
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
-        columns.put("type", accountType.getText());
+        columns.put("type", type.getText());
         columns.put("email", email);
-        columns.put("username", uname);
+        columns.put("username", username);
         columns.put("password_hash", passwordHash);
         columns.put("password_salt", passwordSalt);
-        columns.put("followed_stocks", stocksFollowed);
-        columns.put("transaction_history", transactionHistory);//change this to deserialized params from object
+        columns.put("followed_stocks", followedStocks);
+        columns.put("invested_stocks", investedStocks);
+        columns.put("transaction_history", transactionHistory);
+        columns.put("wallet_balance", walletBalance);
         columns.put("leaderboard_rank", leaderboardRank);
         columns.put("bio", bio);
         columns.put("profile_picture", profilePicture);

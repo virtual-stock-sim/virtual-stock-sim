@@ -8,6 +8,7 @@ create table ACCOUNTS (id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
                     followed_stocks LONG VARCHAR,
                     invested_stocks LONG VARCHAR,
                     transaction_history CLOB,
+                    wallet_balance DECIMAL(12, 2),
                     leaderboard_rank INT,
                     bio VARCHAR(500),
                     profile_picture LONG VARCHAR,

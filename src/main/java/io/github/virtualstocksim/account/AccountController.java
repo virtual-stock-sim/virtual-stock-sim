@@ -100,7 +100,7 @@ public class AccountController {
      */
     public void updateUsername(String newUsername){
         // change username in model
-        acc.setUname(newUsername);
+        acc.setUsername(newUsername);
 
         // update username in db
         try{
