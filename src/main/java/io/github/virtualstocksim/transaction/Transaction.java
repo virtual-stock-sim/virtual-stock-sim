@@ -21,7 +21,6 @@ public class Transaction {
         this.stock = stock;
     }
     //truncates the hours:minutes:seconds.MS
-    //for a nicer experience on the website
     public String getTruncatedDate(){
        return this.getTimestamp().toString().substring(0,10);
     }

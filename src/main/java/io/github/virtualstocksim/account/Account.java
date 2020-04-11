@@ -25,14 +25,12 @@ public class Account extends DatabaseItem {
     private byte[] passwordSalt;
     private int leaderboardRank;
     //private StocksFollowed stocksFollowed;
-    // private InvestedStocks investedStocks;
    // private TransactionHistory transactionHistory;
     /**
      * IMPORTANT: These are being changed to strings for the time being, as we are still testing. They will
      * eventually be objects again
      */
     private String stocksFollowed;
-    private String investedStocks;
     private String transactionHistory;
     private AccountType accountType;
     private String profilePicture;
@@ -54,22 +52,9 @@ public class Account extends DatabaseItem {
      * @param profilePicture String Path to profile picture locally on server
      * @param timestamp time the account was created (java.time)
      */
-    public Account(
-            int id,
-            String uuid,
-            AccountType accountType,
-            String email,
-            String username,
-            byte[] passwordHash,
-            byte[] passwordSalt,
-            String stocksFollowed,
-            String investedStocks,
-            String transactionHistory,
-            int leaderboardRank,
-            String bio,
-            String profilePicture,
-            Timestamp timestamp
-      ) {
+    public Account(int id, String uuid, AccountType accountType, String email, String username, byte[] passwordHash, byte[] passwordSalt,
+                   String stocksFollowed, String transactionHistory,
+                   int leaderboardRank, String bio, String profilePicture, Timestamp timestamp) {
         super(id);
         this.uuid = uuid;
         this.accountType = accountType;
@@ -78,7 +63,6 @@ public class Account extends DatabaseItem {
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.stocksFollowed = stocksFollowed;
-        this.investedStocks = investedStocks;
         this.transactionHistory = transactionHistory;
         this.leaderboardRank = leaderboardRank;
         this.bio = bio;
@@ -248,27 +232,22 @@ public class Account extends DatabaseItem {
                     }
                 }
 
-                /**
-                 * This will have to change when the accountBal field is added fully
-                 * So will the strings in favor of actual objects. I just dont want to mess Dan up because he is working on Account DB stuff right now -Brett
-                 */
 
                 accounts.add(
                         new Account(
                                 crs.getInt("id"),
-                                columns.containsKey("uuid")                 ? crs.getString("uuid")                         : null,
-                                columns.containsKey("type")                 ? AccountType.valueOf(crs.getString("type"))    : null,
-                                columns.containsKey("email")                ? crs.getString("email")                        : null,
-                                columns.containsKey("username")             ? crs.getString("username")                     : null,
-                                columns.containsKey("password_hash")        ? crs.getBytes("password_hash")                 : null,
-                                columns.containsKey("password_salt")        ? crs.getBytes("password_salt")                 : null,
-                                columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")              : null,
-                                columns.containsKey("invested_stocks")      ? crs.getString("invested_stocks")              : null,
-                                columns.containsKey("transaction_history")  ? transactionHistory                                        : null,
-                                columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")                : -1,
-                                columns.containsKey("bio")                  ? crs.getString("bio")                          : null,
-                                columns.containsKey("profile_picture")      ? crs.getString("profile_picture")              : null,
-                                columns.containsKey("creation_date")        ? crs.getTimestamp("creation_date")             : null
+                                columns.containsKey("uuid")                 ? crs.getString("uuid")                 : null,
+                                columns.containsKey("type")                 ? AccountType.valueOf(crs.getString("type"))                       : null,
+                                columns.containsKey("email")                ? crs.getString("email")                : null,
+                                columns.containsKey("username")             ? crs.getString("username")             : null,
+                                columns.containsKey("password_hash")        ? crs.getBytes("password_hash")         : null,
+                                columns.containsKey("password_salt")        ? crs.getBytes("password_salt")         : null,
+                                columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")      : null,
+                                columns.containsKey("transaction_history")  ? transactionHistory                                : null,
+                                columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")        : -1,
+                                columns.containsKey("bio")                  ? crs.getString("bio")                  : null,
+                                columns.containsKey("profile_picture")      ? crs.getString("profile_picture")      : null,
+                                columns.containsKey("creation_date")        ? crs.getTimestamp("creation_date")     : null
                         )
                 );
             }
@@ -303,31 +282,14 @@ public class Account extends DatabaseItem {
         {
             int id = SQL.executeInsert(conn,
                     "INSERT INTO accounts (uuid, type, email, username, password_hash, password_salt, " +
-                            " followed_stocks, invested_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
+                            " followed_stocks, transaction_history, leaderboard_rank, bio, profile_picture, creation_date) " +
 
                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",uuid, accountType.getText(), email, username, hash, salt, blank_string,
-                    blank_string, blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
+                    blank_string, defaultLeaderboardRank, blank_string, blank_string, timestamp);
 
             logger.info("Account with new id " + id + " successfully created!");
-            return Optional.of(
-                    new Account
-                            (
-                                    id,
-                                    uuid,
-                                    accountType,
-                                    email,
-                                    username,
-                                    hash,
-                                    salt,
-                                    "",
-                                    "",
-                                    "",
-                                    defaultLeaderboardRank,
-                                    blank_string,
-                                    blank_string,
-                                    timestamp
-                            )
-                              );
+            return Optional.of(new Account(id, uuid, accountType, email, username, hash, salt, "",
+                    "", defaultLeaderboardRank, blank_string, blank_string, timestamp));
 
         } catch (SQLException e){
             logger.info("Account creation failed\n", e);
@@ -360,8 +322,7 @@ public class Account extends DatabaseItem {
         columns.put("password_hash", passwordHash);
         columns.put("password_salt", passwordSalt);
         columns.put("followed_stocks", stocksFollowed);
-        columns.put("invested_stocks", investedStocks);
-        columns.put("transaction_history", transactionHistory);
+        columns.put("transaction_history", transactionHistory);//change this to deserialized params from object
         columns.put("leaderboard_rank", leaderboardRank);
         columns.put("bio", bio);
         columns.put("profile_picture", profilePicture);

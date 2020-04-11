@@ -8,10 +8,20 @@ import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.sql.rowset.CachedRowSet;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -68,12 +78,23 @@ public class AccountController {
 
     /**
      *
-     * @param accountID Account id to update
-     * @param newPicturePath Updated picture path
+     * @param inputStream  file contents converted to input stream
+     * @param fileName file name user uploaded
      */
-    public void updateProfilePicture(int accountID, String newPicturePath) {
-        acc = Account.Find(accountID).get();
-        acc.setProfilePicture(newPicturePath);
+    public void updateProfilePicture(InputStream inputStream, String fileName) {
+        File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
+        if(!uploadDir.exists()){
+            uploadDir.mkdirs();
+        }
+        try{
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+            ImageIO.write(bufferedImage, fileName.substring(fileName.lastIndexOf("."), fileName.length()-1), uploadDir);
+
+        }catch (IOException e){
+            logger.error("Error reading image: " +e);
+        }
+
+
 
         try{
             acc.update();
@@ -81,10 +102,6 @@ public class AccountController {
         } catch(SQLException e){
             logger.error("Error: " + e.toString());
         }
-
-        // allow user to provide a new picture and update it
-        // convert picture name to UUID
-        // how to upload picture to server (could be bytes?)
 
     }
 
@@ -165,6 +182,15 @@ public class AccountController {
             if(compareRes !=-1){
                 acc.setAccountBal(acc.getAccountBal().subtract(volumePrice));
                 //need to figure out how to associate investments with account in DB and then move stock from follow to invest
+                try (Connection conn = AccountDatabase.getConnection()) {
+                    SQL.executeUpdate(conn,"SELECT followed_stocks "+
+                            "FROM accounts "+
+                            "WHERE UUID = ? "
+                            );
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    logger.info("something went wrong when trying to connect. Failed to move from following to invested");
+                }
             }else{
                 logger.info("The user does not have the funds to cover this trade!");
             }

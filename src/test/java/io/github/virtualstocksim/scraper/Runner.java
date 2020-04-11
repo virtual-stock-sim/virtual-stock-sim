@@ -1,7 +1,5 @@
 package io.github.virtualstocksim.scraper;
 
-import io.github.virtualstocksim.following.StocksFollowedController;
-import io.github.virtualstocksim.transaction.TransactionHistoryController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
