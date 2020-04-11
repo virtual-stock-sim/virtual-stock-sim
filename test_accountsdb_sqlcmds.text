@@ -6,6 +6,7 @@ create table ACCOUNTS (id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
                     password_hash VARCHAR(256) FOR BIT DATA NOT NULL,
                     password_salt VARCHAR(16) FOR BIT DATA NOT NULL,
                     followed_stocks LONG VARCHAR,
+                    invested_stocks LONG VARCHAR,
                     transaction_history CLOB,
                     leaderboard_rank INT,
                     bio VARCHAR(500),
