@@ -5,8 +5,14 @@ import io.github.virtualstocksim.encryption.Encryption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.sql.rowset.CachedRowSet;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -62,12 +68,23 @@ public class AccountController {
 
     /**
      *
-     * @param accountID Account id to update
-     * @param newPicturePath Updated picture path
+     * @param inputStream  file contents converted to input stream
+     * @param fileName file name user uploaded
      */
-    public void updateProfilePicture(int accountID, String newPicturePath) {
-        acc = Account.Find(accountID).get();
-        acc.setProfilePicture(newPicturePath);
+    public void updateProfilePicture(InputStream inputStream, String fileName) {
+        File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
+        if(!uploadDir.exists()){
+            uploadDir.mkdirs();
+        }
+        try{
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+            ImageIO.write(bufferedImage, fileName.substring(fileName.lastIndexOf("."), fileName.length()-1), uploadDir);
+
+        }catch (IOException e){
+            logger.error("Error reading image: " +e);
+        }
+
+
 
         try{
             acc.update();
@@ -75,10 +92,6 @@ public class AccountController {
         } catch(SQLException e){
             logger.error("Error: " + e.toString());
         }
-
-        // allow user to provide a new picture and update it
-        // convert picture name to UUID
-        // how to upload picture to server (could be bytes?)
 
     }
 

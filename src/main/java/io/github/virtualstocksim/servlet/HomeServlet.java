@@ -27,15 +27,15 @@ public class HomeServlet extends HttpServlet
             String username = (String) session.getAttribute("username");
             if(Account.Find(username).isPresent()) {
                 String profilePicture = Account.Find(username).get().getProfilePicture();
-                if(profilePicture.length() == 0){
+                if(profilePicture.length() == 0) {
                     // if the user has not uploaded a profile picture, default it to question mark
                     profilePicture = "../_view/resources/images/home/question-mark.jpg";
                     logger.info("profile picture was null - defaulted to Question Mark");
-                }else {
+                }
                     req.setAttribute("picturepath", profilePicture);
                     req.setAttribute("username", username);
                     logger.info(username + " is logged in");
-                }
+
             }
         }else logger.info("Session was null - user not logged in");
 

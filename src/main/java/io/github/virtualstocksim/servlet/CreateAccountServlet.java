@@ -48,34 +48,43 @@ public class CreateAccountServlet extends HttpServlet {
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
-            }
 
-            // check to make sure passwords match
-            if(!pword.equals(confirmPword)){
+                // check for passwords not matching
+            } else if (!pword.equals(confirmPword)){
                 errorMessage = "Passwords do not match. Please try again. ";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
-            }
-            // check to make sure password meets length requirements
-            if(pword.length() < 8){
+
+                // check to make sure password is at least 8 characters
+            }else if(pword.length() < 8){
                 errorMessage = "Passwords must be at least 8 characters long.";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
-            }
-            String userNameP = "'%" + uname + "%'";
-            String emailP = "'%" + email + "%'";
-            List<Account> accs = Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ? OR email LIKE ?", userNameP, emailP);
-            if(!accs.isEmpty()){
-                //username exists
-                errorMessage= "That username or email is already in use.";
+
+                // check to make sure email is not taken
+            } else if(!Account.FindCustom("SELECT id FROM accounts WHERE email LIKE ?", "'%" + email + "%'").isEmpty()){
+                // email exists
+                errorMessage= "An account with this email already exists";
                 req.setAttribute("errorMessage", errorMessage);
+                req.setAttribute("email", email);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
-            }
 
-            Account.Create(uname,email,pword, AccountType.ADMIN);
+                // check to see if username is taken
+            } else if(!Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ?", "'%" + uname + "%'").isEmpty()){
+                // username already exists
+                errorMessage= "That username is already in use.";
+                req.setAttribute("errorMessage", errorMessage);
+                req.setAttribute("uname", uname);
+                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+                return;
+
+            // if none of these conditions are met, account can be created
+            } else {
+                Account.Create(uname, email, pword, AccountType.ADMIN);
+            }
 
         } catch (NumberFormatException e){
             errorMessage = "Invalid credentials. Please enter a valid username and password.";

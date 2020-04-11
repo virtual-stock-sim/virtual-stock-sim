@@ -49,9 +49,11 @@ public class ProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountController controller = new AccountController();
         HttpSession session = req.getSession(false);
-        Account acc = Account.Find(session.getAttribute("username").toString()).get();
-        logger.info("Profile Servlet: doPost");
         String errorMsg = null;
+
+       if( Account.Find(session.getAttribute("username").toString()).isPresent() ) {
+            Account acc = Account.Find(session.getAttribute("username").toString()).get();
+            logger.info("Profile Servlet: doPost");
 
             //Update user bio
             if(req.getParameter("bio") !=null) {
@@ -67,50 +69,46 @@ public class ProfileServlet extends HttpServlet {
                 String description = req.getParameter("description"); // Retrieves <input type="text" name="description">
                 Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-                InputStream fileContent = filePart.getInputStream(); // convert to image stream
-                File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
-                if(!uploadDir.exists()){
-                    uploadDir.mkdirs();
-                }
-                File file = File.createTempFile(fileName,".tmp", uploadDir); // write file to directory
-                logger.info(file.toString());
-                Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                controller.updateProfilePicture(acc.getId(),file.toString());
-                logger.info("Profile Picture successfully updated to " +file.toString());
+                controller.updateProfilePicture(filePart.getInputStream(),fileName); // controller updates profile picture
 
 
             }
-                // User changing username
+
+            // User changing username
             if (req.getParameter("username")!=null ){
 
                 String username = req.getParameter("username"); // retrieve username from form
                 controller.updateUsername(acc.getId(),username);    // controller updates username
                 session.setAttribute("username", username); // bind new username to session (used for profile menu)
             }
+
+            // User changing password
             if(req.getParameter("password")!=null) {
                 // user changing password
                 String password = req.getParameter("password"); // retrieve password from form
-                if(password.length() >= 8) {    // check to ensure password meets required length
+                if (password.length() >= 8) {    // check to ensure password meets required length
                     logger.info("Updating password to " + password); /*** THIS WILL NOT BE HERE IN THE FINAL PRODUCT, IT IS ONLY USED FOR TESTING ***/
 
                     // Encrypt new password, and store it in DB
                     byte[] newSalt = Encryption.getNextSalt();
                     byte[] newHash = Encryption.hash(password.toCharArray(), newSalt);
                     controller.updatePassword(acc.getId(), newHash, newSalt);
-                }else{
+                } else {
                     // else password did not meet required length, notify user
                     logger.info("Password must be at least 8 characters");
-                    errorMsg ="Password must be at least 8 characters long.";
+                    errorMsg = "Password must be at least 8 characters long.";
                     req.setAttribute("errorMsg", errorMsg);
                 }
             }
 
+    }else{
+           logger.error("Error finding account with username "+session.getAttribute("username").toString());
+           errorMsg="Whoops! something went wrong. Error: 404";
+           req.setAttribute("errorMsg", errorMsg);
+       }
+
             req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
 
-
-
+       }
 
     }
-
-}
