@@ -12,9 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DatabaseFactory
 {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseFactory.class);
-    private Map<String, BasicDataSource> dataSources;
-    private Properties config;
+    //private static final Logger logger = LoggerFactory.getLogger(DatabaseFactory.class);
+    private final Map<String, BasicDataSource> dataSources;
 
     private static class StaticContainer
     {
@@ -25,6 +24,7 @@ public class DatabaseFactory
 
     private DatabaseFactory()
     {
+        System.setProperty("derby.language.sequence.preallocator", "1");
         dataSources = new ConcurrentHashMap<>();
     }
 
@@ -48,7 +48,6 @@ public class DatabaseFactory
             ds.setDriver(new EmbeddedDriver());
             ds.setUrl(databaseURI);
             getInstance().dataSources.put(databaseURI, ds);
-
             return getInstance().dataSources.get(databaseURI);
         }
     }
