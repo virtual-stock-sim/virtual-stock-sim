@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class Account extends DatabaseItem {
     private AccountType accountType;
     private String profilePicture;
     private final Timestamp timestamp;
-
+    private BigDecimal accountBal;
 
     /**
      *
@@ -67,8 +68,8 @@ public class Account extends DatabaseItem {
         this.bio = bio;
         this.profilePicture = profilePicture;
         this.timestamp = timestamp;
-
-    }
+        this.accountBal = new BigDecimal(500.50); //Brett is adding this for now, will change constructor later
+    }                          //Just for laying down ground work of AccountController.trade
 
 
     public String getUname(){
@@ -98,6 +99,8 @@ public class Account extends DatabaseItem {
     public byte[] getPasswordSalt() {
         return this.passwordSalt;
     }
+
+    public BigDecimal getAccountBal(){return this.accountBal;}
 
     /**
      * THESE SHOULD EVENTUALLY BE CHANGED BACK TO THEIR RESPECTIVE OBJECTS AFTER TESTING
@@ -140,6 +143,7 @@ public class Account extends DatabaseItem {
     public void setUuid(String UUID){
         this.uuid = UUID;
     }
+    public void setAccountBal(BigDecimal newBalance){ this.accountBal = newBalance;}
 
     public void setPasswordHash(byte[] passwordHash){
         this.passwordHash = passwordHash;
@@ -227,6 +231,11 @@ public class Account extends DatabaseItem {
                         transactionHistory = clob.getSubString(1, (int) clob.length());
                     }
                 }
+
+                /**
+                 * This will have to change when the accountBal field is added fully
+                 * So will the strings in favor of actual objects. I just dont want to mess Dan up because he is working on Account DB stuff right now -Brett
+                 */
 
                 accounts.add(
                         new Account(

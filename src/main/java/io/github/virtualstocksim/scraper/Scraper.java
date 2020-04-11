@@ -50,18 +50,16 @@ public class Scraper {
     public boolean checkStockExists(String ticker) throws IOException {
         logger.info("Checking if stock symbol `" + ticker + "` exists");
         try {
-            //Document doc = Jsoup.connect("https://finance.yahoo.com/quote/"+ticker).get();
-
             Connection.Response response = Jsoup.connect("https://finance.yahoo.com/quote/"+ticker).followRedirects(true).execute();
             int statusCode = response.statusCode();
             String redirect = response.url().toString();
 
-            if (redirect.contains("lookup") ) {
+            if (redirect.contains("lookup") || statusCode!=200) {
                 System.out.println("status code: " + statusCode);
                 //was redirected to a lookup page, not on yahoo finance
                 return false;
             } else {
-                //is in yahoo finance
+                //stock is in yahoo finance
                 return true;
             }
         }catch (HttpStatusException e){ //this will account for MALFORMED tickers only (ex: starting name with a slash)
@@ -71,15 +69,16 @@ public class Scraper {
     }
 
 
-    public JsonArray getDescriptionAndHistory(String ticker, TimeInterval timeInterval) throws IOException {
+    public JsonObject getDescriptionAndHistory(String ticker, TimeInterval timeInterval) throws IOException {
         logger.info("Getting company description and price history for stock symbol `" + ticker + "`");
         long unixTime = System.currentTimeMillis() / 1000L;
         //calculate seconds passed & sub from current unix time
 
-        JsonArray ja = new JsonArray();
+        JsonArray priceHistory = new JsonArray();
 
+        JsonObject content = new JsonObject();
+        content.addProperty("description",this.getDescription(ticker));
         if(checkStockExists(ticker)) {
-            String companyDescription = this.getDescription(ticker);
 
             logger.info("Getting max price history for `" + ticker + "` with time interval of " + timeInterval.getPeriod());
             //since unix time calculates time from epoch, 0 and current time are really min and max values, do not need integer.max
@@ -94,9 +93,7 @@ public class Scraper {
                 col.addAll(Arrays.asList(rowsList.get(i).split(",")));
             }
 
-            JsonObject companyDesc = new JsonObject();
-            companyDesc.addProperty("description", this.getDescription(ticker));
-            ja.add(companyDesc);
+
             for (int i = 0; i < col.size() - 6; i += 7) {
                 JsonObject jo = new JsonObject();
                 jo.addProperty("date", col.get(i));
@@ -106,14 +103,17 @@ public class Scraper {
                 jo.addProperty("close", col.get(i + 4));
                 jo.addProperty("adjclose", col.get(i + 5));
                 jo.addProperty("volume", col.get(i + 6));
-                ja.add(jo);
+                priceHistory.add(jo);
             }
+            content.addProperty("history",priceHistory.toString());
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            return ja;
+            JsonObject finalObject = new JsonObject();
+            finalObject.addProperty(ticker, String.valueOf(content));
+
+            return finalObject;
         }else{
             logger.warn("Stock symbol `" + ticker + "` does not exist. Unable to retrieve description and history");
-            return ja; // did not exist on Yahoo finance
+            return content; // did not exist on Yahoo finance
         }
 
         //return gson.toJson(ja); this would enable pretty printing if returned

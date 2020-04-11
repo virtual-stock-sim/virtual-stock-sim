@@ -29,7 +29,7 @@ public class ScraperTest {
     private static List<JsonArray> JsonArrays = new LinkedList<JsonArray>();
     private static List<JsonArray> stressJsonArrays = new LinkedList<JsonArray>();
     private static List<BigDecimal> openingPrices = new LinkedList<BigDecimal>();
-
+    private static Scraper scraper = new Scraper();
     /**
      * Pause program execution
      * @param baseTime Base time for pause
@@ -49,8 +49,13 @@ public class ScraperTest {
     {
         pause(10, 6);
     }
+    @Test
+    public void debug() throws IOException {
+        System.out.println(scraper.getDescriptionAndHistory("GOOGL",TimeInterval.ONEWEEK));
+    }
 
-    private static Scraper scraper = new Scraper();
+    /*
+   s
     @BeforeClass //used for every test but stress test
     public static void setUp() throws IOException, InterruptedException {
         logger.info("Setting up scraper tests");
@@ -121,9 +126,8 @@ public class ScraperTest {
             Map.Entry pair = (Map.Entry)iter.next();
             System.out.println(pair.getKey() + " = " + pair.getValue());
             iter.remove();
-        }*/
+        }
     }
-
     @Test
     public void testCompanyDescription() throws IOException {
         for (JsonArray ja : JsonArrays) {
@@ -161,7 +165,7 @@ public class ScraperTest {
         assertEquals(stressJsonArrays.size(),40);
         System.out.println("done");
 
-    }
+    }*/
 
 
 

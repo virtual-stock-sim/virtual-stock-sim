@@ -31,19 +31,14 @@ public class TransactionHistoryController {
         }
         return ja;
     }
-    /*TODO:
-          Here is why Transaction should also probably have another constructor again to make this look better
-    */
 
-    public List<Transaction> parseTransactionFromJSON(JsonArray j){
+    public TransactionHistory parseTransactionFromJSON(JsonArray j){
         List tempList = new LinkedList();
-
         for(JsonElement x : j){
 
             tempList.add(new Transaction(TransactionType.valueOf(x.getAsJsonObject().get("type").getAsString()), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString()),    x.getAsJsonObject().get("total").getAsBigDecimal(), x.getAsJsonObject().get("shares").getAsInt(), Stock.Find(x.getAsJsonObject().get("stock").getAsInt()).get()));
         }
-
-        return tempList;
+        return new TransactionHistory (tempList);
     }
 
 /*

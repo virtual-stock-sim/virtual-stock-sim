@@ -2,19 +2,19 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.scraper.Scraper;
+import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import javax.sql.rowset.CachedRowSet;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,7 +23,7 @@ public class AccountController {
     private Account acc;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
 
-
+    private io.github.virtualstocksim.scraper.Scraper scraper;
 
     public void setModel (Account acc){
         this.acc=acc;
@@ -68,23 +68,12 @@ public class AccountController {
 
     /**
      *
-     * @param inputStream  file contents converted to input stream
-     * @param fileName file name user uploaded
+     * @param accountID Account id to update
+     * @param newPicturePath Updated picture path
      */
-    public void updateProfilePicture(InputStream inputStream, String fileName) {
-        File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
-        if(!uploadDir.exists()){
-            uploadDir.mkdirs();
-        }
-        try{
-            BufferedImage bufferedImage = ImageIO.read(inputStream);
-            ImageIO.write(bufferedImage, fileName.substring(fileName.lastIndexOf("."), fileName.length()-1), uploadDir);
-
-        }catch (IOException e){
-            logger.error("Error reading image: " +e);
-        }
-
-
+    public void updateProfilePicture(int accountID, String newPicturePath) {
+        acc = Account.Find(accountID).get();
+        acc.setProfilePicture(newPicturePath);
 
         try{
             acc.update();
@@ -92,6 +81,10 @@ public class AccountController {
         } catch(SQLException e){
             logger.error("Error: " + e.toString());
         }
+
+        // allow user to provide a new picture and update it
+        // convert picture name to UUID
+        // how to upload picture to server (could be bytes?)
 
     }
 
@@ -143,6 +136,45 @@ public class AccountController {
        } catch(SQLException e){
            logger.error("Error: " + e.toString());
        }
+
+    }
+    //remove from follow add to invest!
+
+    /**
+     * @param type
+     * @param ticker
+     * @param numShares
+     */
+
+
+    public void trade(TransactionType type, String ticker, int numShares) throws IOException {
+        List<Stock> results = Stock.FindCustom("SELECT curr_price"+
+                "FROM stocks"+
+                "WHERE symbol LIKE ?", "'%" + ticker +"'%");
+
+
+        if(results.isEmpty()) {
+            logger.info("ERROR: no results returned (Stock probably not on Yahoo finance)");
+        }
+
+        Optional<Stock> stockOpt = Optional.ofNullable(results.get(0));
+        BigDecimal volumePrice = stockOpt.get().getCurrPrice().multiply(new BigDecimal(numShares));
+
+        if(type.equals(TransactionType.BUY)){
+            int compareRes = acc.getAccountBal().compareTo(volumePrice);
+            if(compareRes !=-1){
+                acc.setAccountBal(acc.getAccountBal().subtract(volumePrice));
+                //need to figure out how to associate investments with account in DB and then move stock from follow to invest
+            }else{
+                logger.info("The user does not have the funds to cover this trade!");
+            }
+        }else if(type.equals(TransactionType.SELL)){
+            acc.setAccountBal(acc.getAccountBal().add(volumePrice));
+            //then remove the stock from invested to following
+        }
+
+
+
 
     }
 
