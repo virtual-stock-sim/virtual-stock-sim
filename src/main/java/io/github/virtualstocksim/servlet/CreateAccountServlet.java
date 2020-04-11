@@ -58,14 +58,16 @@ public class CreateAccountServlet extends HttpServlet {
                 return;
             }
             // check to make sure password meets length requirements
-            if(pword.length() < 8 || pword.isEmpty() || confirmPword.isEmpty()){
+            if(pword.length() < 8){
                 errorMessage = "Passwords must be at least 8 characters long.";
                 req.setAttribute("errorMessage", errorMessage);
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
             }
-            List<Account> accs = Account.FindCustom("SELECT id FROM accounts WHERE username LIKE '%?%' OR email LIKE '%?%'", uname, email);
-            if(accs.isEmpty()){
+            String userNameP = "'%" + uname + "%'";
+            String emailP = "'%" + email + "%'";
+            List<Account> accs = Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ? OR email LIKE ?", userNameP, emailP);
+            if(!accs.isEmpty()){
                 //username exists
                 errorMessage= "That username or email is already in use.";
                 req.setAttribute("errorMessage", errorMessage);
@@ -85,8 +87,7 @@ public class CreateAccountServlet extends HttpServlet {
         // login is valid, redirect user
         // create session
         HttpSession session = req.getSession(true);
-        String username = req.getParameter("uname");
-        session.setAttribute("username", username);
+        session.setAttribute("username", uname);
         logger.info("Logging user" +uname+ " in....");
 
         resp.sendRedirect("/home");
