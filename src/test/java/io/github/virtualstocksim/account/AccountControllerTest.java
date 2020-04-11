@@ -1,39 +1,37 @@
 package io.github.virtualstocksim.account;
 
+import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import org.junit.Before;
+import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import static org.junit.Assert.*;
 
 public class AccountControllerTest
 {
     private AccountController conn;
-    private Account acc;
     StocksFollowed stocksFollowed;
     Stock Amazon;
     List<Transaction> transactions;
     TransactionHistory transactionHistory;
     List<Stock> stocks;
     String uuid;
-    byte[] hash;
-    byte[] salt;
 
     @Before
     public void setup() {
         conn = new AccountController();
-        Encryption encrypt = new Encryption();
-        acc.setPword("virtualstocksim");
-        salt = encrypt.getNextSalt();
-        hash = encrypt.hash(acc.getPword().toCharArray(),salt);
-        System.out.println(hash);
 
         uuid = UUID.randomUUID().toString();
         stocks = new LinkedList<Stock>();
@@ -47,14 +45,61 @@ public class AccountControllerTest
 
         //transactions.add(new Transaction(TransactionType.BUY,"3/18/2020",new BigDecimal("1800.00"),5, Amazon));
 
-        acc= new Account(0, uuid, AccountType.ADMIN, "VSSAdmin@vss.com", "VSSAdmin", hash, salt,
-                "", "",-1,"Fun text","my-picture.jpg", Timestamp.valueOf(Instant.now().toString()));
+        try(Connection conn = AccountDatabase.getConnection())
+        {
+            SQL.executeUpdate(conn, "DELETE FROM accounts WHERE username = ? ", "TestAdmin");
+        }
+        catch (SQLException e)
+        {
+            fail();
+        }
 
-        conn.setModel(acc);
+        conn.setModel(Account.Create("TestAdmin", "test@vss.com", "supersecret", AccountType.ADMIN).get());
     }
 
-    // No tests yet because account controller has no methods
+    @Test
+    public void testGetModel() {
+        Optional<Account> find_acc = Account.Find("TestAdmin");
+        if(!find_acc.isPresent()){ fail(); }
+        assertEquals(find_acc.get().getUUID(),conn.getModel().getUUID());
+        assertEquals(find_acc.get().getAccountType().getText(),conn.getModel().getAccountType().getText());
+        assertEquals(find_acc.get().getEmail(),conn.getModel().getEmail());
+        assertArrayEquals(find_acc.get().getPasswordHash(), conn.getModel().getPasswordHash());
+        assertArrayEquals(find_acc.get().getPasswordSalt(), conn.getModel().getPasswordSalt());
+        assertEquals(find_acc.get().getCreationDate(),conn.getModel().getCreationDate());
+        assertEquals(find_acc.get().getLeaderboardRank(),conn.getModel().getLeaderboardRank());
+        assertEquals(find_acc.get().getBio(),conn.getModel().getBio());
+        assertEquals(find_acc.get().getProfilePicture(),conn.getModel().getProfilePicture());
 
+    }
 
+    @Test
+    public void testLogin() {
+        assertTrue((AccountController.login(conn.getModel().getUname(),conn.getModel().getPword())));
+
+    }
+
+    @Test
+    public void testUpdateBio() {
+        conn.updateUserBio("Software Engineer");
+        assertEquals(conn.getModel().getBio(), "Software Engineer");
+    }
+
+    @Test
+    public void testUpdateUsername() {
+        conn.updateUsername("DanPalm5");
+        assertEquals(conn.getModel().getUname(), "DanPalm5");
+    }
+
+    @Test
+    public void testUpdatePassword(){
+        conn.updatePassword("ultrasecret");
+        Optional<Account> find_acc = Account.Find("TestAdmin");
+        if(!find_acc.isPresent()){ fail(); }
+        byte[] salt = find_acc.get().getPasswordSalt();
+        byte[] hash = find_acc.get().getPasswordHash();
+        byte[] pwordHash = Encryption.hash("ultrasecret".toCharArray(), salt);
+        assertArrayEquals(hash, pwordHash);
+    }
 
 }
