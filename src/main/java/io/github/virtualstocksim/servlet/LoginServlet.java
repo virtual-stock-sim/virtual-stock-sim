@@ -2,6 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
+import io.github.virtualstocksim.account.CreateAccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,6 @@ public class LoginServlet extends HttpServlet
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         logger.info("Login Servlet: doPost");
-        // create account model
-
         //List<Transaction> transactions = new LinkedList<Transaction>();
         //TransactionHistory transactionHistory = new TransactionHistory(transactions);
         //List<Follow> stocks = new LinkedList<Follow>();
@@ -52,12 +51,14 @@ public class LoginServlet extends HttpServlet
         try {
             String uname = req.getParameter("uname");
             String pword = req.getParameter("pword");
+            CreateAccountModel accountModel = new CreateAccountModel(uname);
 
-
-          if(!AccountController.login(uname,pword)){
+          if(!AccountController.login(uname,pword))
+          {
             // If user input is invalid, return error message with same page
             errorMessage = "Login Failed. Please enter a valid username and password.";
             req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel",accountModel);
             req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
             return;
           }
@@ -68,10 +69,7 @@ public class LoginServlet extends HttpServlet
             return;
         }
 
-
-
-        // login is valid, redirect user
-        // create session
+        // login is valid, redirect user and create session
         HttpSession session = req.getSession(true);
         String username = req.getParameter("uname");
         session.setAttribute("username", username);

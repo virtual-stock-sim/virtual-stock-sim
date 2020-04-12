@@ -2,6 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
+import io.github.virtualstocksim.account.CreateAccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,10 @@ public class HomeServlet extends HttpServlet
         HttpSession session = req.getSession(false);
         if(session!=null) {
             String username = (String) session.getAttribute("username");
+            CreateAccountModel accountModel = new CreateAccountModel(username);
             if(Account.Find(username).isPresent()) {
                 String profilePicture = Account.Find(username).get().getProfilePicture();
+                req.setAttribute("CreateAccountModel", accountModel);
                 if(profilePicture.length() == 0) {
                     // if the user has not uploaded a profile picture, default it to question mark
                     profilePicture = "../_view/resources/images/home/question-mark.jpg";

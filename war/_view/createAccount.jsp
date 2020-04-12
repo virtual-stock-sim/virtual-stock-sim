@@ -23,9 +23,9 @@
 
         <div class = "sign-up">
                 <form action="${pageContext.servletContext.contextPath}/createAccount" method="post">
-                        <input type="text" id="email" placeholder=" Email" name="email"><br><br>
+                        <input type="text" id="email" placeholder=" Email" name="email" value=${CreateAccountModel.email}><br><br>
 
-                        <input type="text" id="uname" placeholder=" Username" name="uname" value=${uname}><br><br>
+                        <input type="text" id="uname" placeholder=" Username" name="uname" value=${CreateAccountModel.username}><br><br>
 
                         <input type="password" id="pword" placeholder=" Password " name="pword"><br><br>
 

@@ -31,8 +31,8 @@
             <p class="login-text">
             <h6>WELCOME BACK</h6>
             </p>
-            <input type="text"  class ="username" id="uname" name="uname"  required="true" placeholder=" Username"/>
-            <input type="password" class ="password" id="pword" name="pword"  required="true" placeholder=" Password"/>
+            <input type="text"  class ="username" id="uname" name="uname" required="true" placeholder=" Username" value="${CreateAccountModel.username}" />
+            <input type="password" class ="password" id="pword" name="pword"  required="true" placeholder=" Password" />
             <input type="submit" class ="submit" value ="Login"/>
             <button onClick="redirectAccount()">Join the Team</button>
             <script>

@@ -56,7 +56,7 @@ public class AccountControllerTest
             fail();
         }
 
-        conn.setModel(Account.Create("TestAdmin", "test@vss.com", "supersecret", AccountType.ADMIN).get());
+        conn.setModel(Account.Create("TestAdmin", "test@vss.com", TEST_PASSWORD, AccountType.ADMIN).get());
     }
 
     @Test

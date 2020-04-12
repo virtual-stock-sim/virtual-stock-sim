@@ -39,10 +39,11 @@
 <div class="profile-menu">
    <!--Profile menu dropdown, simple logout button for now-->
     <div class = "dropdown">
-        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src=${picturepath}>
-            <span class="caret"></span></button>
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><img class="img-thumbnail" style="width: 50px;" src="${picturepath}">
+            <span class="caret"></span>
+        </button>
         <u1 class="dropdown-menu">
-            <li class="dropdown-header" style="font-size:large;">Hi, ${username}</li>
+            <li class="dropdown-header" style="font-size:large;">Hi, ${CreateAccountModel.username}</li>
             <li class="divider"></li>
             <li class="link"><a onclick="redirectProfile()">My Account<i class="fa fa-user"></i></a></li>
             <li class="link"><a onclick="logout()">Sign out<i class="fa fa-sign-out"></i></a></li>

@@ -133,6 +133,18 @@ public class AccountTest
     }*/
 
     @Test
+    public void testGetInvestedStocks(){
+        account.setInvestedStocks("Amazon,Tesla");
+        assertEquals(account.getInvestedStocks(),"Amazon,Tesla");
+    }
+
+    @Test
+    public void testGetWalletBalance(){
+        account.setWalletBalance(new BigDecimal("10000.00"));
+        assertEquals(account.getWalletBalance(), new BigDecimal("10000.00"));
+    }
+
+    @Test
     public void testSetPasswordHash(){
         account.setPasswordHash(hash);
         assertEquals(hash, account.getPasswordHash());
@@ -160,6 +172,18 @@ public class AccountTest
     public void testSetProfilePicture(){
         account.setProfilePicture("new-picture.jpg");
         assertEquals("new-picture.jpg", account.getProfilePicture());
+    }
+
+    @Test
+    public void testSetFollowedStocks(){
+        account.setFollowedStocks("Amazon, BD");
+        assertEquals(account.getFollowedStocks(), "Amazon, BD");
+    }
+
+    @Test
+    public void testSetTransactionHistory(){
+        account.setTransactionHistory("AMZN 4/11 1 $300");
+        assertEquals(account.getTransactionHistory(),"AMZN 4/11 1 $300");
     }
 
     @Test
@@ -192,4 +216,5 @@ public class AccountTest
         assertEquals(new_acc.get().getCreationDate(), find_acc.get().getCreationDate());
 
     }
+
 }
