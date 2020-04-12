@@ -89,5 +89,13 @@
         <servlet-class>io.github.virtualstocksim.servlet.ProfileServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ErrorServlet</servlet-name>
+        <url-pattern>/error=404</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ErrorServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.ErrorServlet</servlet-class>
+    </servlet>
 
 </web-app>
