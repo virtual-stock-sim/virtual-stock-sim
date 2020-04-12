@@ -64,7 +64,7 @@ public class AccountTest
         assertEquals("VSSAdmin", account.getUsername());
     }
 
-/*    @Test
+   @Test
     public void testGetPassword() {
         assertEquals("virtualstocksim", account.getPword());
     }
@@ -125,7 +125,7 @@ public class AccountTest
         assertEquals("my-picture.jpg", account.getProfilePicture());
     }
 
-/*    @Test
+    @Test
     public void testSetUUID(){
         String test_uuid = UUID.randomUUID().toString();
         account.set(test_uuid);

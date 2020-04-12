@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.UUID;
 
 
 public class AccountController {
@@ -79,13 +80,18 @@ public class AccountController {
      * @param fileName file name user uploaded
      */
     public void updateProfilePicture(InputStream inputStream, String fileName) {
-        File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
-        if(!uploadDir.exists()){
-            uploadDir.mkdirs();
+        File saveDir = new File("./war/userdata/ProfilePictures"); // directory where images are stored
+        if(!saveDir.exists()){
+            saveDir.mkdirs();
         }
         try{
-            BufferedImage bufferedImage = ImageIO.read(inputStream);
-            ImageIO.write(bufferedImage, fileName.substring(fileName.lastIndexOf("."), fileName.length()-1), uploadDir);
+
+            BufferedImage img = ResizeBufferedImage(ImageIO.read(inputStream), Account.ProfilePictureMaxWidth(), Account.ProfilePictureMaxHeight());
+
+            String imgName = UUID.randomUUID().toString() + fileName.split("\\.")[0];
+            File picture = new File(saveDir.getPath() + "/" + imgName + ".jpg");
+            ImageIO.write(img, "jpg", picture);
+            acc.setProfilePicture(imgName);
 
         }catch (IOException e){
             logger.error("Error reading image: " +e);
@@ -95,7 +101,7 @@ public class AccountController {
 
         try{
             acc.update();
-            logger.info("ProfilePicture updated successfully!");
+            logger.info("Profile Picture updated successfully!");
         } catch(SQLException e){
             logger.error("Error: " + e.toString());
         }
@@ -156,6 +162,23 @@ public class AccountController {
 
     }
 
+    /**
+     * Resize a buffered image
+     * @param image Image to be resized
+     * @param width Desired width
+     * @param height Desired height
+     * @return Resized buffered image
+     */
+    private static BufferedImage ResizeBufferedImage(BufferedImage image, int width, int height)
+    {
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+
+        Graphics2D g = resized.createGraphics();
+        g.drawImage(image, 0, 0, width, height, null);
+        g.dispose();
+        return resized;
+    }
 
     public void trade(TransactionType type, String ticker, int numShares) throws SQLException {
         if (type.equals(TransactionType.BUY)) {
@@ -199,6 +222,7 @@ public class AccountController {
         }
         //TODO:integrate sell with the account &database
     }
+
 
 
 
