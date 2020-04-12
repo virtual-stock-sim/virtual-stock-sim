@@ -108,7 +108,7 @@ public class Scraper {
             content.addProperty("history",priceHistory.toString());
 
             JsonObject finalObject = new JsonObject();
-            finalObject.addProperty(ticker, String.valueOf(content));
+            finalObject.add(ticker, content);
 
             return finalObject;
         }else{
