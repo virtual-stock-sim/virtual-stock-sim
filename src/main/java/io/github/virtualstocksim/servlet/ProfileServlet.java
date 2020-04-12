@@ -2,8 +2,6 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.encryption.Encryption;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +114,24 @@ public class ProfileServlet extends HttpServlet {
             if(profilePic != null)
             {
                 logger.info("User requested profile picture change");
-                controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                // Make sure file is an image
+                if(!profilePic.getContentType().contains("image"))
+                {
+                    lastError = "Uploaded file isn't an image";
+                    errorMsgs.add(lastError);
+                    logger.info(lastError);
+                }
+                // Make sure file doesn't exceed file size limit
+                else if(profilePic.getSize() >= Account.ProfilePictureMaxFileSize())
+                {
+                    lastError = "Uploaded file exceeds file size limit";
+                    errorMsgs.add(lastError);
+                    logger.info(lastError);
+                }
+                else
+                {
+                    controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                }
             }
 
              // User changing username

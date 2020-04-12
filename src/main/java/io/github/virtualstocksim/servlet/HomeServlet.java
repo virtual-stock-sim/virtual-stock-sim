@@ -43,6 +43,5 @@ public class HomeServlet extends HttpServlet
         }else logger.info("Session was null - user not logged in");
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
-        return;
     }
 }

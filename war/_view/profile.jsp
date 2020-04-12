@@ -86,7 +86,6 @@
         <div id ="page-picture" class="page">
             <h2>Update Your Profile Picture</h2>
             <form action=${pageContext.servletContext.contextPath}/profile class="form-group" method="post" enctype="multipart/form-data">
-                <input type="text" name="description" />
                 <input type="file" name="file" />
                 <input type="submit" value="UPLOAD"/>
             </form>

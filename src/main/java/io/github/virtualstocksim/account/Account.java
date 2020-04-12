@@ -473,4 +473,8 @@ public class Account extends DatabaseItem {
         logger.info(String.format("Removing Account with ID %d from database", id));
         SQL.executeUpdate(conn, "DELETE FROM accounts WHERE id = ?", id);
     }
+
+    public static long ProfilePictureMaxFileSize() { return 2097152; }
+    public static int ProfilePictureMaxWidth() { return 328; }
+    public static int ProfilePictureMaxHeight() { return 328; }
 }
