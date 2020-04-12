@@ -423,27 +423,24 @@ public class Account extends DatabaseItem {
 
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
-        columns.put("type", type.getText());
-        columns.put("email", email);
-        columns.put("username", username);
-        columns.put("password_hash", passwordHash);
-        columns.put("password_salt", passwordSalt);
-        columns.put("followed_stocks", followedStocks);
-        columns.put("invested_stocks", investedStocks);
-        columns.put("transaction_history", transactionHistory);
-        columns.put("wallet_balance", walletBalance);
-        columns.put("leaderboard_rank", leaderboardRank);
-        columns.put("bio", bio);
-        columns.put("profile_picture", profilePicture);
+        if(type!=null)                                                          columns.put("type", type.getText());
+        if(email!=null && !email.trim().isEmpty())                              columns.put("email", email);
+        if(username!=null && !username.trim().isEmpty())                        columns.put("username", username);
+        if(passwordHash!=null)                                                  columns.put("password_hash", passwordHash);
+        if(passwordSalt!=null)                                                  columns.put("password_salt", passwordSalt);
+        if(followedStocks!=null && !followedStocks.trim().isEmpty())            columns.put("followed_stocks", followedStocks);
+        if(investedStocks!=null && !investedStocks.trim().isEmpty())            columns.put("invested_stocks", investedStocks);
+        if(transactionHistory!=null && !transactionHistory.trim().isEmpty())    columns.put("transaction_history", transactionHistory);
+        if(walletBalance!=null)                                                 columns.put("wallet_balance", walletBalance);
+        if(leaderboardRank > 0)                                                 columns.put("leaderboard_rank", leaderboardRank);
+        if(bio!=null && !bio.trim().isEmpty())                                  columns.put("bio", bio);
+        if(profilePicture!=null && !profilePicture.trim().isEmpty())            columns.put("profile_picture", profilePicture);
 
         // Check each column name and add it to the update list if its been updated
         for(Map.Entry<String, Object> c : columns.entrySet())
         {
-            if(c.getValue() != null)
-            {
                 updated.add(c.getKey() + " = ?");
                 params.add(c.getValue());
-            }
         }
 
         if(updated.isEmpty())
