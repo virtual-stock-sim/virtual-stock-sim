@@ -1,7 +1,11 @@
 package io.github.virtualstocksim.account;
 
+import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.transaction.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +16,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Optional;
-import java.util.UUID;
 
 
 public class AccountController {
@@ -73,18 +79,13 @@ public class AccountController {
      * @param fileName file name user uploaded
      */
     public void updateProfilePicture(InputStream inputStream, String fileName) {
-        File saveDir = new File("./war/userdata/ProfilePictures"); // directory where images are stored
-        if(!saveDir.exists()){
-            saveDir.mkdirs();
+        File uploadDir = new File("./userdata/ProfilePictures"); // directory where images are stored
+        if(!uploadDir.exists()){
+            uploadDir.mkdirs();
         }
         try{
-
-            BufferedImage img = ResizeBufferedImage(ImageIO.read(inputStream), Account.ProfilePictureMaxWidth(), Account.ProfilePictureMaxHeight());
-
-            String imgName = UUID.randomUUID().toString() + fileName.split("\\.")[0];
-            File picture = new File(saveDir.getPath() + "/" + imgName + ".jpg");
-            ImageIO.write(img, "jpg", picture);
-            acc.setProfilePicture(imgName);
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+            ImageIO.write(bufferedImage, fileName.substring(fileName.lastIndexOf("."), fileName.length()-1), uploadDir);
 
         }catch (IOException e){
             logger.error("Error reading image: " +e);
@@ -94,7 +95,7 @@ public class AccountController {
 
         try{
             acc.update();
-            logger.info("Profile Picture updated successfully!");
+            logger.info("ProfilePicture updated successfully!");
         } catch(SQLException e){
             logger.error("Error: " + e.toString());
         }
@@ -155,20 +156,50 @@ public class AccountController {
 
     }
 
-    /**
-     * Resize a buffered image
-     * @param image Image to be resized
-     * @param width Desired width
-     * @param height Desired height
-     * @return Resized buffered image
-     */
-    private static BufferedImage ResizeBufferedImage(BufferedImage image, int width, int height)
-    {
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        Graphics2D g = resized.createGraphics();
-        g.drawImage(image, 0, 0, width, height, null);
-        g.dispose();
-        return resized;
+    public void trade(TransactionType type, String ticker, int numShares) throws SQLException {
+        if (type.equals(TransactionType.BUY)) {
+            //check that the user has the funds
+            int compareResult = acc.getWalletBalance().compareTo(Stock.Find(ticker).get().getCurrPrice().multiply(new BigDecimal(numShares)));
+            if (compareResult != -1) {
+                String followingString = Account.FindCustom("SELECT followed_stocks FROM accounts WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks();
+                StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
+                //if it contains the ticker, remove it from the following list
+                if (tempStocksFollowed.containsStock(ticker)) {
+                    tempStocksFollowed.removeFollow(tempStocksFollowed.getIndexofStock(ticker));
+                }
+                //update and push to DB
+                acc.setTransactionHistory(tempStocksFollowed.followObjectsToSting());
+                acc.update();
+
+                //add the stock to transactionHistory
+                String transHistoryString = Account.FindCustom("SELECT transaction_history FROM accounts where UUID = ? ",acc.getUUID()).get(0).getTransactionHistory();
+                //add the transaction using a method with a string
+                TransactionHistory tempTransactionHistory = new TransactionHistory(transHistoryString);
+                Transaction tempTransaction = new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), Stock.Find(ticker).get().getCurrPrice(), numShares, Stock.Find(ticker).get());
+                tempTransactionHistory.addTransaction(tempTransaction);
+                //update and push to DB
+                acc.setTransactionHistory(tempTransactionHistory.buildTransactionJSON());
+                acc.update();
+
+                //add the stock to investments   Exactly like transactionhistory minus the enum
+                String investedStocks = Account.FindCustom("SELECT invested_stocks FROM accounts where UUID = ?", acc.getUUID()).get(0).getInvestedStocks();
+                InvestmentCollection investments = new InvestmentCollection(investedStocks);
+                Investment tempInvestment = new Investment(numShares,ticker,SQL.GetTimeStamp());
+                investments.addInvestment(tempInvestment);
+                //update and push to DB
+                acc.setInvestedStocks(investments.buildJSON());
+                acc.update();
+
+
+            } else {
+                logger.warn("Warning: the user is not following that stock!");
+            }
+            logger.info("Error: The user did not have the funds to purchase this. REQUIRED: $" + Stock.Find(ticker).get().getCurrPrice().multiply(new BigDecimal(numShares)) + " has $" + acc.getWalletBalance());
+        }
+        //TODO:integrate sell with the account &database
     }
+
+
+
 }

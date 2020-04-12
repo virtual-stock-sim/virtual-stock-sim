@@ -2,10 +2,16 @@ package io.github.virtualstocksim.follow;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.following.Follow;
+import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.DummyStocks;
+import org.junit.Before;
 import org.junit.Test;
 
+
+import java.awt.*;
 import java.math.BigDecimal;
+import java.util.LinkedList;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,13 +20,28 @@ public class FollowTest
 
 
     Follow [] testFollowList = new Follow[5];
+    LinkedList<Follow> dummyFollows = new LinkedList<Follow>();
+
+    @Before
     public void populate(){
+
+        dummyFollows.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON), SQL.GetTimeStamp()));
+        dummyFollows.add(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA), SQL.GetTimeStamp()));
+        dummyFollows.add(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE), SQL.GetTimeStamp()));
+        dummyFollows.add(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD), SQL.GetTimeStamp()));
+
+
+
+
+    }
+
+    /*public void populate(){
         testFollowList[0]=(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.AMAZON), SQL.GetTimeStamp()));
         testFollowList[1]=(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA), SQL.GetTimeStamp()));
         testFollowList[2]=(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE), SQL.GetTimeStamp()));
         testFollowList[3]=(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD), SQL.GetTimeStamp()));
         testFollowList[4]=(new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE), SQL.GetTimeStamp()));
-    }
+    }/*
     @Test
     public void testGetPercentChange() {
         this.populate();
@@ -50,7 +71,24 @@ public class FollowTest
         assertEquals(testFollowList[3].getInitialPrice().doubleValue(),501,0.001);
         assertEquals(testFollowList[4].getInitialPrice().doubleValue(),.12,0.001);
 
+    }*/
+    @Test
+    public void testSerialize(){
+        StocksFollowed sf = new StocksFollowed(dummyFollows);
+        StocksFollowed testFollow = new StocksFollowed(sf.followObjectsToSting());
+
+        for(Follow f : testFollow.getStocksFollowed()){
+            System.out.println(f.getInitialPrice()+ " " + f.getStock().getSymbol() + " " + f.getTimeStamp());
+        }
+
+
+
+
+
     }
+
+
+
 
 
 

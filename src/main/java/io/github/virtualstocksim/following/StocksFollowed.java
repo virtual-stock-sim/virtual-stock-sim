@@ -4,8 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.stock.Stock;
+import sun.awt.image.ImageWatched;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,17 +16,11 @@ public class StocksFollowed {
 
     private List<Follow> stocksFollowed;
 
-
-
     public StocksFollowed(List<Follow> stocksFollowed)
     {
         this.stocksFollowed = stocksFollowed;
     }
-
-    public StocksFollowed(String s ){
-
-    }
-
+    public StocksFollowed(String s){ setStocksFollowed(this.stringToFollowObjects(s)); }
     public List<Follow> getStocksFollowed()
     {
         return this.stocksFollowed;
@@ -34,8 +31,6 @@ public class StocksFollowed {
         this.stocksFollowed = stocksFollowed;
     }
 
-
-
     public void setFollow(Follow newFollow)
     {
         this.stocksFollowed.add(newFollow);
@@ -44,6 +39,46 @@ public class StocksFollowed {
     public void removeFollow(Follow toRemove)
     {
         this.stocksFollowed.remove(toRemove);
+    }
+    public void removeFollow(int index){
+        this.stocksFollowed.remove(index);
+    }
+    //to change following objects into String for DB storage
+    public String followObjectsToSting(){
+        String s = "";
+        for (Follow f : this.getStocksFollowed()){
+            s+=f.getInitialPrice()+"," + f.getStock().getSymbol()+ "," +f.getPercentChange()+"," + f.getTimeStamp() +  ";";
+        }
+        return s;
+    }
+
+    public int getIndexofStock(String ticker){
+        for(int i=0; i<stocksFollowed.size();i++){
+            if(stocksFollowed.get(i).getStock().getSymbol().equals(ticker)){
+                return i;
+            }
+        }
+        //element not in list
+        return -1;
+    }
+
+    public boolean containsStock(String ticker){
+        if(followObjectsToSting().contains(ticker)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    //to create following objects from DB string into Follow objects (to be used in string constructor)
+    public List stringToFollowObjects(String input){
+        LinkedList<Follow> temp = new LinkedList<>();
+        for(String s : input.split(";")){
+            LinkedList <String> args = new LinkedList<>();
+            args.addAll(Arrays.asList(s.split(",")));
+            temp.add(new Follow( new BigDecimal(args.get(0)), Stock.Find(args.get(1)).get(), Timestamp.valueOf(args.get(3))));
+        }
+        return  temp;
     }
 
 
@@ -64,9 +99,9 @@ public class StocksFollowed {
         return ja;
     }
 
+
     //will return a list of follow objects from a JSON string
     public List<Follow> parseFollowFromJSON(JsonArray j){
-
         List <Follow> Following = new LinkedList<>();
         for (JsonElement x: j) {
 

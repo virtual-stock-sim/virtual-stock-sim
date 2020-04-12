@@ -2,7 +2,7 @@ package io.github.virtualstocksim.transaction;
 
 public enum  TransactionType
 {
-    BUY("Buy"), SELL("Sell");
+    BUY("BUY"), SELL("SELL");
 
     private final String text;
     public String getText() {

@@ -3,6 +3,7 @@ package io.github.virtualstocksim.transaction;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.sql.Timestamp;
@@ -21,8 +22,8 @@ public class TransactionHistory
         this.transactions = new LinkedList<>(transactions);
     }
 
-    public TransactionHistory(String jsonString){
-        this.jsonString=jsonString;
+    public TransactionHistory(String s){
+      this.setTransactions(this.parseTransactionFromJSON(s));
     }
 
     public List<Transaction> getTransactions()
@@ -30,9 +31,9 @@ public class TransactionHistory
         return this.transactions;
     }
 
-    public void setTransactions(Transaction... transactions)
+    public void setTransactions(List<Transaction> t )
     {
-        this.transactions = new LinkedList<>(Arrays.asList(transactions));
+        this.transactions=t;
     }
 
     public void addTransaction(Transaction transaction)
@@ -41,9 +42,9 @@ public class TransactionHistory
     }
 
 
-    public JsonArray getTransactionJSON (TransactionHistory transactionHistory){
+    public String buildTransactionJSON (){
         JsonArray ja = new JsonArray();
-        for(Transaction t : transactionHistory.getTransactions()){
+        for(Transaction t : this.transactions){
             JsonObject jo = new JsonObject();
             jo.addProperty("timestamp",t.getTimestamp().toString());
             jo.addProperty("stock",t.getStock().getId());
@@ -53,16 +54,19 @@ public class TransactionHistory
             jo.addProperty("price_per",t.getPricePerShare());
             ja.add(jo);
         }
-        return ja;
+        return ja.toString();
     }
 
-    public TransactionHistory parseTransactionFromJSON(JsonArray j){
+    //builds new transactionHistory from a Json Array
+    public List<Transaction> parseTransactionFromJSON(String  s){
         List tempList = new LinkedList();
-        for(JsonElement x : j){
 
+        JsonParser jsonParser = new JsonParser();
+        JsonArray j = (JsonArray) jsonParser.parse(s);
+        for(JsonElement x : j){
             tempList.add(new Transaction(TransactionType.valueOf(x.getAsJsonObject().get("type").getAsString()), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString()),    x.getAsJsonObject().get("total").getAsBigDecimal(), x.getAsJsonObject().get("shares").getAsInt(), Stock.Find(x.getAsJsonObject().get("stock").getAsInt()).get()));
         }
-        return new TransactionHistory (tempList);
+       return tempList;
     }
 
 

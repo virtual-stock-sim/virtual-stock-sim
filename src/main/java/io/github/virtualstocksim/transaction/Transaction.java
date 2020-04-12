@@ -59,6 +59,7 @@ public class Transaction {
     }
 
 
+
     public void setType(TransactionType type)
     {
         this.type = type;

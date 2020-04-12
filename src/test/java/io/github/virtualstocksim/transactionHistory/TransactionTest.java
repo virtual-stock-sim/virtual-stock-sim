@@ -4,6 +4,7 @@ import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
+import io.github.virtualstocksim.transaction.TransactionHistory;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Test;
 
@@ -162,6 +163,19 @@ public class TransactionTest
         Stock tesla = DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA);
         transactions.get(3).setStock(tesla);
         assertEquals(transactions.get(3).getStock(),tesla);
+
+    }
+    @Test
+    public void debug(){
+        this.setUp();
+        TransactionHistory th = new TransactionHistory(transactions);
+        String ex = th.buildTransactionJSON();
+        //System.out.println(ex);
+        TransactionHistory Christian = new TransactionHistory(ex);
+
+        for(Transaction t : Christian.getTransactions()){
+            System.out.println(t.getStock().getSymbol() + " Number of shares: " + t.getNumShares());
+        }
 
     }
 

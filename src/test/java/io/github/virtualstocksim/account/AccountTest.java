@@ -67,7 +67,7 @@ public class AccountTest
 /*    @Test
     public void testGetPassword() {
         assertEquals("virtualstocksim", account.getPword());
-    }*/
+    }
 
     @Test
     public void testGetEmail() {
@@ -130,7 +130,7 @@ public class AccountTest
         String test_uuid = UUID.randomUUID().toString();
         account.set(test_uuid);
         assertEquals(test_uuid, account.getUUID());
-    }*/
+    }
 
     @Test
     public void testGetInvestedStocks(){
