@@ -42,11 +42,14 @@ public class StocksFollowedServlet extends HttpServlet
         followingList.add(new Follow(new BigDecimal(5), Stock.Find(4).get(), SQL.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(.12), Stock.Find(5).get(), SQL.GetTimeStamp()));
 
-        Optional<Stock> stock = Stock.Find(1);
+        Optional<Stock> stock = Stock.Find(2);
+
+        /**
+         * TODO: Don't forget to check for the values of the stock being 0 (Could cause a divide by 0 error)
+         */
         if(stock.isPresent()){
             Stock stockModel = stock.get();
-            req.setAttribute("stockModel", stockModel);
-        }
+            req.setAttribute("stockModel", stockModel); }
 
         StocksFollowed model = new StocksFollowed(followingList);
         req.setAttribute("model", model);

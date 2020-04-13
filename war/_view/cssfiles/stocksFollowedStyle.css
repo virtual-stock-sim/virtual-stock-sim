@@ -1,8 +1,7 @@
 body {
-    font-family: "Lato", sans-serif;
+    font-family: "Lato", sans-serif!important;
     background-color: #404040;
-    color: white;
-    text-align: center;
+    color: white!important;
     text-shadow: #0a0a0a;
     mix-blend-mode: difference;
 }
@@ -31,6 +30,7 @@ body {
 }
 
 .header {
+    text-align: center;
     padding-bottom: 50px;
 }
 
@@ -79,8 +79,7 @@ a { color: inherit;}
 
 }
 .parent{
-    padding-left: 300px;
-    padding-right: 300px;
+
 }
 .wrapper{
     padding-bottom: 15px;
