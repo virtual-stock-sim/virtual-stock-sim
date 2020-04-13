@@ -64,11 +64,6 @@ public class AccountTest
         assertEquals("VSSAdmin", account.getUsername());
     }
 
-   @Test
-    public void testGetPassword() {
-        assertEquals("virtualstocksim", account.getPword());
-    }
-
     @Test
     public void testGetEmail() {
         account.setEmail("dpalmieri@ycp.edu");
@@ -123,13 +118,6 @@ public class AccountTest
     @Test
     public void testGetProfilePicture(){
         assertEquals("my-picture.jpg", account.getProfilePicture());
-    }
-
-    @Test
-    public void testSetUUID(){
-        String test_uuid = UUID.randomUUID().toString();
-        account.set(test_uuid);
-        assertEquals(test_uuid, account.getUUID());
     }
 
     @Test

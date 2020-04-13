@@ -26,12 +26,14 @@
 <div >
     <h4><span class = "subhead">Stock</span><span class = "subhead">Symbol</span> <span class = "subhead">Share Price</span> <span class = "subhead">% Change Since Follow</span></h4>
 </div>
-
+    <!-- Following items
     <div class = parent>
-    <c:forEach var="followItem" items="${model.stocksFollowed}">
-        <ul>   <f:followingTemplate followItem="${followItem}"></f:followingTemplate> </ul>
-    </c:forEach>
-    </div>
+    < c:forEach var="followItem" items="$ {model.stocksFollowed}">
+        <ul>   < f:followingTemplate followItem="$ {followItem}"></ f:followingTemplate> </ul>
+    < /c:forEach>
+    </div> -->
+<f:stockTemplate stock="${stockModel}"></f:stockTemplate>
+
 
 </body>
 </html>

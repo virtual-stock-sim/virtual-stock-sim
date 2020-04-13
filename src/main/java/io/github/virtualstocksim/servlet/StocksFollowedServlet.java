@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class StocksFollowedServlet extends HttpServlet
 {
@@ -29,6 +32,7 @@ public class StocksFollowedServlet extends HttpServlet
         if (session == null) {
             logger.warn("Not logged in. Please login");
             resp.sendRedirect("/login");
+            return;
         }
 
         ArrayList<Follow> followingList = new ArrayList<>();
@@ -37,6 +41,12 @@ public class StocksFollowedServlet extends HttpServlet
         followingList.add(new Follow(new BigDecimal(320), Stock.Find(3).get(), SQL.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(5), Stock.Find(4).get(), SQL.GetTimeStamp()));
         followingList.add(new Follow(new BigDecimal(.12), Stock.Find(5).get(), SQL.GetTimeStamp()));
+
+        Optional<Stock> stock = Stock.Find(1);
+        if(stock.isPresent()){
+            Stock stockModel = stock.get();
+            req.setAttribute("stockModel", stockModel);
+        }
 
         StocksFollowed model = new StocksFollowed(followingList);
         req.setAttribute("model", model);

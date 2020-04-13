@@ -42,7 +42,7 @@ public class CreateAccountServlet extends HttpServlet {
             String pword = req.getParameter("pword");
             String email = req.getParameter("email");
             String confirmPword = req.getParameter("pwordconfirm");
-            CreateAccountModel accountModel = new CreateAccountModel(uname, email);
+            CreateAccountModel accountModel = new CreateAccountModel(email, uname);
 
             // check for fields containing values
             if((uname == null) || (pword == null) || (email == null) || (confirmPword == null))
