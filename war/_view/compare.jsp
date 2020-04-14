@@ -23,11 +23,18 @@
             storeStockData(input);
             console.log(getStockData("GOOGL").description);*/
 
-            let updater = new Datastream();
-            updater.setOnMessage(function(e)
+            let stream = new DataStream("compareStream");
+            stream.setOnMessage(function(e)
             {
-                console.log(e.data);
+                document.getElementById("graph").innerHTML += ("<p>" + e.data + "</p>")
             });
+
+            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
+                if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
+                {
+                    console.log(r.responseText);
+                }
+            }});
         </script>
     </head>
 
