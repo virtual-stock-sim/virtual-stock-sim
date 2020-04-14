@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @MultipartConfig
+@WebServlet(urlPatterns = {"/profile"})
 public class ProfileServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileServlet.class);
