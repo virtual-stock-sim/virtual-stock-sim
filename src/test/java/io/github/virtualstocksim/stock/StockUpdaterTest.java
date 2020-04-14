@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import io.github.virtualstocksim.update.StockUpdater;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,8 @@ public class StockUpdaterTest
         }
 
         StockUpdater updater = new StockUpdater();
-        updater.updateNow();
-        updater.stop();
+//        updater.updateNow();
+//        updater.stop();
 
         for(Stock s : Stock.FindCustom("SELECT * FROM stocks"))
         {
