@@ -27,7 +27,7 @@ public class Scraper {
     private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
 
     //will be called within the getJson method
-    public String getDescription(String tickerSymbol) throws IOException, ConnectException {
+    public static String getDescription(String tickerSymbol) throws IOException, ConnectException {
         logger.info("Getting company description for stock symbol: " + tickerSymbol);
         String URL = "https://finance.yahoo.com/quote/" + tickerSymbol + "/profile?p=" + tickerSymbol;
         Document doc = Jsoup.connect(URL).timeout(0).get();//timeout set to 0 indicates infinite
@@ -36,7 +36,7 @@ public class Scraper {
     }
 
     //Might not need to use this depending on what we end up doing with the API
-    public BigDecimal getCurrentPrice(String tickerSymbol)throws IOException{
+    public static BigDecimal getCurrentPrice(String tickerSymbol)throws IOException{
         String URL = "https://finance.yahoo.com/quote/"+tickerSymbol+"/profile?p="+tickerSymbol;
 
         Document doc = Jsoup.connect(URL).get();
@@ -47,7 +47,7 @@ public class Scraper {
     //this method checks if the stock exists on Yahoo finance
     //Because Yahoo finance doesn't 404 if you look for a stock that isn't there
     //I just checked if it redirected to a "lookup" page rather than a "quote" page
-    public boolean checkStockExists(String ticker) throws IOException {
+    public static boolean checkStockExists(String ticker) throws IOException {
         logger.info("Checking if stock symbol `" + ticker + "` exists");
         try {
             Connection.Response response = Jsoup.connect("https://finance.yahoo.com/quote/"+ticker).followRedirects(true).execute();
@@ -69,7 +69,7 @@ public class Scraper {
     }
 
 
-    public JsonObject getDescriptionAndHistory(String ticker, TimeInterval timeInterval) throws IOException {
+    public static JsonObject getDescriptionAndHistory(String ticker, TimeInterval timeInterval) throws IOException, IllegalArgumentException {
         logger.info("Getting company description and price history for stock symbol `" + ticker + "`");
         long unixTime = System.currentTimeMillis() / 1000L;
         //calculate seconds passed & sub from current unix time
@@ -77,7 +77,7 @@ public class Scraper {
         JsonArray priceHistory = new JsonArray();
 
         JsonObject content = new JsonObject();
-        content.addProperty("description",this.getDescription(ticker));
+        content.addProperty("description", getDescription(ticker));
         if(checkStockExists(ticker)) {
 
             logger.info("Getting max price history for `" + ticker + "` with time interval of " + timeInterval.getPeriod());
@@ -105,7 +105,7 @@ public class Scraper {
                 jo.addProperty("volume", col.get(i + 6));
                 priceHistory.add(jo);
             }
-            content.addProperty("history",priceHistory.toString());
+            content.add("history", priceHistory);
 
             JsonObject finalObject = new JsonObject();
             finalObject.add(ticker, content);
@@ -113,7 +113,7 @@ public class Scraper {
             return finalObject;
         }else{
             logger.warn("Stock symbol `" + ticker + "` does not exist. Unable to retrieve description and history");
-            return content; // did not exist on Yahoo finance
+            throw new IllegalArgumentException("Stock symbol " + ticker + " does not exist");
         }
 
         //return gson.toJson(ja); this would enable pretty printing if returned
