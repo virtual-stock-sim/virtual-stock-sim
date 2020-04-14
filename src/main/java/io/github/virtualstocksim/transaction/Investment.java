@@ -4,7 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.stock.Stock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -12,15 +15,18 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 
 public class Investment {
+
     private int numShares;
     private BigDecimal pricePerShare,totalHoldings;
     private Timestamp timeStamp;
     private String ticker;
 
-
-    //The price will change DYNAMICALLY!!! there is no need to store that information in some local variables unless the need for calculations arise at a later time
-    //think about the difference between this class and transaction
+    private static final Logger logger = LoggerFactory.getLogger(Investment.class);
+    //The price will change DYNAMICALLY!!! from the DB there is no need to store that information in some local variables unless the need for calculations arise at a later time
+    //This is the real difference between this class and transaction, really
     public Investment(int numShares, String ticker, Timestamp timestamp){
+            this.ticker=ticker;
+            this.timeStamp=timestamp;
             this.numShares=numShares;
             this.pricePerShare= Stock.Find(ticker).get().getCurrPrice();
             this.totalHoldings = this.pricePerShare.multiply(new BigDecimal(numShares));
@@ -48,6 +54,12 @@ public class Investment {
         return this.timeStamp;
     }
 
-    public void setNumShares(int input){this.numShares=input;}
+    public void setNumShares(int input) {
+        if (input < 0) {
+            logger.error("Error: The user cannot hold less than 0 stocks. ");
+        } else {
+            this.numShares = input;
+        }
+    }
 
 }

@@ -36,13 +36,8 @@ public class StocksFollowed {
         this.stocksFollowed.add(newFollow);
     }
 
-    public void removeFollow(Follow toRemove)
-    {
-        this.stocksFollowed.remove(toRemove);
-    }
-    public void removeFollow(int index){
-        this.stocksFollowed.remove(index);
-    }
+
+
     //to change following objects into String for DB storage
     public String followObjectsToSting(){
         String s = "";
@@ -52,14 +47,13 @@ public class StocksFollowed {
         return s;
     }
 
-    public int getIndexofStock(String ticker){
-        for(int i=0; i<stocksFollowed.size();i++){
+
+    public void removeFollow(String ticker){
+        for(int i =0; i< stocksFollowed.size();i++){
             if(stocksFollowed.get(i).getStock().getSymbol().equals(ticker)){
-                return i;
+                stocksFollowed.remove(i);
             }
         }
-        //element not in list
-        return -1;
     }
 
     public boolean containsStock(String ticker){
@@ -69,20 +63,23 @@ public class StocksFollowed {
             return false;
         }
     }
-
+    //Will be stored in DB as a plain string formatted with ; and , instead of JSON to avoid unnecessary overhead
     //to create following objects from DB string into Follow objects (to be used in string constructor)
     public List stringToFollowObjects(String input){
         LinkedList<Follow> temp = new LinkedList<>();
         for(String s : input.split(";")){
             LinkedList <String> args = new LinkedList<>();
             args.addAll(Arrays.asList(s.split(",")));
-            temp.add(new Follow( new BigDecimal(args.get(0)), Stock.Find(args.get(1)).get(), Timestamp.valueOf(args.get(3))));
+            temp.add(new Follow( new BigDecimal(args.get(0).toString()), Stock.Find(args.get(1)).get(), Timestamp.valueOf(args.get(3))));
         }
         return  temp;
     }
+    public void addFollow(Follow f){
+        this.stocksFollowed.add(f);
+    }
 
 
-
+    //deprecated because not storing as a JSON string anymore....
     public JsonArray getStocksFollowedFromJSON(StocksFollowed stocksFollowed){
 
         JsonArray ja = new JsonArray();
@@ -99,13 +96,13 @@ public class StocksFollowed {
         return ja;
     }
 
-
+    //deprecated because not storing as a JSON string anymore....
     //will return a list of follow objects from a JSON string
     public List<Follow> parseFollowFromJSON(JsonArray j){
         List <Follow> Following = new LinkedList<>();
         for (JsonElement x: j) {
 
-            Following.add(new Follow(x.getAsJsonObject().get("price").getAsBigDecimal(),  Stock.Find(x.getAsJsonObject().get("stock").getAsString()).get(),    Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
+            Following.add(new Follow(x.getAsJsonObject().get("price").getAsBigDecimal(),  Stock.Find(x.getAsJsonObject().get("stock").getAsString()).get(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
         }
         return Following;
     }

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
-import org.apache.commons.validator.routines.EmailValidator;
+//import org.apache.commons.validator.routines.EmailValidator;
 
 public class CreateAccountServlet extends HttpServlet {
 
@@ -85,7 +85,8 @@ public class CreateAccountServlet extends HttpServlet {
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
             }
-
+/*             commenting this out because it's preventing compilation
+               I'll look into it later if i dont forget about it, but if it's working on other machines, i suspect something is weird with my pom.xml file or something
             // check to see if email is valid using regex
             else if(!EmailValidator.getInstance().isValid(accountModel.getEmail()))
             {
@@ -95,7 +96,7 @@ public class CreateAccountServlet extends HttpServlet {
                 req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
                 return;
             }
-
+*/
             // check to see if username is taken
             else if (!Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
             {

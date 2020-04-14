@@ -2,13 +2,16 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -38,8 +41,9 @@ public class AccountControllerTest
         uuid = UUID.randomUUID().toString();
         stocks = new LinkedList<Stock>();
 
-       // List <Follow>followList = new LinkedList<Follow>();
-       // followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
+        List <Follow>followList = new LinkedList<Follow>();
+        followList.add(new Follow(new BigDecimal(100), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA),SQL.GetTimeStamp()));
+
        // stocksFollowed = new StocksFollowed(followList);
 
         //transactions = new LinkedList<Transaction>();
@@ -103,5 +107,8 @@ public class AccountControllerTest
         byte[] pwordHash = Encryption.hash("ultrasecret".toCharArray(), salt);
         assertArrayEquals(hash, pwordHash);
     }
+
+
+
 
 }

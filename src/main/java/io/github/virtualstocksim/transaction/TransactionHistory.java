@@ -41,6 +41,8 @@ public class TransactionHistory
         this.transactions.add(transaction);
     }
 
+    //right now, I see no reason why there needs to be any remove methods or checks for a particular stock in transaction
+    //can implement easily later if we decide users can delete their transaction history
 
     public String buildTransactionJSON (){
         JsonArray ja = new JsonArray();
