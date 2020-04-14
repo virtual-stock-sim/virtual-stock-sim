@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5"
-         xmlns="http://java.sun.com/xml/ns/javaee">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
 
-    
     <display-name>Virtual Stock Sim</display-name>
     <welcome-file-list>
         <welcome-file>/home</welcome-file>
     </welcome-file-list>
-
 
 <!-- Servlets -->
     <servlet-mapping>
@@ -98,4 +96,22 @@
         <servlet-class>io.github.virtualstocksim.servlet.ErrorServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>CompareServlet</servlet-name>
+        <url-pattern>/compare</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CompareServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.CompareServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DataStreamServlet</servlet-name>
+        <url-pattern>/dataStream</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DataStreamServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.DataStreamServlet</servlet-class>
+        <async-supported>true</async-supported>
+    </servlet>
 </web-app>
