@@ -23,18 +23,50 @@
             storeStockData(input);
             console.log(getStockData("GOOGL").description);*/
 
-            let stream = new DataStream("compareStream");
+            let stream = new DataStream("stockStream");
             stream.setOnMessage(function(e)
             {
-                document.getElementById("graph").innerHTML += ("<p>" + e.data + "</p>")
+                let output = "";
+                let data = JSON.parse(e.data);
+                if(data.type === "stocks")
+                {
+
+                }
+                else if(data.type === "stockDatas")
+                {
+                    for(let stockStr of data.data)
+                    {
+                        let stockJson = JSON.parse(stockStr);
+                        console.log(stockJson);
+                        storeStockData(stockJson);
+                        output += "<p>" + JSON.stringify(getStockData(stockJson.symbol)) + "</p>";
+                    }
+                }
+                else
+                {
+
+                }
+                document.getElementById("graph").innerHTML += output;
             });
 
-            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
+/*            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
                 if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
                 {
                     console.log(r.responseText);
                 }
-            }});
+            }});*/
+
+            stream.sendMessage({msg: "dataRequest={type: \"stockDatas\", symbols: [\"AMZN\", \"TSLA\", \"GOOGL\"]}", protocol: "POST", onReceived: (r) =>
+                {
+                    if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
+                    {
+                        let text = r.responseText;
+                        if(text && text.length > 0)
+                        {
+                            console.log(r.responseText);
+                        }
+                    }
+                }});
         </script>
     </head>
 

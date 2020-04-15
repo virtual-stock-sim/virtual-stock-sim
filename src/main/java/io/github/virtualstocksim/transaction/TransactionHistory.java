@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import io.github.virtualstocksim.stock.Stock;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.stock.StockRequestHandler;
 import org.eclipse.jetty.io.RuntimeIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,21 @@ public class DataStreamServlet extends HttpServlet
     private static final String STREAM_HEADER = "text/event-stream";
 
     @Override
+    public void init() throws ServletException
+    {
+        addListener("stockStream", new StockRequestHandler());
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        logger.info(clients.size() + "");
         logger.info("DataStreamServlet: doGet");
 
         // Is the request a new stream connection
         if(req.getHeader("Accept").equals(STREAM_HEADER))
         {
             String id = UUID.randomUUID().toString();
+            logger.info("New Connection - Id: " + id);
 
             // Setup stream headers
             resp.setContentType(STREAM_HEADER);
@@ -61,7 +68,7 @@ public class DataStreamServlet extends HttpServlet
         }
         else
         {
-            String name = req.getParameter("streamName");
+            String name = req.getParameter("Stream-name");
             if(name != null)
             {
                 listeners.get(name).onGet(req, resp);
@@ -164,28 +171,26 @@ public class DataStreamServlet extends HttpServlet
         {
             this.id = id;
         }
-        private void remove(AsyncEvent e)
-        {
-            logger.info("AsyncContext closed. Id: " + id);
-            clients.remove(this.id);
-        }
+
+        private String removeReason = "Complete";
 
         @Override
         public void onComplete(AsyncEvent event) throws IOException
         {
-            remove(event);
+            logger.info("AsyncContext closed. Reason: " + removeReason + " - Id: " + id);
+            clients.remove(this.id);
         }
 
         @Override
         public void onTimeout(AsyncEvent event) throws IOException
         {
-            remove(event);
+            removeReason = "Timeout";
         }
 
         @Override
         public void onError(AsyncEvent event) throws IOException
         {
-            remove(event);
+            removeReason = "Error";
         }
 
         @Override

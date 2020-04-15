@@ -130,10 +130,12 @@ public class StockUpdater
      */
     public static void updateStockDatas(List<Stock> stocks, TimeInterval interval, int delay, int delayUpperBound, int delayLowerBound) throws UpdateException
     {
-        for(Stock stock : stocks)
+        Iterator<Stock> stockIt = stocks.iterator();
+        while (stockIt.hasNext())
         {
+            Stock stock = stockIt.next();
             // Get the stock data for the stock
-            List<StockData> stockDatas = StockData.FindCustom("SELECT id FROM stocks_data WHERE id = ?", stock.getStockDataId());
+            List<StockData> stockDatas = StockData.FindCustom("SELECT id FROM stock_data WHERE id = ?", stock.getStockDataId());
             if(!stockDatas.isEmpty())
             {
                 StockData data = stockDatas.get(0);
@@ -142,8 +144,10 @@ public class StockUpdater
                 try
                 {
                     JsonObject scraperData = Scraper.getDescriptionAndHistory(stock.getSymbol(), interval);
+                    Timestamp now = SQL.GetTimeStamp();
+                    scraperData.addProperty("lastUpdated", now.toString());
                     data.setData(String.valueOf(scraperData));
-                    data.setLastUpdated(SQL.GetTimeStamp());
+                    data.setLastUpdated(now);
 
                     // Not using dedicated connection without auto commit since there's such a delay in-between update calls
                     data.update();
@@ -154,14 +158,20 @@ public class StockUpdater
                 }
                 catch (IOException e)
                 {
-                    throw new UpdateException("Exception while getting description and history for Stock with symbol " + stock.getSymbol(), e);
+                    throw new UpdateException(
+                            "Exception while getting description and history for Stock with symbol " + stock.getSymbol(), e);
                 }
                 catch (SQLException e)
                 {
-                    throw new UpdateException("Exception while committing updates for Stock with symbol " + stock.getSymbol(), e);
+                    throw new UpdateException(
+                            "Exception while committing updates for Stock with symbol " + stock.getSymbol(), e);
                 }
 
-                pauseStockDataUpdate(delay, delayUpperBound, delayLowerBound);
+                // Only sleep if necessary
+                if (stockIt.hasNext())
+                {
+                    pauseStockDataUpdate(delay, delayUpperBound, delayLowerBound);
+                }
             }
         }
     }
@@ -177,7 +187,9 @@ public class StockUpdater
             Random r = new Random();
             try
             {
-                TimeUnit.SECONDS.sleep(delay + r.nextInt(delayUpperBound - delayLowerBound + 1) + delayLowerBound);
+                int randDelay = delay + r.nextInt(delayUpperBound - delayLowerBound + 1) + delayLowerBound;
+                logger.info("Sleeping for " + randDelay + " seconds");
+                TimeUnit.SECONDS.sleep(randDelay);
                 sleepSuccess = true;
             }
             catch (InterruptedException e)

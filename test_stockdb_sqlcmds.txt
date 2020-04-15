@@ -1,24 +1,24 @@
-create table STOCKS_DATA(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+create table STOCK_DATA(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 						data CLOB NOT NULL,
 						last_updated TIMESTAMP);
 						
-create table STOCKS(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+create table STOCK(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 					symbol VARCHAR(10) NOT NULL UNIQUE,
 					curr_price DECIMAL(12, 2),
 					prev_close DECIMAL(12, 2),
 					curr_volume INT,
 					prev_volume INT,
-					data_id INT NOT NULL REFERENCES stocks_data(id),
+					data_id INT NOT NULL REFERENCES stock_data(id),
 					last_updated TIMESTAMP);
 
-insert into STOCKS_DATA(DATA, LAST_UPDATED) values ('amazon test data', '2020-01-21 21:18:07.233'),
-                                                   ('tesla test data',  '2020-02-21 21:18:07.233'),
-                                                   ('google test data', '2020-03-21 21:18:07.233'),
-                                                   ('ford test data',   '2020-04-21 21:18:07.233'),
-                                                   ('bd test data',     '2020-05-21 21:18:07.233');
+insert into STOCK_DATA(LAST_UPDATED, DATA) values
+('2020-03-21 21:18:07.233', '{"symbol":"AMZN","description":"amazon description","history":[{"date":"2010-06-01","open":"19.000000","high":"30.420000","low":"17.540001","close":"23.830000","adjclose":"23.830000","volume":"35953400"},{"date":"2010-07-01","open":"25.000000","high":"25.920000","low":"14.980000","close":"19.940001","adjclose":"19.940001","volume":"64575800"}]}'),
+('2020-03-21 21:18:07.233', '{"symbol":"TSLA","description":"tesla description","history":[{"date":"2010-06-01","open":"19.000000","high":"30.420000","low":"17.540001","close":"23.830000","adjclose":"23.830000","volume":"35953400"},{"date":"2010-07-01","open":"25.000000","high":"25.920000","low":"14.980000","close":"19.940001","adjclose":"19.940001","volume":"64575800"}]}'),
+('2020-03-21 21:18:07.233', '{"symbol":"GOOGL","description":"google description","history":[{"date":"2010-06-01","open":"19.000000","high":"30.420000","low":"17.540001","close":"23.830000","adjclose":"23.830000","volume":"35953400"},{"date":"2010-07-01","open":"25.000000","high":"25.920000","low":"14.980000","close":"19.940001","adjclose":"19.940001","volume":"64575800"}]}'),
+('2020-03-21 21:18:07.233', '{"symbol":"F","description":"ford description","history":[{"date":"2010-06-01","open":"19.000000","high":"30.420000","low":"17.540001","close":"23.830000","adjclose":"23.830000","volume":"35953400"},{"date":"2010-07-01","open":"25.000000","high":"25.920000","low":"14.980000","close":"19.940001","adjclose":"19.940001","volume":"64575800"}]}'),
+('2020-03-21 21:18:07.233', '{"symbol":"BDX","description":"bd description","history":[{"date":"2010-06-01","open":"19.000000","high":"30.420000","low":"17.540001","close":"23.830000","adjclose":"23.830000","volume":"35953400"},{"date":"2010-07-01","open":"25.000000","high":"25.920000","low":"14.980000","close":"19.940001","adjclose":"19.940001","volume":"64575800"}]}');
 
-
-insert into STOCKS(symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated) VALUES
+insert into STOCK(symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated) VALUES
                                                                      ('AMZN',   100.00, 0.0,    10000, 0,       1,'2020-01-21 21:18:07.233'),
                                                                      ('TSLA',   200.00, 100.0,  20000, 10000,   2,'2020-02-21 21:18:07.233'),
                                                                      ('GOOGL',  300.00, 200.0,  30000, 20000,   3,'2020-03-21 21:18:07.233'),

@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.servlet;
 
-import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.CreateAccountModel;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet

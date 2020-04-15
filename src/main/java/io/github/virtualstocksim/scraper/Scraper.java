@@ -1,8 +1,6 @@
 package io.github.virtualstocksim.scraper;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.jsoup.Connection;
@@ -74,10 +72,12 @@ public class Scraper {
         long unixTime = System.currentTimeMillis() / 1000L;
         //calculate seconds passed & sub from current unix time
 
-        JsonArray priceHistory = new JsonArray();
 
-        JsonObject content = new JsonObject();
-        content.addProperty("description", getDescription(ticker));
+        JsonObject result = new JsonObject();
+        result.addProperty("symbol", ticker);
+        result.addProperty("description", getDescription(ticker));
+
+        JsonArray priceHistory = new JsonArray();
         if(checkStockExists(ticker)) {
 
             logger.info("Getting max price history for `" + ticker + "` with time interval of " + timeInterval.getPeriod());
@@ -105,12 +105,9 @@ public class Scraper {
                 jo.addProperty("volume", col.get(i + 6));
                 priceHistory.add(jo);
             }
-            content.add("history", priceHistory);
+            result.add("history", priceHistory);
 
-            JsonObject finalObject = new JsonObject();
-            finalObject.add(ticker, content);
-
-            return finalObject;
+            return result;
         }else{
             logger.warn("Stock symbol `" + ticker + "` does not exist. Unable to retrieve description and history");
             throw new IllegalArgumentException("Stock symbol " + ticker + " does not exist");

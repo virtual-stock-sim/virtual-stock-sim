@@ -2,16 +2,11 @@ package io.github.virtualstocksim.follow;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.DummyStocks;
-import org.junit.Before;
 import org.junit.Test;
 
-
-import java.awt.*;
 import java.math.BigDecimal;
 import java.util.LinkedList;
-
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,7 +24,7 @@ public class FollowTest
         dummyFollows.add(new Follow(new BigDecimal(498), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA), SQL.GetTimeStamp()));
         dummyFollows.add(new Follow(new BigDecimal(220), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE), SQL.GetTimeStamp()));
         dummyFollows.add(new Follow(new BigDecimal(501), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD), SQL.GetTimeStamp()));
-        dummyFollows.add((new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE), SQL.GetTimeStamp())));
+        dummyFollows.add((new Follow(new BigDecimal(.12), DummyStocks.GetDummyStock(DummyStocks.StockSymbol.BDX), SQL.GetTimeStamp())));
 
     }
 
@@ -51,7 +46,7 @@ public class FollowTest
         assertEquals(dummyFollows.get(1).getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA).getCurrPrice());
         assertEquals(dummyFollows.get(2).getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE).getCurrPrice());
         assertEquals(dummyFollows.get(3).getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD).getCurrPrice());
-        assertEquals(dummyFollows.get(4).getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE).getCurrPrice());
+        assertEquals(dummyFollows.get(4).getCurrentPrice(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.BDX).getCurrPrice());
     }
 
     @Test

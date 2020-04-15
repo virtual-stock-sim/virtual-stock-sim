@@ -9,6 +9,8 @@ class DataStream
     idMessageReceived = false;
     closed = false;
 
+    sendQueue = [];
+
     /**
      *
      * @param streamName Name of data stream for message queue if applicable
@@ -22,6 +24,23 @@ class DataStream
         window.addEventListener("beforeunload", (e) => {
             this.close();
         });
+
+        this._sendNextMsgInQueue();
+    }
+
+    // Message queue to make sure that id is available for header
+    _sendNextMsgInQueue()
+    {
+        if(this.sendQueue.length > 0 && this.idMessageReceived)
+        {
+            let obj = this.sendQueue.shift();
+            this._sendMessage(obj);
+            setTimeout(() => this._sendNextMsgInQueue(), 1);
+        }
+        else
+        {
+            setTimeout(() => this._sendNextMsgInQueue(), 10);
+        }
     }
 
     /**
@@ -41,7 +60,8 @@ class DataStream
     }
 
     /**
-     * Sends a message to the stream source and returns response if applicable
+     * Adds message to queue for stream source and returns response if applicable
+     *
      * @param msg Message to send
      * @param protocol Protocol to use. i.e. GET or POST
      * @param onReceived Callback function for when response is received
@@ -49,7 +69,12 @@ class DataStream
      */
     sendMessage({msg, protocol, onReceived = () => {}, async = true})
     {
-        console.log("Sent Message:\n\t" + msg);
+        this.sendQueue.push({msg, protocol, onReceived, async});
+    }
+
+    // Actually sends the message
+    _sendMessage({msg, protocol, onReceived = () => {}, async = true})
+    {
         let req = new XMLHttpRequest();
         req.open(protocol, this.streamURI, async);
         req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -108,7 +133,8 @@ class DataStream
     {
         this.source.close();
         // Disable async to make sure the message is sent before page unload
-        this.sendMessage({msg: "op=close", protocol: "POST", async: false});
+        // Also bypass message queue to ensure that the correct id is used
+        this._sendMessage({msg: "op=close", protocol: "POST", async: false});
         this.closed = true;
     }
 }

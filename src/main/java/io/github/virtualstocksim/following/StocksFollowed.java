@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.stock.Stock;
 
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;

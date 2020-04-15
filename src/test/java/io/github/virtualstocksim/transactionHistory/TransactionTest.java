@@ -25,7 +25,7 @@ public class TransactionTest
         transactions.add(new Transaction(TransactionType.BUY, Timestamp.valueOf("1977-05-08 01:15:30.123456"), new BigDecimal(50.12), 7, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA)));
         transactions.add(new Transaction(TransactionType.SELL,  Timestamp.valueOf("2018-05-18 04:46:05.123456"), new BigDecimal(500.7), 8, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE)));
         transactions.add(new Transaction(TransactionType.BUY,  Timestamp.valueOf("2016-03-23 04:46:05.123456"), new BigDecimal(123.8), 100, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD)));
-        transactions.add(new Transaction(TransactionType.SELL, Timestamp.valueOf("2008-11-22 04:46:05.123456"), new BigDecimal(65.2), 12, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE)));
+        transactions.add(new Transaction(TransactionType.SELL, Timestamp.valueOf("2008-11-22 04:46:05.123456"), new BigDecimal(65.2), 12, DummyStocks.GetDummyStock(DummyStocks.StockSymbol.BDX)));
     }
 
 
@@ -148,7 +148,7 @@ public class TransactionTest
        assertEquals(transactions.get(1).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.TESLA));
        assertEquals(transactions.get(2).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.GOOGLE));
        assertEquals(transactions.get(3).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.FORD));
-       assertEquals(transactions.get(4).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.APPLE));
+       assertEquals(transactions.get(4).getStock(),DummyStocks.GetDummyStock(DummyStocks.StockSymbol.BDX));
 
    }
 

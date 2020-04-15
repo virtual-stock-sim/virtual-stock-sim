@@ -85,7 +85,7 @@ public class Stock extends DatabaseItem
      */
     public static Optional<Stock> Find(String key, Object value)
     {
-        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated FROM stocks WHERE %s = ?", key), value);
+        List<Stock> stocks = FindCustom(String.format("SELECT id, symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated FROM stock WHERE %s = ?", key), value);
         if (stocks.isEmpty())
         {
             return Optional.empty();
@@ -179,7 +179,7 @@ public class Stock extends DatabaseItem
         {
             logger.info("Creating new stock...");
 
-            int id = SQL.executeInsert(conn, "INSERT INTO stocks(symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated) VALUES(?, ?, ?, ?, ?, ?, ?)",
+            int id = SQL.executeInsert(conn, "INSERT INTO stock(symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated) VALUES(?, ?, ?, ?, ?, ?, ?)",
                     symbol, currPrice, prevClose, currVolume, prevVolume, stockDataId, lastUpdated);
 
             return Optional.of(new Stock(id, symbol, currPrice, prevClose, currVolume, prevVolume, stockDataId, lastUpdated));
@@ -241,7 +241,7 @@ public class Stock extends DatabaseItem
         else
         {
             params.add(id);
-            SQL.executeUpdate(conn, String.format("UPDATE stocks SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
+            SQL.executeUpdate(conn, String.format("UPDATE stock SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
         }
     }
 
@@ -258,6 +258,6 @@ public class Stock extends DatabaseItem
     public void delete(Connection conn) throws SQLException
     {
         logger.info(String.format("Removing Stock with ID %d from database", id));
-        SQL.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
+        SQL.executeUpdate(conn, "DELETE FROM stock WHERE id = ?", id);
     }
 }

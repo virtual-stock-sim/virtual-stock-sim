@@ -1,18 +1,11 @@
 package io.github.virtualstocksim.transaction;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.stock.Stock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.LinkedList;
 
 public class Investment {
 

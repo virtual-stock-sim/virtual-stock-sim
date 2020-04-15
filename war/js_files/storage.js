@@ -1,12 +1,10 @@
 /**
  * Stores stock data locally
- * @param jsonString String that contains the JSON object to be stored
+ * @param json String that contains the JSON object to be stored
  */
-function storeStockData(jsonString)
+function storeStockData(json)
 {
-    let json = JSON.parse(jsonString);
-    let symbol = Object.keys(json)[0];
-    window.localStorage.setItem(symbol, JSON.stringify(json[symbol]));
+    window.localStorage.setItem(json.symbol, JSON.stringify(json));
 }
 
 /**

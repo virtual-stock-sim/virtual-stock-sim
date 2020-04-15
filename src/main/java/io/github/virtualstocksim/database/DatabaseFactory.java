@@ -2,12 +2,9 @@ package io.github.virtualstocksim.database;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.derby.jdbc.EmbeddedDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DatabaseFactory

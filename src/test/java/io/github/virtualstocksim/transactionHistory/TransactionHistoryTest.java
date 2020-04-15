@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.transactionHistory;
 
-import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
 import io.github.virtualstocksim.transaction.TransactionHistory;
@@ -13,7 +12,6 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TransactionHistoryTest {

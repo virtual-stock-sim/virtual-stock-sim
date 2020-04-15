@@ -1,6 +1,5 @@
 package io.github.virtualstocksim.account;
 
-import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.Follow;
@@ -11,19 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import javax.sql.rowset.CachedRowSet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
 

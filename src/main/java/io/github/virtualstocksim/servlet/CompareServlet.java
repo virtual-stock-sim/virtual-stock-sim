@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = {"/compare"})
 public class CompareServlet extends HttpServlet
@@ -19,27 +18,6 @@ public class CompareServlet extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        DataStreamServlet.addListener("compareStream", new HttpRequestListener()
-        {
-            @Override
-            public void onGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
-            {
-                logger.info("Listener doGet");
-                resp.setContentType("text/plain");
-                PrintWriter writer = resp.getWriter();
-                writer.write("get received");
-                writer.flush();
-            }
-
-            @Override
-            public void onPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
-            {
-                resp.setContentType("text/plain");
-                PrintWriter writer = resp.getWriter();
-                writer.write("post received");
-                writer.flush();
-            }
-        });
     }
 
     @Override

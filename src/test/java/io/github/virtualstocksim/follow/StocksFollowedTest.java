@@ -3,7 +3,6 @@ package io.github.virtualstocksim.follow;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import org.junit.Before;
 import org.junit.Test;

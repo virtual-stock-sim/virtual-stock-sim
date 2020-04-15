@@ -1,19 +1,17 @@
 package io.github.virtualstocksim.scraper;
+
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.*;
 
 public class ScraperTest {
     private static final Logger logger = LoggerFactory.getLogger(ScraperTest.class);

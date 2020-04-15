@@ -36,7 +36,7 @@ public class StockData extends DatabaseItem
     }
     public static Optional<StockData> Find(String key, Object value)
     {
-        List<StockData> stockDatas = FindCustom(String.format("SELECT id, data, last_updated FROM stocks_data WHERE %s = ?", key), value);
+        List<StockData> stockDatas = FindCustom(String.format("SELECT id, data, last_updated FROM stock_data WHERE %s = ?", key), value);
 
         if(stockDatas.isEmpty())
         {
@@ -124,7 +124,7 @@ public class StockData extends DatabaseItem
 
         try(Connection conn = StockDatabase.getConnection())
         {
-            int id = SQL.executeInsert(conn, "INSERT INTO stocks_data(data, last_updated) VALUES(?, ?)", data, lastUpdated);
+            int id = SQL.executeInsert(conn, "INSERT INTO stock_data(data, last_updated) VALUES(?, ?)", data, lastUpdated);
             return Optional.of(new StockData(id, data, lastUpdated));
         }
         catch (SQLException e)

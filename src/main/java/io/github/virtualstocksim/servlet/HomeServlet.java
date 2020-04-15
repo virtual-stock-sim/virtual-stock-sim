@@ -1,7 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
-import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.CreateAccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

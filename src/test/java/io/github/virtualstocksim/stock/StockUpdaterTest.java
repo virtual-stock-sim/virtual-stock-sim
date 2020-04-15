@@ -17,7 +17,7 @@ public class StockUpdaterTest
     @Test
     public void testUpdate() throws IOException
     {
-        List<Stock> originalValues = Stock.FindCustom("SELECT * FROM stocks");
+        List<Stock> originalValues = Stock.FindCustom("SELECT * FROM stock");
 
         for(Stock s : originalValues)
         {
@@ -28,7 +28,7 @@ public class StockUpdaterTest
 //        updater.updateNow();
 //        updater.stop();
 
-        for(Stock s : Stock.FindCustom("SELECT * FROM stocks"))
+        for(Stock s : Stock.FindCustom("SELECT * FROM stock"))
         {
             logger.info(s.getSymbol() + ": " + s.getCurrPrice());
         }
