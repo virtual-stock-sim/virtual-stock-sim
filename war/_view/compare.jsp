@@ -62,7 +62,7 @@
                 }
             }});*/
 
-            stream.sendMessage({msg: "dataRequest={type: \"stockDatas\", symbols: [\"AMZN\", \"TSLA\", \"GOOGL\"]}", protocol: "POST", onReceived: (r) =>
+            stream.sendMessage(new Message("dataRequest={type: \"stockDatas\", symbols: [\"AMZN\", \"TSLA\", \"GOOGL\"]}", "POST", (r) =>
                 {
                     if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
                     {
@@ -72,7 +72,7 @@
                             console.log(r.responseText);
                         }
                     }
-                }});
+                }));
         </script>
     </head>
 

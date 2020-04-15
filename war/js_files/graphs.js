@@ -2,10 +2,10 @@
  * Generates a pricing history graph
  * @param {string} elementID ID of element to graph draw to
  * @param {string} stockSymbol Symbol of the stock that graph is being generated for
- * @param {Date} minDate Minimum date in range to be graphed. Null for no minimum.
- * @param {Date} maxDate Maximum date in range to be graphed. Null for no maximum
+ * @param {Date|null} minDate Minimum date in range to be graphed. Null for no minimum.
+ * @param {Date|null} maxDate Maximum date in range to be graphed. Null for no maximum
  */
-function genPriceHistoryGraph(elementID, stockSymbol, minDate, maxDate)
+function genPriceHistoryGraph(elementID, stockSymbol, minDate = null, maxDate = null)
 {
     // Setup google charts
     google.charts.load('current', {'packages': ['corechart']});
