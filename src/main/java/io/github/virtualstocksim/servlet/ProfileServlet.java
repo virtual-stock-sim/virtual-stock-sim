@@ -141,7 +141,7 @@ public class ProfileServlet extends HttpServlet {
             if(username != null)
             {
                 logger.info("User requested username change");
-                if(!Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ?", "'%" + username + "%'").isEmpty())
+                if(!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + username + "%'").isEmpty())
                 {
                     lastError = "Username already exists";
                     logger.warn(lastError);

@@ -236,7 +236,7 @@ public class Account extends DatabaseItem {
                                 "bio, " +
                                 "profile_picture, " +
                                 "creation_date " +
-                                "FROM accounts WHERE %s = ?",
+                                "FROM account WHERE %s = ?",
                         key),
                 value);
 
@@ -343,7 +343,7 @@ public class Account extends DatabaseItem {
         try(Connection conn = AccountDatabase.getConnection())
         {
             int id = SQL.executeInsert(conn,
-                                       "INSERT INTO accounts (" +
+                                       "INSERT INTO account (" +
                                                "uuid, " +
                                                "type, " +
                                                "email, " +
@@ -450,7 +450,7 @@ public class Account extends DatabaseItem {
         else
         {
             params.add(id);
-            SQL.executeUpdate(connection, String.format("UPDATE accounts SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
+            SQL.executeUpdate(connection, String.format("UPDATE account SET %s WHERE id = ?", String.join(", ", updated)), params.toArray());
         }
     }
 
@@ -468,7 +468,7 @@ public class Account extends DatabaseItem {
     {
         // deleting an account from database
         logger.info(String.format("Removing Account with ID %d from database", id));
-        SQL.executeUpdate(conn, "DELETE FROM accounts WHERE id = ?", id);
+        SQL.executeUpdate(conn, "DELETE FROM account WHERE id = ?", id);
     }
 
     public static long ProfilePictureMaxFileSize() { return 2097152; }

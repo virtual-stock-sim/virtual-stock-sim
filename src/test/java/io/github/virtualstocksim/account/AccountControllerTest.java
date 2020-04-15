@@ -52,7 +52,7 @@ public class AccountControllerTest
 
         try(Connection conn = AccountDatabase.getConnection())
         {
-            SQL.executeUpdate(conn, "DELETE FROM accounts WHERE username = ? ", "TestAdmin");
+            SQL.executeUpdate(conn, "DELETE FROM account WHERE username = ? ", "TestAdmin");
         }
         catch (SQLException e)
         {

@@ -78,7 +78,7 @@ public class CreateAccountServlet extends HttpServlet {
             }
 
             // check to make sure email is not taken
-            else if (!Account.FindCustom("SELECT id FROM accounts WHERE email LIKE ?", "'%" + email + "%'").isEmpty())
+            else if (!Account.FindCustom("SELECT id FROM account WHERE email LIKE ?", "'%" + email + "%'").isEmpty())
             {
                 // email exists
                 errorMessage= "An account with this email already exists";
@@ -100,7 +100,7 @@ public class CreateAccountServlet extends HttpServlet {
             }
 */
             // check to see if username is taken
-            else if (!Account.FindCustom("SELECT id FROM accounts WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
+            else if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
             {
                 // username already exists
                 errorMessage= "That username is already in use.";

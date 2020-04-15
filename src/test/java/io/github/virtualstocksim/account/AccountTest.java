@@ -178,7 +178,7 @@ public class AccountTest
     public void testCreateAccountInDB(){
         try(Connection conn = AccountDatabase.getConnection())
         {
-            SQL.executeUpdate(conn, "DELETE FROM accounts WHERE username = ? ", "DanPalm5");
+            SQL.executeUpdate(conn, "DELETE FROM account WHERE username = ? ", "DanPalm5");
         }
         catch (SQLException e)
         {

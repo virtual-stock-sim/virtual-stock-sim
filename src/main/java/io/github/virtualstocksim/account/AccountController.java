@@ -175,13 +175,13 @@ public class AccountController {
     }
 
     public void followStock(String ticker) throws SQLException {
-        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM accounts WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
+        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
         temp.addFollow(new Follow(Stock.Find(ticker).get().getCurrPrice(), Stock.Find(ticker).get(), SQL.GetTimeStamp() ));
         acc.setFollowedStocks(temp.followObjectsToSting());
         acc.update();
     }
     public void unFollowStock(String ticker) throws SQLException {
-        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM accounts WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
+        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
 
         if(temp.containsStock(ticker)) {
             temp.removeFollow(ticker);
@@ -197,7 +197,7 @@ public class AccountController {
             //check that the user has the funds
             int compareResult = acc.getWalletBalance().compareTo(Stock.Find(ticker).get().getCurrPrice().multiply(new BigDecimal(numShares)));
             if (compareResult != -1) {
-                String followingString = Account.FindCustom("SELECT followed_stocks FROM accounts WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks();
+                String followingString = Account.FindCustom("SELECT followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks();
                 StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
                 //if it contains the ticker, remove it from the following list
                 if (tempStocksFollowed.containsStock(ticker)) {
@@ -208,7 +208,7 @@ public class AccountController {
                     acc.update();
 
                     //add the stock to transactionHistory
-                    String transHistoryString = Account.FindCustom("SELECT transaction_history FROM accounts where UUID = ? ", acc.getUUID()).get(0).getTransactionHistory();
+                    String transHistoryString = Account.FindCustom("SELECT transaction_history FROM account where UUID = ? ", acc.getUUID()).get(0).getTransactionHistory();
                     //add the transaction using a method with a string
                     TransactionHistory tempTransactionHistory = new TransactionHistory(transHistoryString);
                     Transaction tempTransaction = new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), Stock.Find(ticker).get().getCurrPrice(), numShares, Stock.Find(ticker).get());
@@ -218,7 +218,7 @@ public class AccountController {
                     acc.update();
 
                     //add the stock to investments   Exactly like transactionhistory minus the enum
-                    String investedStocks = Account.FindCustom("SELECT invested_stocks FROM accounts where UUID = ?", acc.getUUID()).get(0).getInvestedStocks();
+                    String investedStocks = Account.FindCustom("SELECT invested_stocks FROM account where UUID = ?", acc.getUUID()).get(0).getInvestedStocks();
                     InvestmentCollection investments = new InvestmentCollection(investedStocks);
                     Investment tempInvestment = new Investment(numShares, ticker, SQL.GetTimeStamp());
                     investments.addInvestment(tempInvestment);
@@ -234,8 +234,8 @@ public class AccountController {
             }
         }else if(type.equals(TransactionType.SELL)){
             //check that the user has the particular stock they want to sell, as well as the quantity that they desire to sell
-            InvestmentCollection investmentCollection = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks FROM accounts WHERE UUID = ?",acc.getUUID()).get(0).getInvestedStocks());
-            StocksFollowed stocksFollowed = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM accounts WHERE UUID = ?",acc.getUUID()).get(0).getFollowedStocks());
+            InvestmentCollection investmentCollection = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks FROM account WHERE UUID = ?",acc.getUUID()).get(0).getInvestedStocks());
+            StocksFollowed stocksFollowed = new StocksFollowed(Account.FindCustom("SELECT followed_stocks FROM account WHERE UUID = ?",acc.getUUID()).get(0).getFollowedStocks());
             if(investmentCollection.isInvested(ticker)){
                 if(investmentCollection.getInvestment(ticker).getNumShares()<= numShares){
 
@@ -250,7 +250,7 @@ public class AccountController {
                         investmentCollection.addInvestment(new Investment(numShares, ticker, SQL.GetTimeStamp()));
                     }
 
-                    TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history FROM accounts WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
+                    TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
                     th.addTransaction(new Transaction(type, SQL.GetTimeStamp(),Stock.Find(ticker).get().getCurrPrice(),numShares, Stock.Find(ticker).get()));
                     acc.setTransactionHistory(th.buildTransactionJSON());
                     acc.setInvestedStocks(investmentCollection.buildJSON());
