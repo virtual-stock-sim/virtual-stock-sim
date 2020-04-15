@@ -6,7 +6,7 @@
 <html>
 <head>
         <title>Create an Account - Virtual Stock Sim</title>
-        <style><%@include file="cssfiles/accountPageStyle.css"%></style>
+        <style><%@include file="../cssfiles/accountPageStyle.css"%></style>
 </head>
 
 <body>

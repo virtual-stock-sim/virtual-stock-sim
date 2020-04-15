@@ -27,7 +27,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
 
-    <style><%@include file="cssfiles/homePageStyle.css"%></style>
+    <link rel="stylesheet" href="../cssfiles/homePageStyle.css">
 
     <title>Home - VSS: Virtual Stock Sim</title>
 </head>

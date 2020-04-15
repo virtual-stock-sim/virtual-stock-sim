@@ -8,7 +8,7 @@
 
 <html>
 <head>
-    <style><%@include file="cssfiles/stocksFollowedStyle.css"%></style>
+    <link href="../cssfiles/stocksFollowedStyle.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
     <title>VSS - Transaction History</title>
 </head>

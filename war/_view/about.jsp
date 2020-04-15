@@ -6,7 +6,7 @@
 
 <html>
 <head>
-    <style><%@include file="cssfiles/aboutPageStyle.css"%></style>
+    <link rel="stylesheet" href="../cssfiles/aboutPageStyle.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>

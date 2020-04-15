@@ -15,7 +15,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     /*Image retrieved from https://roundtablewealth.com/resources/portfolio-theory-diversification/*/
-    background-image: url("../../_view/resources/images/following/followingBG.jpg");
+    background-image: url("../_view/resources/images/following/followingBG.jpg");
     width: 100%;
     height: 100%;
     z-index: -1;

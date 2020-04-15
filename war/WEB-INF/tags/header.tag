@@ -1,5 +1,5 @@
 <%@tag description="page header" pageEncoding="UTF-8" %>
-<style><%@include file="/_view/cssfiles/headerStyle.css"%></style>
+<link rel="stylesheet" href="../../cssfiles/headerStyle.css">
 <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
 
 

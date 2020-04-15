@@ -23,7 +23,7 @@ h1{
     /*Image Obtained from Wallpaper flare https://www.wallpaperflare.com/grayscale-photo-low-angle-of-view-of-high-rise-buildings-i-can-wallpaper-mfywe  */
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("../../_view/resources/images/transactionHistory/transactionHistoryBG.jpg");
+    background-image: url("../_view/resources/images/transactionHistory/transactionHistoryBG.jpg");
     -webkit-filter: grayscale(95%) blur(6px) sepia(20%);
     -moz-appearance: inherit;
     width: 100%;

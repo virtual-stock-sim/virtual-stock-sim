@@ -6,7 +6,7 @@
 <html>
 <head>
     <title>VSS: Virtual Stock Sim</title>
-    <style><%@include file="cssfiles/landingPageStyle.css"%></style>
+    <link rel="stylesheet" href="../cssfiles/landingPageStyle.css">
     <div class = "header">
           <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
           <h2>Simulated Investing, Reimagined</h2>

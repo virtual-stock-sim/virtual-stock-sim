@@ -6,7 +6,7 @@
 <html>
 
 <head>
-    <style><%@include file="cssfiles/transactionHistoryStyle.css"%></style>
+    <link rel="stylesheet" href="../cssfiles/transactionHistoryStyle.css">
 
     <title>VSS - Transaction History</title>
     <div class="bg-img"></div>

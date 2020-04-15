@@ -1,5 +1,5 @@
 <%@tag description="navigation bar" pageEncoding="UTF-8" %>
-<style><%@include file="../../_view/cssfiles/navbarStyle.css"%></style>
+<link rel="stylesheet" href="../../cssfiles/navbarStyle.css">
 <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 

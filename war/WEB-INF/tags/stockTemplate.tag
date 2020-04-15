@@ -21,7 +21,7 @@
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<style><%@include file="../../_view/cssfiles/stockTemplateStyle.css"%></style>
+<link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
 
 <div class="stock-template">

@@ -8,7 +8,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-blend-mode: hard-light;
-    background-image: url("../../_view/resources/images/home/homebg.jpg");
+    background-image: url("../_view/resources/images/home/homebg.jpg");
 }
 
 /* Placing Button in upper left */

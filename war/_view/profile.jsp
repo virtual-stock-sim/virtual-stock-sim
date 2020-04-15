@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
-    <style><%@include file="cssfiles/profilePageStyle.css"%></style>
+    <link href="../cssfiles/profilePageStyle.css" rel="stylesheet">
     <script src="js_files/tabscript.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 

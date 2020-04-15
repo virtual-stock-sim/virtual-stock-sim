@@ -76,7 +76,7 @@ input[type=submit]{
     /*Obtained from https://wonderfulengineering.com/52-hd-black-and-white-wallpaper-for-download/ */
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("../../_view/resources/images/account/accountPageBG.png");
+    background-image: url("../_view/resources/images/account/accountPageBG.png");
     width: 100%;
     height: 100%;
     z-index: -1;

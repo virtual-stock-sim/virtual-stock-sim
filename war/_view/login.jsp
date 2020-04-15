@@ -9,7 +9,7 @@
     <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
     <link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style><%@include file="cssfiles/loginPageStyle.css"%></style>
+    <link rel="stylesheet" href= "../cssfiles/loginPageStyle.css">
 
     </head>
     <body>

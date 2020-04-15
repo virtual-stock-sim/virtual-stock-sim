@@ -10,7 +10,7 @@ body {
     left: 0;
     top: 0;
     /*Obtained from shutterstock - 16504738*/
-    background-image: url("../../_view/resources/images/login/VSS_Background1.jpg");
+    background-image: url("../_view/resources/images/login/VSS_Background1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-blend-mode: hard-light;
