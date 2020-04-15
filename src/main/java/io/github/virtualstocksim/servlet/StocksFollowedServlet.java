@@ -47,9 +47,11 @@ public class StocksFollowedServlet extends HttpServlet
         /**
          * TODO: Don't forget to check for the values of the stock being 0 (Could cause a divide by 0 error)
          */
-        if(stock.isPresent()){
+        if(stock.isPresent())
+        {
             Stock stockModel = stock.get();
-            req.setAttribute("stockModel", stockModel); }
+            req.setAttribute("stockModel", stockModel);
+        }
 
         StocksFollowed model = new StocksFollowed(followingList);
         req.setAttribute("model", model);

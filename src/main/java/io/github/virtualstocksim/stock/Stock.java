@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Stock extends DatabaseItem
@@ -259,5 +260,18 @@ public class Stock extends DatabaseItem
     {
         logger.info(String.format("Removing Stock with ID %d from database", id));
         SQL.executeUpdate(conn, "DELETE FROM stock WHERE id = ?", id);
+    }
+
+
+    public double getPercentChange()
+    {
+       double percentChange = this.currPrice.doubleValue()/this.prevClose.doubleValue();
+       if(percentChange < 1)
+       {
+           percentChange = percentChange-1;
+       }
+       percentChange = percentChange*100;
+       return percentChange;
+
     }
 }

@@ -1,4 +1,5 @@
 <%@tag description="Template for displaying a Stock" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="stock" required="true" type="io.github.virtualstocksim.stock.Stock" %>
 <%@taglib prefix="f" tagdir="/WEB-INF/tags" %>
 <!-- jQuery library -->
@@ -31,7 +32,15 @@
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
                     <span class="glance-symbol">${stock.symbol}</span>
                     <span class="glance-curr_price">$${stock.currPrice}</span>
-                    <span class="glance-pchange">${stock.currPrice.divide(stock.prevClose) * 100} %</span>
+                    <span class="glance-pchange"<c:choose>
+                        <c:when test="${stock.percentChange  ge 0.0}">
+                            style="color:green!important;"
+                        </c:when>
+                        <c:otherwise>
+                            style="color:red!important;"
+                        </c:otherwise>
+                    </c:choose>>
+                                ${stock.percentChange} %</span>
                 </a>
             </h2>
         </div>
@@ -61,7 +70,15 @@
                     </tr>
                     <tr>
                         <th>Percent Change:</th>
-                        <td><span class="depth-pchange">${stock.currPrice.divide(stock.prevClose) * 100} %</span></td>
+                        <td><span class="depth-pchange"<c:choose>
+                            <c:when test="${stock.percentChange  ge 0.0}">
+                                style="color:green!important;"
+                            </c:when>
+                            <c:otherwise>
+                                style="color:red!important;"
+                            </c:otherwise>
+                        </c:choose>>
+                                ${stock.percentChange} %</span></td>
                     </tr>
                 </table>
                 <span class="graph">
