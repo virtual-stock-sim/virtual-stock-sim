@@ -93,7 +93,6 @@ public class DataStreamServlet extends HttpServlet
         }
         else
         {
-            // Add the request to the message queue with stream name as key, or the general queue if none provided
             String name = req.getHeader("Stream-name");
             if(name != null)
             {

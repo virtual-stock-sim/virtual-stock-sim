@@ -34,19 +34,25 @@
                 }
                 else if(data.type === "stockDatas")
                 {
+                    let graphsElem = document.getElementById("graphs");
                     for(let stockStr of data.data)
                     {
                         let stockJson = JSON.parse(stockStr);
                         console.log(stockJson);
                         storeStockData(stockJson);
+
+
+                        graphsElem.innerHTML += "<div id=graph-" + stockJson.symbol + "></div>";
+                        genPriceHistoryGraph("graph-" + stockJson.symbol, stockJson.symbol, new Date("2010-01-01"), new Date("2020-01-01"));
                         output += "<p>" + JSON.stringify(getStockData(stockJson.symbol)) + "</p>";
                     }
+
+                    genPriceHistoryGraph("graph", "AMZN");
                 }
                 else
                 {
 
                 }
-                document.getElementById("graph").innerHTML += output;
             });
 
 /*            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
@@ -71,6 +77,6 @@
     </head>
 
     <body>
-        <div id="graph" onload=''></div>
+        <div id="graphs" onload=''></div>
     </body>
 </html>
