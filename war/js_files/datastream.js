@@ -92,9 +92,9 @@ class DataStream
 
     /**
      * Set callback function for message received event
-     * @param func Callback function. Needs single parameter for event
+     * @param func {function(Event)} Callback function
      */
-    setOnMessage(func)
+    setOnMessageReceived(func)
     {
         this.onMessage = func;
         // Only set the function if the message containing the stream ID

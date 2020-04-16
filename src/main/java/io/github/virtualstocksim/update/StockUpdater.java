@@ -125,10 +125,10 @@ public class StockUpdater
      * @param interval Desired price history time interval
      * @param delay Delay in between queries for each stock so the web scraper doesn't overload the site
      *              Should be somewhere around 15 seconds
-     * @param delayUpperBound Upper bound for delay variation
      * @param delayLowerBound Lower bound for delay variation
+     * @param delayUpperBound Upper bound for delay variation
      */
-    public static void updateStockDatas(List<Stock> stocks, TimeInterval interval, int delay, int delayUpperBound, int delayLowerBound) throws UpdateException
+    public static void updateStockDatas(List<Stock> stocks, TimeInterval interval, int delay, int delayLowerBound, int delayUpperBound) throws UpdateException
     {
         Iterator<Stock> stockIt = stocks.iterator();
         while (stockIt.hasNext())

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class StockRequestHandler implements HttpRequestListener
 {
@@ -73,7 +74,17 @@ public class StockRequestHandler implements HttpRequestListener
                     List<StockData> datas = StockData.FindCustom("SELECT stock_data.id, stock_data.last_updated, stock_data.data FROM stock_data, stock WHERE stock.symbol = ? AND stock.data_id = stock_data.id", e.getAsString());
                     for(StockData d : datas)
                     {
-                        dataArr.add(d.getData());
+                        JsonObject dataObj = JsonParser.parseString(d.getData()).getAsJsonObject();
+                        /**
+                         * TODO: Use update interval from config file instead of hardcoded TTL
+                         */
+                        String[] interval = "24:00:00".split(":");
+                        long time = 0;
+                        time += TimeUnit.HOURS.toMillis(Integer.parseInt(interval[0]));
+                        time += TimeUnit.MINUTES.toMillis(Integer.parseInt(interval[1]));
+                        time += TimeUnit.SECONDS.toMillis(Integer.parseInt(interval[2]));
+                        dataObj.addProperty("ttl", time);
+                        dataArr.add(dataObj);
                     }
                 }
             }

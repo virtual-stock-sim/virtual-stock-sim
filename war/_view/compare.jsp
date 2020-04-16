@@ -24,7 +24,7 @@
             console.log(getStockData("GOOGL").description);*/
 
             let stream = new DataStream("stockStream");
-            stream.setOnMessage(function(e)
+/*            stream.setOnMessage(function(e)
             {
                 let output = "";
                 let data = JSON.parse(e.data);
@@ -39,7 +39,7 @@
                     {
                         let stockJson = JSON.parse(stockStr);
                         console.log(stockJson);
-                        storeStockData(stockJson);
+                        //storeStockData(stockJson);
 
 
                         graphsElem.innerHTML += "<div id=graph-" + stockJson.symbol + "></div>";
@@ -53,7 +53,7 @@
                 {
 
                 }
-            });
+            });*/
 
 /*            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
                 if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
@@ -62,17 +62,24 @@
                 }
             }});*/
 
-            stream.sendMessage(new Message("dataRequest={type: \"stockDatas\", symbols: [\"AMZN\", \"TSLA\", \"GOOGL\"]}", "POST", (r) =>
+/*            let requestObj = {type: "stockDatas", symbols: ["AMZN", "TSLA", "GOOGL"]};
+            stream.setOnMessageReceived((e) =>
+                                        {
+                                            let data = JSON.parse(e.data);
+                                            if(data !== null)
+                                            {
+                                                //console.log(data);
+                                            }
+                                        });
+            stream.sendMessage(new Message("dataRequest=" + JSON.stringify(requestObj), "POST"));*/
+
+            getStockData(["AMZN", "TSLA", "GOOGL", "F"], (arr) =>
+            {
+                for(let obj of arr)
                 {
-                    if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
-                    {
-                        let text = r.responseText;
-                        if(text && text.length > 0)
-                        {
-                            console.log(r.responseText);
-                        }
-                    }
-                }));
+                    console.log(obj);
+                }
+            });
         </script>
     </head>
 
