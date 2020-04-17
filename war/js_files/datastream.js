@@ -1,19 +1,25 @@
 /**
+ * Callback for when message response is received
+ * @callback Message~responseReceived
+ * @param {XMLHttpRequest} HTTP Request object
+ */
+
+/**
  * @class Message
- * @classdesc Outgoing HTTP message for DataStream
+ * @classdesc Outgoing HTTP message container for DataStream
  */
 class Message
 {
     /**
-     * @param msg {string} Message to be sent
-     * @param protocol {string} HTTP Protocol to send message over
-     * @param onReceived {function(XMLHttpRequest)} Message response handler
-     * @param async {boolean} Should this be sent asynchronously
+     * @param {string} message Message to be sent
+     * @param {string} protocol HTTP Protocol to send message over
+     * @param {Message~responseReceived} onReceived Message response handler
+     * @param {boolean} async Should this be sent asynchronously
      */
-    constructor(msg, protocol, onReceived = () => {}, async = true)
+    constructor(message, protocol, onReceived = () => {}, async = true)
     {
         /** @type {string} Message to be sent */
-        this.message = msg;
+        this.message = message;
         /** @type {string} HTTP Protocol to send message over */
         this.protocol = protocol;
         /** @type {function(XMLHttpRequest)} Message response handler */
@@ -34,6 +40,22 @@ class Message
 }
 
 /**
+ * @class DataRequestMessage
+ * @classdesc Pre-formatted message for a dataRequest message that will have its response sent through a data stream
+ */
+class DataRequestMessage extends Message
+{
+    /**
+     * @param {string} dataRequest Config for requested data
+     */
+    constructor(dataRequest)
+    {
+        super("dataRequest=" + dataRequest, "POST", () => {}, true);
+    }
+
+}
+
+/**
  * @class DataStream
  * @classdesc Handles incoming and outgoing data from/to a event stream.
  */
@@ -41,8 +63,8 @@ class DataStream
 {
     /**
      *
-     * @param streamName Name of stream that coincides with a server-side stream handler
-     * @param streamURI Where to connect to
+     * @param {string} streamName Name of stream that coincides with a server-side stream handler
+     * @param {string} streamURI Where to connect to
      */
     constructor(streamName, streamURI = "/dataStream")
     {
@@ -91,12 +113,18 @@ class DataStream
     }
 
     /**
-     * Set callback function for message received event
-     * @param func {function(Event)} Callback function
+     * Callback for when message is received through the stream
+     * @callback DataStream~messageReceived
+     * @param {MessageEvent} Event object from the EventSource
      */
-    setOnMessageReceived(func)
+
+    /**
+     * Set callback function for message received event
+     * @param {DataStream~messageReceived} onReceived Callback function
+     */
+    setOnMessageReceived(onReceived)
     {
-        this.onMessage = func;
+        this.onMessage = onReceived;
         // Only set the function if the message containing the stream ID
         // has been sent, otherwise let the default message handler
         // set and execute the message function
@@ -116,7 +144,7 @@ class DataStream
      * should send the data through the stream and handle the response
      * in onMessage.
      *
-     * @param message {Message} Message to send
+     * @param {Message} message Message to send
      * @public
      */
     sendMessage(message)
@@ -126,7 +154,7 @@ class DataStream
 
     /**
      *
-     * @param message {Message}
+     * @param {Message} message
      * @private
      */
     _sendMessage(message)

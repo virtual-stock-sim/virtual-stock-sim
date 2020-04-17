@@ -1,6 +1,6 @@
 /**
  * Stores the given JSON stock data objects with the symbol as the key
- * @param dataArr {JSON[]} Array of JSON stock data objects
+ * @param {StockData[]} dataArr Array of JSON stock data objects
  */
 function storeStockData(dataArr)
 {
@@ -11,16 +11,22 @@ function storeStockData(dataArr)
 }
 
 /**
- * Retrieve an array of stock data objects and perform onGet() on the array
- *
- * @param symbolArr {string[]} Array of stock symbols
- * @param onGet {function(JSON[])} Callback function that takes a JSON array of stock data
+ * Callback for when stock data is retrieved
+ * @callback dataRetrieved
+ * @param {StockData[]} JSON Array of stock data
  */
-async function getStockData(symbolArr, onGet)
+
+/**
+ * Retrieve an array of stock data objects and perform onDataRetrieved() on the array
+ *
+ * @param {string[]} symbolArr Array of stock symbols
+ * @param {dataRetrieved} onDataRetrieved
+ */
+function getStockData(symbolArr, onDataRetrieved)
 {
     /** @type {string[]} Array of stock data symbols that are either outdated or don't exist */
     let invalidStocks = [];
-    /** @type {JSON[]} Array of stock data objects that are valid and were successfully retrieved */
+    /** @type {StockData[]} Array of stock data objects that are valid and were successfully retrieved */
     let validStocks = [];
 
     // Determine which stock symbols have a valid stored value and which don't
@@ -31,7 +37,7 @@ async function getStockData(symbolArr, onGet)
         {
             let dataObj = JSON.parse(data);
             // Has the data expired
-            if(Date.parse(dataObj.lastUpdated) + parseInt(dataObj.ttl) >= Date.now())
+            if(Date.parse(dataObj.lastUpdated) + dataObj.ttl >= Date.now())
             {
                 validStocks.push(JSON.parse(data));
             }
@@ -49,9 +55,6 @@ async function getStockData(symbolArr, onGet)
     // Only query server for data if there is invalid stock data
     if(invalidStocks.length !== 0)
     {
-        // Ask the server for the data of symbols with invalid stored data
-        let reqObj = {type: "stockDatas", symbols: invalidStocks};
-        let msg = "dataRequest=" + JSON.stringify(reqObj);
         let dataStream = new DataStream("stockStream", "/dataStream");
         dataStream.setOnMessageReceived((e) =>
                                         {
@@ -63,7 +66,7 @@ async function getStockData(symbolArr, onGet)
                                             }
                                             else
                                             {
-                                                /** @type {JSON[]} Array of stock data objects that were returned in response */
+                                                /** @type {StockData[]} Array of stock data objects that were returned in response */
                                                 let returnedStockData = [];
                                                 // Iterate over each stock data returned in response
                                                 for(let data of response.data)
@@ -78,13 +81,15 @@ async function getStockData(symbolArr, onGet)
                                                 dataStream.close();
 
                                                 // Finally, call the callback function with the returned stocks
-                                                onGet(validStocks);
+                                                onDataRetrieved(validStocks);
                                             }
                                         });
-        dataStream.sendMessage(new Message(msg, "POST"));
+        // Ask the server for the data of symbols with invalid stored data
+        let dataReq = {type: "stockDatas", symbols: invalidStocks};
+        dataStream.sendMessage(new DataRequestMessage(JSON.stringify(dataReq)));
     }
     else
     {
-        onGet(validStocks);
+        onDataRetrieved(validStocks);
     }
 }
