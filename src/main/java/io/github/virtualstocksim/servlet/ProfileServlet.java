@@ -86,6 +86,10 @@ public class ProfileServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         String lastError;
         List<String> errorMsgs = new LinkedList<>();
+        boolean bioUpdateSuccess;
+        boolean pictureUpdateSuccess;
+        boolean credentialUpdateSuccess;
+
 
         // Make sure user is logged in
         String sessionUsername = session.getAttribute("username").toString();
@@ -109,31 +113,36 @@ public class ProfileServlet extends HttpServlet {
             {
                 logger.info("User requested bio change");
                 controller.updateUserBio(bio);
-            }
+                bioUpdateSuccess = true;
+                req.setAttribute("bioUpdateSuccess", bioUpdateSuccess);
 
+            }
+            /**TODO: Look into a better way to check for the picture field being null**/
             // User is updating profile picture
-            Part profilePic = req.getPart("file");
-            if(profilePic != null)
+            if (!req.getParts().isEmpty())
             {
-                logger.info("User requested profile picture change");
-                // Make sure file is an image
-                if(!profilePic.getContentType().contains("image"))
+                Part profilePic = req.getPart("file");
+                if (profilePic != null)
                 {
-                    lastError = "Uploaded file isn't an image";
-                    errorMsgs.add(lastError);
-                    logger.info(lastError);
+                    logger.info("User requested profile picture change");
+                    // Make sure file is an image
+                    if (!profilePic.getContentType().contains("image"))
+                    {
+                        lastError = "Uploaded file isn't an image";
+                        errorMsgs.add(lastError);
+                        logger.info(lastError);
+                    }
+                    // Make sure file doesn't exceed file size limit
+                    else if (profilePic.getSize() >= Account.ProfilePictureMaxFileSize())
+                    {
+                        lastError = "Uploaded file exceeds file size limit";
+                        errorMsgs.add(lastError);
+                        logger.info(lastError);
+                    } else {
+                        controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                    }
                 }
-                // Make sure file doesn't exceed file size limit
-                else if(profilePic.getSize() >= Account.ProfilePictureMaxFileSize())
-                {
-                    lastError = "Uploaded file exceeds file size limit";
-                    errorMsgs.add(lastError);
-                    logger.info(lastError);
-                }
-                else
-                {
-                    controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
-                }
+
             }
 
              // User changing username

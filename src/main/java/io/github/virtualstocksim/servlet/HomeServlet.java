@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.CreateAccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +26,27 @@ public class HomeServlet extends HttpServlet
 
         // do not create a new session until the user logs in
         HttpSession session = req.getSession(false);
-        if(session!=null) {
+        if(session!=null)
+        {
             String username = (String) session.getAttribute("username");
             CreateAccountModel accountModel = new CreateAccountModel(username);
-            if(Account.Find(username).isPresent()) {
-                String profilePicture = Account.Find(username).get().getProfilePicture();
+            Account acc = Account.Find(username).orElse(null);
+            if(acc !=null)
+            {
+                String profilePicture = AccountController.PROFILE_PICTURE_PATH +acc.getProfilePicture();
                 req.setAttribute("CreateAccountModel", accountModel);
-                if(profilePicture.length() == 0) {
+                if(Account.Find(username).get().getProfilePicture().length() == 0)
+                {
                     // if the user has not uploaded a profile picture, default it to question mark
                     profilePicture = "../_view/resources/images/home/question-mark.jpg";
                     logger.info("profile picture was null - defaulted to Question Mark");
                 }
-                    req.setAttribute("picturepath", profilePicture);
-                    req.setAttribute("username", username);
-                    logger.info(username + " is logged in");
+                req.setAttribute("picturepath", profilePicture);
+                req.setAttribute("username", username);
+                logger.info(username + " is logged in");
 
             }
-        }else logger.info("Session was null - user not logged in");
+        } else logger.info("Session was null - user not logged in");
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
     }

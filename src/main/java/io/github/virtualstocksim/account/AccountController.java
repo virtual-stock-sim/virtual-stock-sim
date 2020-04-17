@@ -25,6 +25,7 @@ public class AccountController {
     // account instance
     private Account acc;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
+    public static final String PROFILE_PICTURE_PATH = "./war/userdata/ProfilePictures/";
 
     public AccountController() {
 
@@ -50,16 +51,20 @@ public class AccountController {
         logger.info("Logging user " + username + " in...");
 
         Optional<Account> acc = Account.Find(username);
-        if(!acc.isPresent()){
+        if(!acc.isPresent())
+        {
             return false;
         }
         // check hash and salt against login credentials
         boolean isValid = Encryption.validateInput(password.toCharArray(), acc.get().getPasswordSalt(), acc.get().getPasswordHash());
 
         // check if credentials are valid
-        if (isValid) {
+        if (isValid)
+        {
             logger.info("Logged user "+username+ " in successfully!");
-        }else{
+        }
+        else
+        {
             logger.info("Couldn't find account with username "+username);
         }
 
@@ -74,29 +79,34 @@ public class AccountController {
      * @param fileName file name user uploaded
      */
     public void updateProfilePicture(InputStream inputStream, String fileName) {
-        File saveDir = new File("./war/userdata/ProfilePictures"); // directory where images are stored
-        if(!saveDir.exists()){
+        File saveDir = new File(PROFILE_PICTURE_PATH); // directory where images are stored
+        if(!saveDir.exists())
+        {
             saveDir.mkdirs();
         }
-        try{
+        try
+        {
 
             BufferedImage img = ResizeBufferedImage(ImageIO.read(inputStream), Account.ProfilePictureMaxWidth(), Account.ProfilePictureMaxHeight());
 
             String imgName = UUID.randomUUID().toString() + fileName.split("\\.")[0];
             File picture = new File(saveDir.getPath() + "/" + imgName + ".jpg");
             ImageIO.write(img, "jpg", picture);
-            acc.setProfilePicture(imgName);
+            acc.setProfilePicture(imgName + ".jpg");
 
-        }catch (IOException e){
+        }catch (IOException e)
+        {
             logger.error("Error reading image: " +e);
         }
 
 
 
-        try{
+        try
+        {
             acc.update();
             logger.info("Profile Picture updated successfully!");
-        } catch(SQLException e){
+        } catch(SQLException e)
+        {
             logger.error("Error: " + e.toString());
         }
 
@@ -106,7 +116,7 @@ public class AccountController {
      *
      * @param newUsername - new username that is being stored in database
      */
-    public void updateUsername(String newUsername){
+    public void updateUsername(String newUsername) {
         // change username in model
         acc.setUsername(newUsername);
 

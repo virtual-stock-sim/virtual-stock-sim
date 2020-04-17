@@ -50,6 +50,12 @@
         <div class="error">${errorMsg}</div>
     </c:if>
 
+    <c:if test="${bioUpdateSuccess==true}">
+        <div class="alert alert-success">
+            <strong>Success!</strong> Your bio was successfully updated.
+        </div>
+    </c:if>
+
     <div id="tab-cont">
         <div id="menu-fixed">
             <a href="#tab-cont">
