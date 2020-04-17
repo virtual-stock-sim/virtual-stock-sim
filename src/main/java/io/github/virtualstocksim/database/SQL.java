@@ -101,7 +101,7 @@ public class SQL
     }
 
     /**
-     * Executes SQL insertion commmand
+     * Executes SQL insertion command
      * @param conn Database connection
      * @param sql SQL command
      * @return The automatically generated primary key if there is one
@@ -114,7 +114,7 @@ public class SQL
     }
 
     /**
-     * Executes SQL insertion commmand
+     * Executes SQL insertion command
      * @param conn Database connection
      * @param sql SQL command
      * @param params SQL command parameters
