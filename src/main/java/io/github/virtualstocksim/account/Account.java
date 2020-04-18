@@ -315,7 +315,7 @@ public class Account extends DatabaseItem {
                                 columns.containsKey("password_salt")        ? crs.getBytes("password_salt")                 : null,
                                 columns.containsKey("followed_stocks")      ? crs.getString("followed_stocks")              : null,
                                 columns.containsKey("invested_stocks")      ? crs.getString("invested_stocks")              : null,
-                                columns.containsKey("transaction_history")  ? crs.getString("transaction_history")          : null,
+                                transactionHistory,
                                 columns.containsKey("wallet_balance")       ? crs.getBigDecimal("wallet_balance")           : null,
                                 columns.containsKey("leaderboard_rank")     ? crs.getInt("leaderboard_rank")                : -1,
                                 columns.containsKey("bio")                  ? crs.getString("bio")                          : null,

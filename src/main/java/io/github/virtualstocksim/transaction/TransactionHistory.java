@@ -58,17 +58,22 @@ public class TransactionHistory
         return ja.toString();
     }
 
+
     //builds new transactionHistory from a Json Array
     public List<Transaction> parseTransactionFromJSON(String  s){
-        List tempList = new LinkedList();
-
-        JsonParser jsonParser = new JsonParser();
-        JsonArray j = (JsonArray) jsonParser.parse(s);
+        List <Transaction>tempList = new LinkedList();
+        System.out.println("String input for parsetransaction from json");
+        System.out.println(s);
+        JsonArray j  = JsonParser.parseString(s).getAsJsonArray();
         for(JsonElement x : j){
             tempList.add(new Transaction(TransactionType.valueOf(x.getAsJsonObject().get("type").getAsString()), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString()),    x.getAsJsonObject().get("total").getAsBigDecimal(), x.getAsJsonObject().get("shares").getAsInt(), Stock.Find(x.getAsJsonObject().get("stock").getAsInt()).get()));
         }
        return tempList;
     }
 
+    //This method will probably not be used outside of tests
+    public void updateTransactions(String s ){
+        this.transactions= (this.parseTransactionFromJSON(s));
+    }
 
 }

@@ -49,7 +49,7 @@ public class Investment {
 
     public void setNumShares(int input) {
         if (input < 0) {
-            logger.error("Error: The user cannot hold less than 0 stocks. ");
+            logger.error("Error: The user cannot hold less than 0 shares in a company");
         } else {
             this.numShares = input;
         }

@@ -30,6 +30,12 @@ public class InvestmentCollection {
         this.investmentList= in;
     }
 
+    public void updateInvestments(String s ){
+        this.investmentList = this.stringToInvestmentList(s);
+    }
+
+    //if for the leaderboard we want to do percent change for each user
+    //So we will need to add fields here for the cash they put in FOR EACH investment (sum of), as well as the current value of all the holdings in their acct (stock not cash on hand)
 
     //upon adding investment, check if already exists and add to numshares, otherwise add new share
     public void addInvestment(Investment in ) {
@@ -45,6 +51,8 @@ public class InvestmentCollection {
             investmentList.add(in);
         }
     }
+
+
 
 
     public boolean isInvested(String ticker){

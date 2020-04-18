@@ -19,7 +19,14 @@ public class StocksFollowed {
     {
         this.stocksFollowed = stocksFollowed;
     }
-    public StocksFollowed(String s){ setStocksFollowed(this.stringToFollowObjects(s)); }
+    public StocksFollowed(String s){
+        if(s!="") {
+            setStocksFollowed(this.stringToFollowObjects(s));
+        }else{
+            //avoids a call to StringtoFollowObjects, and any
+            this.stocksFollowed.clear();
+        }
+    }
     public List<Follow> getStocksFollowed()
     {
         return this.stocksFollowed;
@@ -28,6 +35,10 @@ public class StocksFollowed {
     public void setStocksFollowed(List<Follow> stocksFollowed)
     {
         this.stocksFollowed = stocksFollowed;
+    }
+
+    public void updateStocksFollowed(String s){
+        this.stocksFollowed = stringToFollowObjects(s);
     }
 
     public void setFollow(Follow newFollow)
@@ -49,7 +60,7 @@ public class StocksFollowed {
 
     public void removeFollow(String ticker){
         for(int i =0; i< stocksFollowed.size();i++){
-            if(stocksFollowed.get(i).getStock().getSymbol().equals(ticker)){
+            if(stocksFollowed.get(i).getStock().getSymbol().toUpperCase().equals(ticker.toUpperCase())){
                 stocksFollowed.remove(i);
             }
         }
