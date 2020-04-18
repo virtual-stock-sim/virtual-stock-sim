@@ -149,7 +149,7 @@ public class Stock extends DatabaseItem
         }
         catch (SQLException e)
         {
-            logger.error("Exception occurred while finding stock(s) in database\n", e);
+            logger.error("Exception occurred while finding stock(s) in database\n", e.toString());
         }
 
         return Collections.emptyList();
