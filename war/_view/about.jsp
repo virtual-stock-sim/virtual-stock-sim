@@ -81,7 +81,7 @@
                         <h3>Dan Palmieri</h3>
                         <p class="opacity">Full Stack Developer</p>
                         <p>Dan's interest in web development led him to taking on the bulk of designing and building the
-                            front-end user interface. He also was responsible for developing the Account and Encryption backend.
+                            frontend user interface. He also was responsible for developing the Stock, Account and Encryption backend.
                         </p>
                         <p><button onclick="danLinkedin()" class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
                         <script>
@@ -99,7 +99,7 @@
                             <h3>Brett Kearney</h3>
                             <p class="opacity">Full Stack Developer</p>
                             <p>Brett took on the majority of the backend, developing the transaction history and followed
-                                stocks. Brett also took on web scraping to get the company history and price history for a stock.
+                                stocks. Brett also used web scraping to get the company history and price history for a stock.
                             </p>
                             <p><button onclick="brettLinkedin()" class="button light-grey block"><i class="fa fa-envelope"></i> Contact</button></p>
                             <script>

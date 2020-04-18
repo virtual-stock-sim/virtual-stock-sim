@@ -275,6 +275,26 @@ public class AccountController {
 
     }
 
+    /**
+     *
+     * @param newBalance updated wallet balance for user
+     */
+    public void updateWalletBalance(BigDecimal newBalance)
+    {
+        // set new account balance
+        acc.setWalletBalance(newBalance);
+
+        // push to DB
+        try
+        {
+            acc.update();
+        }
+        catch (SQLException e)
+        {
+            logger.error("Error updating balance in database.");
+        }
+    }
+
 
 
 
