@@ -35,6 +35,7 @@ public class HomeServlet extends HttpServlet
             {
                 String profilePicture = AccountController.PROFILE_PICTURE_PATH +acc.getProfilePicture();
                 req.setAttribute("CreateAccountModel", accountModel);
+                req.setAttribute("account", acc);
                 if(Account.Find(username).get().getProfilePicture().length() == 0)
                 {
                     // if the user has not uploaded a profile picture, default it to question mark

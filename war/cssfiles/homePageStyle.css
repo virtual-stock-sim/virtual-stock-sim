@@ -18,9 +18,9 @@ body {
     right: 10px;
 }
 
-i{
-    text-decoration: none;
+.profile-menu i {
     border-style:hidden;
+    display: inline-block;
 
 }
 

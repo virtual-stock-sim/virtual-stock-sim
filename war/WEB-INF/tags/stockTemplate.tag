@@ -22,17 +22,31 @@
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 <link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
-
-<div class="stock-template">
+<div class="stock-template" style="margin-left: 5%;">
+    <div class="dropdown" id="stock-invest-dropdown">
+        <button class="btn btn-default dropdown-toggle dropdown-title" id="invest-btn" data-toggle="dropdown" style="position:relative;
+    top:95px;right:60px;">
+            INVEST<i class="material-icons" style="border-style:hidden;display:inline-block;position:relative;top:4px;">
+            import_export</i>
+            <span class="caret" style="display: inline-block;"></span></button>
+        <u1 class="dropdown-menu" style="margin-top:5%;margin-left: -5%;">
+            <li class="link"><a type="button" data-toggle="modal" data-target="#buy-modal" style="cursor:pointer;">BUY</a></li>
+            <li class="divider"></li>
+            <li class="link"><a type="button" data-toggle="modal" data-target="#sell-modal" style="cursor:pointer;">SELL</a></li>
+        </u1>
+    </div>
     <div class="panel panel-collapse">
         <div class="panel-heading" role="tab" id="comapnyDesc">
             <h2 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
-                    <span class="glance-symbol">${stock.symbol}</span>
-                    <span class="glance-curr_price">$${stock.currPrice}</span>
-                    <span class="glance-pchange"<c:choose>
+
+                    <span class="${stock.symbol}-glance-symbol">${stock.symbol}</span>
+                    <span class="${stock.symbol}-glance-curr_price">$${stock.currPrice}</span>
+                    <span class="${stock.symbol}-glance-pchange"<c:choose>
                         <c:when test="${stock.percentChange  ge 0.0}">
                             style="color:green!important;"
                         </c:when>
@@ -54,23 +68,23 @@
                 <table class="table table-condensed" style="width: 100%;">
                     <tr>
                         <th>Current Price:</th>
-                        <td><span class="depth-curr_price">$${stock.currPrice}</span></td>
+                        <td><span class="${stock.symbol}-depth-curr_price">$${stock.currPrice}</span></td>
                     </tr>
                     <tr>
                         <th>Previous Closing Price:</th>
-                        <td><span class="depth-prev_close">$${stock.prevClose}</span></td>
+                        <td><span class="${stock.symbol}-depth-prev_close">$${stock.prevClose}</span></td>
                     </tr>
                     <tr>
                         <th>Current Volume:</th>
-                        <td><span class="depth-curr_volume">${stock.currVolume}</span></td>
+                        <td><span class="${stock.symbol}-depth-curr_volume">${stock.currVolume}</span></td>
                     </tr>
                     <tr>
                         <th>Previous Volume:</th>
-                        <td><span class="depth-prev_volume">${stock.prevVolume}</span></td>
+                        <td><span class="${stock.symbol}-depth-prev_volume">${stock.prevVolume}</span></td>
                     </tr>
                     <tr>
                         <th>Percent Change:</th>
-                        <td><span class="depth-pchange"<c:choose>
+                        <td><span class="${stock.symbol}-depth-pchange"<c:choose>
                             <c:when test="${stock.percentChange  ge 0.0}">
                                 style="color:green!important;"
                             </c:when>
@@ -87,4 +101,42 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<!--Buy Modal-->
+<div id="buy-modal" class="modal fade" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+
+    <!-- Modal Content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title">Buy ${stock.symbol} Stock</h2>
+        </div>
+
+        <div class="modal-body">
+            <form action=${pageContext.servletContext.contextPath}/following class="buy-form" method="post" id="buy-form">
+                <textarea class="form-control" form="buy-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
+                <input class="btn btn-default" type="submit" value="Buy">
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Sell Modal-->
+<div class="modal fade" id="sell-modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+        <!-- Modal Content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h2 class="modal-title">Sell ${stock.symbol} Stock</h2>
+            </div>
+
+            <div class="modal-body">
+                <form action=${pageContext.servletContext.contextPath}/following class="sell-form" method="post" id="sell-form">
+                    <textarea class="form-control" form="sell-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
+                    <input class="btn btn-default" type="submit" value="Sell">
+                </form>
+            </div>
+        </div>
 </div>

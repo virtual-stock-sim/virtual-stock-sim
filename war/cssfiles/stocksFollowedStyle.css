@@ -1,7 +1,6 @@
 body {
     font-family: "Lato", sans-serif!important;
     background-color: #404040;
-    color: white!important;
     text-shadow: #0a0a0a;
     mix-blend-mode: difference;
 }
@@ -78,10 +77,12 @@ a { color: inherit;}
     flex: 0 0 200px;
 
 }
-.parent{
+.parent {
 
 }
+
 .wrapper{
     padding-bottom: 15px;
 }
+
 

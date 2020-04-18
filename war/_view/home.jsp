@@ -24,8 +24,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
+
 
     <link rel="stylesheet" href="../cssfiles/homePageStyle.css">
 
@@ -45,8 +46,11 @@
         <u1 class="dropdown-menu">
             <li class="dropdown-header" style="font-size:large;">Hi, ${CreateAccountModel.username}</li>
             <li class="divider"></li>
-            <li class="link"><a onclick="redirectProfile()">My Account<i class="fa fa-user"></i></a></li>
-            <li class="link"><a onclick="logout()">Sign out<i class="fa fa-sign-out"></i></a></li>
+            <li class="link"><a onclick="redirectProfile()">My Account<i class="fa fa-user" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
+            <li><a>Wallet Balance: $${account.walletBalance}<i class="material-icons" style="font-size: 15px;border-style: hidden;padding: 4px;
+                                                                                        position:relative;top:2px;">account_balance_wallet</i></a></li>
+
+            <li class="link"><a onclick="logout()">Sign out<i class="fa fa-sign-out" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
         </u1>
     </div>
 </div>

@@ -2,6 +2,7 @@ body{
     background-color: black;
     border: 2px white;
 }
+
 .panel {
     margin-top: 50px;
     margin-left: 3%;
@@ -42,7 +43,7 @@ body{
     color: white;
 }
 
-.panel-title span{
+.panel-heading span{
     color: white;
     padding: 0px 100px 0px 100px;
 }
@@ -165,5 +166,3 @@ body{
 .panel-title > .small > a {
     color: inherit;
 }
-
-
