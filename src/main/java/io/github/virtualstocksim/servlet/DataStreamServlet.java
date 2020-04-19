@@ -34,7 +34,7 @@ public class DataStreamServlet extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        addListener("stockStream", new StockRequestHandler());
+        addListener("stockRequest", new StockRequestHandler());
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DataStreamServlet extends HttpServlet
         }
         else
         {
-            String name = req.getParameter("Stream-name");
+            String name = req.getHeader("Listener-name");
             if(name != null)
             {
                 listeners.get(name).onGet(req, resp);
@@ -93,7 +93,7 @@ public class DataStreamServlet extends HttpServlet
         }
         else
         {
-            String name = req.getHeader("Stream-name");
+            String name = req.getHeader("Listener-name");
             if(name != null)
             {
                 listeners.get(name).onPost(req, resp);

@@ -29,11 +29,17 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * TODO: The update methods shouldn't abort the entire update process if
+ *  an error occurs for one stock
+ */
+
+/**
  * Pulls current stock data from iexcloud api and updates the database
  */
 public class StockUpdater
 {
     private static final Logger logger = LoggerFactory.getLogger(StockUpdater.class);
+    private static final String apiUrl = Config.getConfig("stockapi.url");
 
     /**
      * Update the frequently changing data for stocks
@@ -41,7 +47,6 @@ public class StockUpdater
      */
     public static void updateStocks(List<Stock> stocks) throws UpdateException
     {
-//        List<Stock> stocks = Stock.FindCustom("SELECT id, symbol FROM stocks");
 
         // Create String of all stock symbols separated by commas
         StringBuilder sb = new StringBuilder();
@@ -57,10 +62,11 @@ public class StockUpdater
 
         try
         {
+            logger.info("Requesting new data from api");
             // It is assumed that stock symbols can be added onto the end
             // of the URL as a comma separated list to get the correct data
-            URL apiUrl = new URL(Config.getConfig("stockapi.url") + sb.toString());
-            URLConnection request = apiUrl.openConnection();
+            URL url = new URL(apiUrl + sb.toString());
+            URLConnection request = url.openConnection();
 
             if(!request.getContentType().contains("application/json"))
             {
@@ -85,18 +91,13 @@ public class StockUpdater
         }
 
         Timestamp lastUpdated = SQL.GetTimeStamp();
-        JsonElement volume;
         for(Stock stock : stocks)
         {
             JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
 
             stock.setCurrPrice(data.get("latestPrice").getAsBigDecimal());
             stock.setPrevClose(data.get("previousClose").getAsBigDecimal());
-            volume = data.get("volume");
-            if(!volume.isJsonNull())
-            {
-                stock.setCurrVolume(volume.getAsInt());
-            }
+            stock.setCurrVolume(data.get("volume").getAsInt());
             stock.setPrevVolume(data.get("previousVolume").getAsInt());
             stock.setLastUpdated(lastUpdated);
         }

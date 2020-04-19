@@ -14,10 +14,8 @@ update.stock.interval=00:01:00
     # hh:mm:ss for specific time
     # 'immediately' (without quotes) for immediately on program startup
     # 'wait-interval' (without quotes) for wait the given interval before starting
-    # 'on-interval' (without quotes) for wait until the current time is on the interval
-        # i.e. interval of 00:01:00 waits until the time is a whole minute (i.e. 04:05:00)
 
-update.stock.start=on-interval
+update.stock.start=wait-interval
 
 # Stock Data Web scraper update time interval - hh:mm:ss
 update.stockdata.interval=24:00:00
@@ -26,7 +24,5 @@ update.stockdata.interval=24:00:00
     # hh:mm:ss for specific time
     # 'immediately' (without quotes) for immediately on program startup
     # 'wait-interval' (without quotes) for wait the given interval before starting
-    # 'on-interval' (without quotes) for wait until the current time is on the interval
-        # i.e. 00:01:00 waits until the time is a whole minute (i.e. 04:05:00)
 
-update.stockdata.start=on-interval
+update.stockdata.start=00:00:00

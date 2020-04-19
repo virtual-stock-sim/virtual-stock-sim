@@ -13,82 +13,28 @@
         <!-- Google Chart API -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-        <script type="text/javascript" src="../js_files/datastream.js"></script>
-        <script type="text/javascript" src="../js_files/storage.js"></script>
-        <script type="text/javascript" src="../js_files/graphs.js"></script>
+<%--        <script type="module" src="../js_files/generated/compare.js"></script>--%>
+<%--        <script type="text/javascript" src="../js_files/graphs.js"></script>--%>
 
+        <script type="module" src="../js_files/generated/compare.js"></script>
         <script type="text/javascript">
 
-/*            let stream = new DataStream("stockStream");
-            stream.setOnMessage(function(e)
-            {
-                let output = "";
-                let data = JSON.parse(e.data);
-                if(data.type === "stocks")
-                {
+/*            let req = {type: "stockDatas", symbols: [""]};
 
-                }
-                else if(data.type === "stockDatas")
-                {
-                    let graphsElem = document.getElementById("graphs");
-                    for(let stockStr of data.data)
-                    {
-                        let stockJson = JSON.parse(stockStr);
-                        console.log(stockJson);
-                        //storeStockData(stockJson);
-
-
-                        graphsElem.innerHTML += "<div id=graph-" + stockJson.symbol + "></div>";
-                        genPriceHistoryGraph("graph-" + stockJson.symbol, stockJson.symbol, new Date("2010-01-01"), new Date("2020-01-01"));
-                        output += "<p>" + JSON.stringify(getStockData(stockJson.symbol)) + "</p>";
-                    }
-
-                    genPriceHistoryGraph("graph", "AMZN");
-                }
-                else
-                {
-
-                }
-            });*/
-
-/*            stream.sendMessage({msg: "data="+encodeURIComponent("hello!"), protocol: "POST", onReceived: (r) => {
-                if(r.readyState === XMLHttpRequest.DONE && r.status === 200)
-                {
-                    console.log(r.responseText);
-                }
-            }});*/
-
-/*            let requestObj = {type: "stockDatas", symbols: ["AMZN", "TSLA", "GOOGL"]};
-            stream.setOnMessageReceived((e) =>
-                                        {
-                                            let data = JSON.parse(e.data);
-                                            if(data !== null)
-                                            {
-                                                //console.log(data);
-                                            }
-                                        });
-            stream.sendMessage(new Message("dataRequest=" + JSON.stringify(requestObj), "POST"));*/
-
-            /*getStockData(["AMZN", "TSLA", "GOOGL", "F"], (arr) =>
-            {
-                for(let obj of arr)
-                {
-                    console.log(obj);
-                }
-            });*/
-
-            let req = {type: "stockDatas", symbols: [""]};
+            /!** @type {GraphConfig} *!/
+            let c = {elem: document.getElementById("tsla-graph"), stockSymbol: "TSLA", minDate: Date.parse("2016-01-05"), maxDate: Date.now()};*/
 
             // Wait until window is done loading, otherwise the document elements won't exist yet
-            window.addEventListener("load", () =>
+
+/*            window.addEventListener("load", () =>
             {
-                /** @type {GraphConfig[]} */
+                //import {drawPriceHistoryGraph} from "../js_files/generated/graphs.js";
                 let configs = [
                         {elem: document.getElementById("amzn-graph"), stockSymbol: "AMZN", minDate: null, maxDate: null},
                         {elem: document.getElementById("tsla-graph"), stockSymbol: "TSLA", minDate: Date.parse("2016-01-05"), maxDate: Date.now()}
                         ];
-                genPriceHistoryGraph(configs)
-            });
+                drawPriceHistoryGraph(configs);
+            });*/
 
         </script>
     </head>
@@ -98,5 +44,6 @@
 
         <div id="amzn-graph"></div>
         <div id="tsla-graph"></div>
+        <div id="f-graph"></div>
     </body>
 </html>

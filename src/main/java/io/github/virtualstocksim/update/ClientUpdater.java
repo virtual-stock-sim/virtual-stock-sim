@@ -1,21 +1,23 @@
 package io.github.virtualstocksim.update;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import io.github.virtualstocksim.config.Config;
+import io.github.virtualstocksim.scraper.TimeInterval;
 import io.github.virtualstocksim.servlet.DataStreamServlet;
 import io.github.virtualstocksim.stock.Stock;
-import io.github.virtualstocksim.stock.StockData;
-import org.eclipse.jetty.io.RuntimeIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Pushes new data to connected clients
@@ -24,43 +26,110 @@ public class ClientUpdater
 {
     private static final Logger logger = LoggerFactory.getLogger(ClientUpdater.class);
 
-    public static void pushStockUpdates(List<Stock> stocks, ConcurrentHashMap<String, AsyncContext> clients)
+    private Duration stockUpdateInterval;
+    public static Duration getStockUpdateInterval() { return getInstance().stockUpdateInterval; }
+    private Duration stockDataUpdateInterval;
+    public static Duration getStockDataUpdateInterval() { return getInstance().stockDataUpdateInterval; }
+
+    private final ScheduledExecutorService scheduler;
+
+    private static class StaticContainer
     {
-        // Create JSON array of data to push to clients
-        JsonArray dataArr = new JsonArray();
-        for (Stock stock : stocks)
-        {
-            JsonObject stockObj = new JsonObject();
-            stockObj.addProperty("symbol", stock.getSymbol());
-            stockObj.addProperty("currPrice", stock.getCurrPrice());
-            stockObj.addProperty("prevClose", stock.getPrevClose());
-            stockObj.addProperty("currVolume", stock.getCurrVolume());
-            stockObj.addProperty("lastUpdated", stock.getLastUpdated().toString());
+        private static final ClientUpdater Instance = new ClientUpdater();
+    }
 
-            dataArr.add(stockObj);
+    private static ClientUpdater getInstance() { return StaticContainer.Instance; }
+
+    private ClientUpdater()
+    {
+        scheduler = Executors.newScheduledThreadPool(2);
+
+        try
+        {
+            stockUpdateInterval = parseInterval("update.stock.interval");
+            stockDataUpdateInterval = parseInterval("update.stockdata.interval");
         }
-
-        String data = String.valueOf(dataArr);
-        // Push the data to each currently connected client
-        Enumeration<String> ids = clients.keys();
-        while (ids.hasMoreElements())
+        catch (DateTimeParseException | IllegalArgumentException e)
         {
-            DataStreamServlet.sendSimpleMessage(ids.nextElement(), data);
+            logger.error("Exception parsing stock/stock data timer configs\n", e);
+            System.exit(-1);
         }
     }
 
-    public static void sendStockData(List<StockData> stockDatas, HttpServletResponse resp) throws IOException, RuntimeIOException
+    private static Duration parseInterval(String intervalConfigName) throws IllegalArgumentException
     {
-        JsonArray dataArr = new JsonArray();
-        for(StockData data : stockDatas)
+        int[] intervalConfig = Arrays.stream(Config.getConfig(intervalConfigName).split(":")).mapToInt(Integer::parseInt).toArray();
+
+        if(intervalConfig.length != 3)
         {
-            dataArr.add(data.getData());
+            throw new IllegalArgumentException("Invalid stock update interval configuration");
         }
 
-        resp.setContentType("application/json");
-        PrintWriter writer = resp.getWriter();
-        writer.write(String.valueOf(dataArr));
-        writer.flush();
+        return Duration.ofHours(intervalConfig[0])
+                        .plus(Duration.ofMinutes(intervalConfig[1]))
+                        .plus(Duration.ofSeconds(intervalConfig[2]));
+    }
+
+    private void scheduleUpdateTask(Duration interval, String startTime, Runnable task)
+    {
+        long startDelay;
+        if(startTime.equals("now"))
+        {
+            startDelay = 0;
+        }
+        else if(startTime.equals("wait-interval"))
+        {
+            startDelay = interval.toNanos();
+        }
+        else
+        {
+            LocalTime time = LocalTime.parse(startTime);
+            LocalDateTime ldt = LocalDateTime.of(LocalDate.now(), time);
+            if(ChronoUnit.NANOS.between(LocalDateTime.now(), ldt) < 0)
+            {
+                ldt = ldt.plusDays(1);
+            }
+            startDelay = ChronoUnit.NANOS.between(LocalDateTime.now(), ldt);
+        }
+
+        scheduler.scheduleAtFixedRate(task, startDelay, interval.toNanos(), TimeUnit.NANOSECONDS);
+    }
+
+    public static void scheduleStockUpdates()
+    {
+        getInstance().scheduleUpdateTask(getStockUpdateInterval(), Config.getConfig("update.stock.start"), () ->
+        {
+            try
+            {
+                StockUpdater.updateStocks(Stock.FindAll());
+                String message = "{\"update\": \"stock\"}";
+                for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
+                {
+                    DataStreamServlet.sendSimpleMessage(ac, message);
+                }
+            }
+            catch (UpdateException e)
+            {
+                logger.info("Exception while updating stocks\n", e);
+            }
+        });
+
+        getInstance().scheduleUpdateTask(getStockDataUpdateInterval(), Config.getConfig("update.stockdata.start"), () ->
+        {
+            try
+            {
+                StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEDAY, 10, 1, 3);
+                String message = "{\"update\": \"stockData\"}";
+                for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
+                {
+                    DataStreamServlet.sendSimpleMessage(ac, message);
+                }
+            }
+            catch (UpdateException e)
+            {
+                logger.error("Exception while updating stocks\n", e);
+            }
+        });
     }
 
 }
