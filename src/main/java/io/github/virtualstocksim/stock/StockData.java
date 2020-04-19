@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
-import java.sql.*;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class StockData extends DatabaseItem
@@ -48,6 +51,11 @@ public class StockData extends DatabaseItem
         }
     }
 
+    public static List<StockData> FindAll()
+    {
+        return FindCustom("SELECT id, data, last_updated FROM stock_data");
+    }
+
     /**
      * Search for one or more stock datas with a custom SQL command
      * Any empty fields are set to null or -1
@@ -65,14 +73,7 @@ public class StockData extends DatabaseItem
         {
             List<StockData> stockDatas = new ArrayList<>(crs.size());
 
-            ResultSetMetaData rsmd = crs.getMetaData();
-
-            // HashMap of column names returned in result
-            HashMap<String, Void> columns = new HashMap<>();
-            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
-            {
-                columns.put(rsmd.getColumnName(i).toLowerCase(), null);
-            }
+            Map<String, Void> columns = SQL.GetColumnNameMap(crs.getMetaData());
 
             // Make sure query returned an ID
             if(!columns.containsKey("id"))

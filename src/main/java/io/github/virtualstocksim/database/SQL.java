@@ -9,6 +9,8 @@ import javax.sql.rowset.RowSetProvider;
 import java.sql.*;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Static methods for executing SQL
@@ -203,6 +205,25 @@ public class SQL
     public static String formatSqlExecute(String sql, Object... params)
     {
         return String.format("Executing SQL... \n\t SQL Command: %s \n\t Parameters: %s", sql, Arrays.toString(params));
+    }
+
+    /**
+     * Creates a map of table names in a result set
+     * Useful for checking if a column exists in the result
+     * @param rsmd The ResultSetMetaData
+     * @return Map of column names
+     * @throws SQLException
+     */
+    public static Map<String, Void> GetColumnNameMap(ResultSetMetaData rsmd) throws SQLException
+    {
+        // HashMap of column names returned in result
+        HashMap<String, Void> columns = new HashMap<>();
+        for(int i = 1; i <= rsmd.getColumnCount(); ++i)
+        {
+            columns.put(rsmd.getColumnName(i).toLowerCase(), null);
+        }
+
+        return columns;
     }
 
     /**

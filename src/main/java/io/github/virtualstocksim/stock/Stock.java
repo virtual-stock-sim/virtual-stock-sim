@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -96,6 +95,11 @@ public class Stock extends DatabaseItem
         }
     }
 
+    public static List<Stock> FindAll()
+    {
+        return FindCustom("SELECT id, symbol, curr_price, prev_close, curr_volume, prev_volume, data_id, last_updated FROM stock");
+    }
+
     /**
      * Search for one or more stocks with a custom SQL command.
      * Any empty fields are set to null or -1
@@ -113,14 +117,7 @@ public class Stock extends DatabaseItem
         {
             List<Stock> stocks = new ArrayList<>(crs.size());
 
-            ResultSetMetaData rsmd = crs.getMetaData();
-
-            // HashMap of column names returned in result
-            HashMap<String, Void> columns = new HashMap<>();
-            for(int i = 1; i <= rsmd.getColumnCount(); ++i)
-            {
-                columns.put(rsmd.getColumnName(i).toLowerCase(), null);
-            }
+            Map<String, Void> columns = SQL.GetColumnNameMap(crs.getMetaData());
 
             // Make sure that the query returned an ID
             if(!columns.containsKey("id"))
@@ -149,7 +146,7 @@ public class Stock extends DatabaseItem
         }
         catch (SQLException e)
         {
-            logger.error("Exception occurred while finding stock(s) in database\n", e.toString());
+            logger.error("Exception occurred while finding stock(s) in database\n", e);
         }
 
         return Collections.emptyList();
@@ -212,7 +209,7 @@ public class Stock extends DatabaseItem
     @Override
     public void update(Connection conn) throws SQLException
     {
-        logger.info(String.format("Committing stock changes to database for Stock ID %d", id));
+        logger.info(String.format("Committing stock changes to database for Stock with ID %d and Symbol %s", id, symbol));
 
         List<String> updated = new LinkedList<>();
         List<Object> params = new LinkedList<>();
@@ -236,7 +233,7 @@ public class Stock extends DatabaseItem
 
         if(updated.isEmpty())
         {
-            logger.warn(String.format("Abandoning update for Stock ID %d; Nothing to update", id));
+            logger.warn(String.format("Abandoning update for Stock with ID %d and Symbol %s; Nothing to update", id, symbol));
         }
         else
         {
@@ -257,7 +254,7 @@ public class Stock extends DatabaseItem
     @Override
     public void delete(Connection conn) throws SQLException
     {
-        logger.info(String.format("Removing Stock with ID %d from database", id));
+        logger.info(String.format("Removing Stock with ID %d and Symbol %s from database", id, symbol));
         SQL.executeUpdate(conn, "DELETE FROM stock WHERE id = ?", id);
     }
 
