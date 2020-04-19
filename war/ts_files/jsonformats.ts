@@ -9,9 +9,38 @@ export function serialize(obj: object)
     return JSON.stringify(obj);
 }
 
+export interface DataRequest
+{
+    type: string;
+    symbols: string[];
+}
+
+export interface StockRequestResult
+{
+    type: string;
+    data: Stock[];
+}
+
+export interface StockDataRequestResult
+{
+    type: string;
+    data: StockData[];
+}
+
 export interface Stock
 {
-
+    /** Stock symbol */
+    symbol: string;
+    /** Current price per share */
+    currPrice: string;
+    /** Last closing of price per share */
+    prevClose: string;
+    /** Current market volume */
+    currVolume: string;
+    /** Last market volume */
+    prevVolume: string;
+    /** 'Stringified' date of when this data was last updated */
+    lastUpdated: string;
 }
 
 export interface StockData

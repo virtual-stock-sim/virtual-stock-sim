@@ -7,8 +7,6 @@ import { HttpRequest } from "./httprequest.js";
 export function storeStockData(dataArr) {
     dataArr.forEach((data) => window.localStorage.setItem(data.symbol, json.serialize(data)));
 }
-class StockDataResp {
-}
 /**
  * Retrieve an array of stock data objects and perform onDataRetrieved(stockData[]) on the array
  * @param symbolArr

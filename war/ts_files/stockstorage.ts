@@ -10,24 +10,12 @@ export function storeStockData(dataArr: json.StockData[])
     dataArr.forEach((data) => window.localStorage.setItem(data.symbol, json.serialize(data)));
 }
 
-interface DataRetrieved
-{
-    (dataArr: json.StockData[]): void;
-}
-
-class StockDataResp
-{
-    public type: string;
-    public data: json.StockData[];
-}
-
-
 /**
  * Retrieve an array of stock data objects and perform onDataRetrieved(stockData[]) on the array
  * @param symbolArr
  * @param onDataRetrieved
  */
-export function getStockData(symbolArr: string[], onDataRetrieved: DataRetrieved)
+export function getStockData(symbolArr: string[], onDataRetrieved: (results: json.StockData[]) => void)
 {
     let invalidStocks: string[] = [];
     let validStocks: json.StockData[] = [];
@@ -68,7 +56,7 @@ export function getStockData(symbolArr: string[], onDataRetrieved: DataRetrieved
                 };
         params.onReceived = (response) =>
         {
-            let resp: StockDataResp = json.deserialize(response);
+            let resp: json.StockDataRequestResult = json.deserialize(response);
             // Check that response contents are valid
             if(!resp && resp.type !== "stockData")
             {

@@ -24,6 +24,6 @@ export class HttpRequest {
         req.open(this._params.protocol, this._params.uri, this._params.useAsync);
         this._params.headers.forEach((header) => req.setRequestHeader(header.name, header.value));
         req.onload = () => { this._params.onReceived(req.response); };
-        req.send(this._params.message);
+        req.send(encodeURI(this._params.message));
     }
 }
