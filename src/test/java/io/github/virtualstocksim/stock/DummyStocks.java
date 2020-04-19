@@ -57,15 +57,15 @@ public class DummyStocks
          * Add new stocks below
          */
         stockDatas.put(StockSymbol.AMAZON, new StockData(StockSymbol.AMAZON.getID(), "{\"symbol\":\"AMZN\",\"description\":\"amazon description\",\"history\":[{\"date\":\"2010-06-01\",\"open\":\"19.000000\",\"high\":\"30.420000\",\"low\":\"17.540001\",\"close\":\"23.830000\",\"adjclose\":\"23.830000\",\"volume\":\"35953400\"},{\"date\":\"2010-07-01\",\"open\":\"25.000000\",\"high\":\"25.920000\",\"low\":\"14.980000\",\"close\":\"19.940001\",\"adjclose\":\"19.940001\",\"volume\":\"64575800\"}]}",
-                                                         Timestamp.valueOf("2020-01-21 21:18:07.233")));
+                                                         Timestamp.valueOf("2020-03-21 21:18:07.233")));
         stockDatas.put(StockSymbol.TESLA, new StockData(StockSymbol.TESLA.getID(), "{\"symbol\":\"TSLA\",\"description\":\"tesla description\",\"history\":[{\"date\":\"2010-06-01\",\"open\":\"19.000000\",\"high\":\"30.420000\",\"low\":\"17.540001\",\"close\":\"23.830000\",\"adjclose\":\"23.830000\",\"volume\":\"35953400\"},{\"date\":\"2010-07-01\",\"open\":\"25.000000\",\"high\":\"25.920000\",\"low\":\"14.980000\",\"close\":\"19.940001\",\"adjclose\":\"19.940001\",\"volume\":\"64575800\"}]}",
-                                                        Timestamp.valueOf("2020-02-21 21:18:07.233")));
+                                                        Timestamp.valueOf("2020-03-21 21:18:07.233")));
         stockDatas.put(StockSymbol.GOOGLE, new StockData(StockSymbol.GOOGLE.getID(), "{\"symbol\":\"GOOGL\",\"description\":\"google description\",\"history\":[{\"date\":\"2010-06-01\",\"open\":\"19.000000\",\"high\":\"30.420000\",\"low\":\"17.540001\",\"close\":\"23.830000\",\"adjclose\":\"23.830000\",\"volume\":\"35953400\"},{\"date\":\"2010-07-01\",\"open\":\"25.000000\",\"high\":\"25.920000\",\"low\":\"14.980000\",\"close\":\"19.940001\",\"adjclose\":\"19.940001\",\"volume\":\"64575800\"}]}",
                                                          Timestamp.valueOf("2020-03-21 21:18:07.233")));
         stockDatas.put(StockSymbol.FORD, new StockData(StockSymbol.FORD.getID(), "{\"symbol\":\"F\",\"description\":\"ford description\",\"history\":[{\"date\":\"2010-06-01\",\"open\":\"19.000000\",\"high\":\"30.420000\",\"low\":\"17.540001\",\"close\":\"23.830000\",\"adjclose\":\"23.830000\",\"volume\":\"35953400\"},{\"date\":\"2010-07-01\",\"open\":\"25.000000\",\"high\":\"25.920000\",\"low\":\"14.980000\",\"close\":\"19.940001\",\"adjclose\":\"19.940001\",\"volume\":\"64575800\"}]}",
-                                                       Timestamp.valueOf("2020-04-21 21:18:07.233")));
+                                                       Timestamp.valueOf("2020-03-21 21:18:07.233")));
         stockDatas.put(StockSymbol.BDX, new StockData(StockSymbol.BDX.getID(), "{\"symbol\":\"BDX\",\"description\":\"bdx description\",\"history\":[{\"date\":\"2010-06-01\",\"open\":\"19.000000\",\"high\":\"30.420000\",\"low\":\"17.540001\",\"close\":\"23.830000\",\"adjclose\":\"23.830000\",\"volume\":\"35953400\"},{\"date\":\"2010-07-01\",\"open\":\"25.000000\",\"high\":\"25.920000\",\"low\":\"14.980000\",\"close\":\"19.940001\",\"adjclose\":\"19.940001\",\"volume\":\"64575800\"}]}",
-                                                      Timestamp.valueOf("2020-05-21 21:18:07.233")));
+                                                      Timestamp.valueOf("2020-03-21 21:18:07.233")));
 
         return stockDatas;
     }
