@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.main;
 
 import io.github.virtualstocksim.update.ClientUpdater;
+import io.github.virtualstocksim.update.StockUpdater;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

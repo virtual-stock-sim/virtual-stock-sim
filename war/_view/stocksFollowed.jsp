@@ -18,7 +18,7 @@
     <t:navbar/>
 </div>
 
-<div class= "dab">
+<div class ="followed-heading">
     <h1>FOLLOWED STOCKS</h1>
     <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
 </div>

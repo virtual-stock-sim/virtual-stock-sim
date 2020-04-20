@@ -51,11 +51,14 @@ function createGraph(config: GraphConfig)
         // Graph visual options
         let options =
                 {
-                    title: config.stockSymbol + ' - Monthly Share Prices',
-                    hAxis: {title: 'Date', titleTextStyle: {color: '#333'}},
-                    vAxis: {title: 'Price Per Share'},
+                    title: config.stockSymbol + ' - Monthly Share Prices', textStyle:{color: '#FFFFFF'},
+                    hAxis: {title: 'Date', titleTextStyle:{color: '#FFFFFF'}, textStyle:{color:'#FFFFFF'}},
+                    vAxis: {title: 'Price Per Share', titleTextStyle:{color: '#FFFFFF'}, textStyle:{color:'#FFFFFF'}},
                     seriesType: 'bars',
-                    series: {2: {type: 'line'}}
+                    series: {2: {type: 'line'}},
+                    backgroundColor: '#222222',
+                    titleTextStyle:{color: '#FFFFFF'},
+                    legend: {textStyle:{color: '#FFFFFF'}}
                 };
 
         // Create and draw the chart
