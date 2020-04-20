@@ -25,7 +25,6 @@ public class AccountController {
     // account instance
     private Account acc;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
-    public static final String PROFILE_PICTURE_PATH = "./war/userdata/ProfilePictures/";
 
     public AccountController() {
 
@@ -78,8 +77,8 @@ public class AccountController {
      * @param inputStream  file contents converted to input stream
      * @param fileName file name user uploaded
      */
-    public void updateProfilePicture(InputStream inputStream, String fileName) {
-        File saveDir = new File(PROFILE_PICTURE_PATH); // directory where images are stored
+    public void updateProfilePicture(InputStream inputStream, String fileName) throws IOException, SQLException {
+        File saveDir = new File("./war/" + Account.getProfilePictureDirectory()); // directory where images are stored
         if(!saveDir.exists())
         {
             saveDir.mkdirs();
@@ -91,25 +90,19 @@ public class AccountController {
 
             String imgName = UUID.randomUUID().toString() + fileName.split("\\.")[0];
             File picture = new File(saveDir.getPath() + "/" + imgName + ".jpg");
+            logger.info(picture.getAbsolutePath());
             ImageIO.write(img, "jpg", picture);
             acc.setProfilePicture(imgName + ".jpg");
 
         }catch (IOException e)
         {
-            logger.error("Error reading image: " +e);
+            throw new IOException("Error reading image: ", e);
         }
 
 
 
-        try
-        {
-            acc.update();
-            logger.info("Profile Picture updated successfully!");
-        } catch(SQLException e)
-        {
-            logger.error("Error: " + e.toString());
-        }
-
+        acc.update();
+        logger.info("Profile Picture updated successfully!");
     }
 
     /**

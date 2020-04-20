@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +118,8 @@ public class ProfileServlet extends HttpServlet {
                 req.setAttribute("bioUpdateSuccess", bioUpdateSuccess);
 
             }
-            /**TODO: Look into a better way to check for the picture field being null**/
+            /* TODO: Look into a better way to check for the picture field being null**/
+            /* TODO: Success message */
             // User is updating profile picture
             if (!req.getParts().isEmpty())
             {
@@ -139,7 +141,15 @@ public class ProfileServlet extends HttpServlet {
                         errorMsgs.add(lastError);
                         logger.info(lastError);
                     } else {
-                        controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                        try
+                        {
+                            controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                        }
+                        catch (SQLException e)
+                        {
+                            logger.error("", e);
+                            errorMsgs.add("Server-side error");
+                        }
                     }
                 }
 

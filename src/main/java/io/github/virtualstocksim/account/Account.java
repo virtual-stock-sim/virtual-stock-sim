@@ -19,7 +19,7 @@ public class Account extends DatabaseItem {
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
     private static final String EMPTY_STRING = "";
     private static final BigDecimal EMPTY_BD = new BigDecimal("0.0");
-    private static final String PROFILE_PICTURE_DIR ="./war/userdata/ProfilePictures/";
+    private static final String PROFILE_PICTURE_DIR ="/userdata/ProfilePictures/";
 
     private final String uuid;
     private AccountType type;
@@ -217,11 +217,13 @@ public class Account extends DatabaseItem {
         return creationDate;
     }
 
-    public String getProfilePictureDirectory()
+    /* Directory root is /war */
+    public static String getProfilePictureDirectory()
     {
         return PROFILE_PICTURE_DIR;
     }
 
+    /* Directory root is /war */
     public String getProfilePictureWithDir(){
         return PROFILE_PICTURE_DIR + profilePicture;
     }
