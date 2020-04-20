@@ -4,7 +4,7 @@
 
 
 
-<div class ="header">
+<div class ="heading">
     <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
     <h2>SIMULATED INVESTING, REIMAGINED</h2>
 </div>

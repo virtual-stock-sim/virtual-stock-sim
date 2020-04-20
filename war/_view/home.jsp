@@ -79,15 +79,8 @@ else  {
 %>
 
 
-<div class = "header">
-    <t:header/>
-</div>
-
-
-
-<div class = "navbar">
-    <t:navbar/>
-</div>
+<t:header/>
+<t:navbar/>
 
 
 <div class="leaderboard">

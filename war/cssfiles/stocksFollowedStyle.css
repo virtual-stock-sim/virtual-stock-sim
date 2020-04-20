@@ -28,19 +28,16 @@ body {
     font-family: "Lato", sans-serif;
 }
 
-.header {
+.dab {
     text-align: center;
     padding-bottom: 50px;
+    color:white!important;
 }
 
-h3{
-    text-align: center;
-}
 
 .subhead {
     flex: 0 0 200px;
 }
-
 
 h4{
     color:white;

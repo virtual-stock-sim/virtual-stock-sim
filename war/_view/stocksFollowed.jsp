@@ -7,20 +7,20 @@
 
 <html>
 <head>
-    <link href="../cssfiles/stocksFollowedStyle.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
+    <link href="../cssfiles/stocksFollowedStyle.css" rel="stylesheet">
     <title>VSS - Transaction History</title>
 </head>
 <body>
 <div class = "bg-img"></div>
 
-<div class ="navigation">
+<div class = "navigation">
     <t:navbar/>
 </div>
 
-<div class="header">
+<div class= "dab">
     <h1>FOLLOWED STOCKS</h1>
-    <h3>The stocks you follow, at a glance</h3>
+    <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
 </div>
 
 
