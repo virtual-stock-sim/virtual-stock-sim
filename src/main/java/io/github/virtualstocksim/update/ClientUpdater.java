@@ -73,7 +73,7 @@ public class ClientUpdater
     private void scheduleUpdateTask(Duration interval, String startTime, Runnable task)
     {
         long startDelay;
-        if(startTime.equals("now"))
+        if(startTime.equals("immediately"))
         {
             startDelay = 0;
         }
