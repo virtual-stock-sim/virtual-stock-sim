@@ -118,7 +118,7 @@ public class ClientUpdater
         {
             try
             {
-                StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEDAY, 10, 1, 3);
+                StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEMONTH, 10, 1, 3);
                 String message = "{\"update\": \"stockData\"}";
                 for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
                 {
