@@ -262,6 +262,28 @@ public class Account extends DatabaseItem {
             return Optional.of(accounts.get(0));
         }
     }
+    public static List<Account> FindAll()
+    {
+        return FindCustom(
+                        "SELECT " +
+                                "id, " +
+                                "uuid, " +
+                                "type, " +
+                                "username, " +
+                                "email, " +
+                                "password_hash, " +
+                                "password_salt, " +
+                                "followed_stocks, " +
+                                "invested_stocks, " +
+                                "transaction_history, " +
+                                "leaderboard_rank, " +
+                                "wallet_balance, " +
+                                "bio, " +
+                                "profile_picture, " +
+                                "creation_date " +
+                                "FROM account"
+                );
+    }
 
 
     /**
