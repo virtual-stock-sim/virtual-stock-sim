@@ -1,7 +1,7 @@
 <%@tag description="Template for displaying a Stock" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="stock" required="true" type="io.github.virtualstocksim.stock.Stock" %>
-<%@taglib prefix="f" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -9,16 +9,19 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('body').on('show.bs.collapse', '.collapse', function(e) {
-            $(this).closest('.panel').find('.panel-heading').addClass('active-${stock.symbol}');
-        });
+    $('body').on('show.bs.collapse', '.collapse', function(e) {
+        $(this).closest('.panel').find('.panel-heading').addClass('active-${stock.symbol}');
+    });
 
-        $('body').on('hide.bs.collapse', '.collapse', function(e) {
-            $(this).closest('.panel').find('.panel-heading').removeClass('active-${stock.symbol}');
-        });
+    $('body').on('hide.bs.collapse', '.collapse', function(e) {
+        $(this).closest('.panel').find('.panel-heading').removeClass('active-${stock.symbol}');
+    });
     })
 
 </script>
+
+<script type="module" src="../../js_files/generated/stocktemplate.js"></script>
+
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -27,6 +30,7 @@
 <link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
 <div class="stock-template" style="margin-left: 5%;">
+    <div hidden class="stockSymbol">${stock.symbol}</div>
     <div class="dropdown" id="stock-invest-dropdown">
         <button class="btn btn-default dropdown-toggle dropdown-title" id="invest-btn" data-toggle="dropdown" style="position:relative;
     top:95px;right:60px;">
@@ -34,13 +38,13 @@
             import_export</i>
             <span class="caret" style="display: inline-block;"></span></button>
         <u1 class="dropdown-menu" style="margin-top:5%;margin-left: -5%;">
-            <li class="link"><a type="button" data-toggle="modal" data-target="#buy-modal" style="cursor:pointer;">BUY</a></li>
+            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer;">BUY</a></li>
             <li class="divider"></li>
-            <li class="link"><a type="button" data-toggle="modal" data-target="#sell-modal" style="cursor:pointer;">SELL</a></li>
+            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
         </u1>
     </div>
     <div class="panel panel-collapse">
-        <div class="panel-heading" role="tab" id="comapnyDesc">
+        <div class="panel-heading" role="tab">
             <h2 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
 
@@ -58,13 +62,9 @@
                 </a>
             </h2>
         </div>
-        <div id="collapseDesc" class="collapse" role="tabpanel" aria-labelledby="companyDesc">
+        <div id="collapseDesc" class="collapse" role="tabpanel" >
             <div class="panel-body">
-                <p class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                    commodo consequat.
-                </p><br>
+                <p id="${stock.symbol}-desc"></p><br>
                 <table class="table table-condensed" style="width: 100%;">
                     <tr>
                         <th>Current Price:</th>
@@ -105,7 +105,7 @@
 
 
 <!--Buy Modal-->
-<div id="buy-modal" class="modal fade" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+<div id="${stock.symbol}-buy-modal" class="modal fade" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
 
     <!-- Modal Content-->
     <div class="modal-content">
@@ -115,8 +115,8 @@
         </div>
 
         <div class="modal-body">
-            <form action=${pageContext.servletContext.contextPath}/following class="buy-form" method="post" id="buy-form">
-                <textarea class="form-control" form="buy-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
+            <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-buy-form" method="post" id="${stock.symbol}-buy-form">
+                <textarea class="form-control" form="${stock.symbol}-buy-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
                 <input class="btn btn-default" type="submit" value="Buy">
             </form>
         </div>
@@ -124,7 +124,7 @@
 </div>
 
 <!--Sell Modal-->
-<div class="modal fade" id="sell-modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+<div class="modal fade" id="${stock.symbol}-sell-modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
         <!-- Modal Content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -133,8 +133,8 @@
             </div>
 
             <div class="modal-body">
-                <form action=${pageContext.servletContext.contextPath}/following class="sell-form" method="post" id="sell-form">
-                    <textarea class="form-control" form="sell-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
+                <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-sell-form" method="post" id="${stock.symbol}-sell-form">
+                    <textarea class="form-control" form="${stock.symbol}-sell-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
                     <input class="btn btn-default" type="submit" value="Sell">
                 </form>
             </div>

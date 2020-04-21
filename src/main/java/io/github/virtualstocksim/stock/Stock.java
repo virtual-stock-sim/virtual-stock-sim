@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Stock extends DatabaseItem
@@ -266,8 +267,10 @@ public class Stock extends DatabaseItem
        {
            percentChange = percentChange-1;
        }
-       percentChange = percentChange*100;
-       return percentChange;
+
+       DecimalFormat df = new DecimalFormat("#.##");
+       percentChange= percentChange*100;
+       return Double.parseDouble(df.format(percentChange));
 
     }
 }
