@@ -104,8 +104,7 @@ public class InvestmentCollection {
     public List<Investment> stringToInvestmentList(String s ){
          List<Investment> temp = new LinkedList<>();
 
-        JsonParser jsonParser = new JsonParser();
-        JsonArray j = (JsonArray) jsonParser.parse(s);
+        JsonArray j = JsonParser.parseString(s).getAsJsonArray();
 
         for(JsonElement x : j ){
             temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),x.getAsJsonObject().get("ticker").getAsString(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
