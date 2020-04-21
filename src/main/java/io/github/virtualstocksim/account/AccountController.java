@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -198,30 +199,41 @@ public class AccountController {
         if(numShares ==-1){
             throw new TradeException("Please specify at least one stock to trade with", TradeExceptionType.NOT_ENOUGH_SHARES);
         }
+        Stock localStock = Stock.Find(ticker).orElse(null);
+        if(localStock == null){
+            throw new TradeException("You are not following that stock! Please follow and wait for new cycle before trading",TradeExceptionType.NOT_FOLLOWING_STOCK);
+        }
+
         if (type.equals(TransactionType.BUY)) {
             //check that the user has the funds
             int compareResult = acc.getWalletBalance().compareTo(Stock.Find(ticker).get().getCurrPrice().multiply(new BigDecimal(numShares)));
             if (compareResult != -1) {
-                String followingString = Account.FindCustom("SELECT followed_stocks, id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks();
-                StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
-                InvestmentCollection ic = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks, id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getInvestedStocks());
+                LinkedList<Account> queryResult =  new LinkedList<Account>(Account.FindCustom("SELECT followed_stocks, invested_stocks, transaction_history, id FROM account WHERE UUID = ?", acc.getUUID())) ;
+                Account localAccount = queryResult.get(0);
+                if(localAccount== null){
+                    throw new TradeException("could not find user in schema", TradeExceptionType.USER_NOT_FOUND);
+                }
+                StocksFollowed tempStocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
+
+                InvestmentCollection ic = new InvestmentCollection(localAccount.getInvestedStocks());
+
+                //StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
                 //if it contains the ticker, remove it from the following list
                 if (tempStocksFollowed.containsStock(ticker) || ic.isInvested(ticker)) {
                     //add the stock to transactionHistory
                     //add the transaction using a method with a string
-                    TransactionHistory tempTransactionHistory = new TransactionHistory(Account.FindCustom("SELECT transaction_history, id FROM account where UUID = ? ", acc.getUUID()).get(0).getTransactionHistory());
-                    Transaction tempTransaction = new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), Stock.Find(ticker).get().getCurrPrice(), numShares, Stock.Find(ticker).get());
+                    TransactionHistory tempTransactionHistory = new TransactionHistory(localAccount.getTransactionHistory());
+                    Transaction tempTransaction = new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), localStock.getCurrPrice(), numShares, localStock);
                     tempTransactionHistory.addTransaction(tempTransaction);
                     //update and push to DB
                     acc.setTransactionHistory(tempTransactionHistory.buildTransactionJSON());
 
 
                     //add the stock to investments   Exactly like transactionhistory minus the enum
-                    String investedStocks = Account.FindCustom("SELECT invested_stocks,id FROM account where UUID = ?", acc.getUUID()).get(0).getInvestedStocks();
-                    InvestmentCollection investments = new InvestmentCollection(investedStocks);
+                    InvestmentCollection investments = new InvestmentCollection(localAccount.getInvestedStocks());
                     Investment tempInvestment = new Investment(numShares, ticker, SQL.GetTimeStamp());
                     investments.addInvestment(tempInvestment);
-                    acc.setWalletBalance(acc.getWalletBalance().subtract(new BigDecimal(numShares).multiply(Stock.Find(ticker).get().getCurrPrice()) ));
+                    acc.setWalletBalance(acc.getWalletBalance().subtract(new BigDecimal(numShares).multiply(localStock.getCurrPrice())));
                     //update and push to DB
                     acc.setInvestedStocks(investments.buildJSON());
 
