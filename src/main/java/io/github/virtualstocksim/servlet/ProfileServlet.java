@@ -112,10 +112,15 @@ public class ProfileServlet extends HttpServlet {
             String bio = req.getParameter("bio");
             if(bio != null)
             {
-                logger.info("User requested bio change");
-                controller.updateUserBio(bio);
-                bioUpdateSuccess = true;
-                req.setAttribute("bioUpdateSuccess", bioUpdateSuccess);
+                if(bio.length() > 500){
+                    logger.warn("Bio is greater than 500 characters. Abandoning update...");
+                    errorMsgs.add("Bio is greater than 500 characters!");
+                }else {
+                    logger.info("User requested bio change");
+                    controller.updateUserBio(bio);
+                    bioUpdateSuccess = true;
+                    req.setAttribute("bioUpdateSuccess", bioUpdateSuccess);
+                }
 
             }
             /* TODO: Look into a better way to check for the picture field being null**/
@@ -157,35 +162,45 @@ public class ProfileServlet extends HttpServlet {
 
              // User changing username
             String username = req.getParameter("username");
-            if(username != null)
-            {
-                logger.info("User requested username change");
-                if(!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + username + "%'").isEmpty())
-                {
-                    lastError = "Username already exists";
-                    logger.warn(lastError);
-                    errorMsgs.add(lastError);
-                }
-                else
-                {
-                    controller.updateUsername(username);
+            if(username != null) {
+                if (username.length() > 255) {
+                    errorMsgs.add("Username cannot exceed 255 characters");
+                    logger.warn("Username cannot exceed 255 characters, abandoning update....");
+
+                } else {
+
+                    logger.info("User requested username change");
+                    if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + username + "%'").isEmpty()) {
+                        lastError = "Username already exists";
+                        logger.warn(lastError);
+                        errorMsgs.add(lastError);
+                    } else {
+                        controller.updateUsername(username);
+                        // update username for session
+                        session.setAttribute("username", username);
+                    }
                 }
             }
 
             String password = req.getParameter("password");
             if(password != null)
             {
-                logger.info("User requested password change");
-
-                if(password.length() < 8)
+                if (password.length() > 255)
                 {
-                    lastError = "Password must be at least 8 characters long";
-                    logger.warn(lastError);
-                    errorMsgs.add(lastError);
+                    errorMsgs.add("Password cannot exceed 255 characters");
+                    logger.warn("Password cannot exceed 255 characters. Abandoning update...");
                 }
                 else
-                {
-                    controller.updatePassword(password);
+                    {
+                    logger.info("User requested password change");
+
+                    if (password.length() < 8) {
+                        lastError = "Password must be at least 8 characters long";
+                        logger.warn(lastError);
+                        errorMsgs.add(lastError);
+                    } else {
+                        controller.updatePassword(password);
+                    }
                 }
             }
 

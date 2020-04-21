@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib prefix="f" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
 
@@ -25,7 +24,7 @@
 
 
 <div class="parent">
-<f:stockTemplate stock="${stockModel}"> </f:stockTemplate>
+<t:stockTemplate stock="${stockModel}"> </t:stockTemplate>
 </div>
 
 </body>
