@@ -124,7 +124,7 @@ public class CreateAccountServlet extends HttpServlet {
             // if none of these conditions are met, account can be created
             else
             {
-               Optional<Account> account = Account.Create(accountModel.getUsername(), accountModel.getEmail(), pword, AccountType.USER);
+               Optional<Account> account = Account.Create(accountModel.getUsername().trim(), accountModel.getEmail().trim(), pword.trim(), AccountType.USER);
                if(account.isPresent())
                {
                    AccountController controller = new AccountController();
@@ -139,8 +139,8 @@ public class CreateAccountServlet extends HttpServlet {
             errorMessage = "Invalid credentials. Please enter a valid username and password.";
             req.setAttribute("errorMessage", errorMessage);
         }
-        String uname = req.getParameter("uname");
-        String pword = req.getParameter("pword");
+        String uname = req.getParameter("uname").trim();
+        String pword = req.getParameter("pword").trim();
         if(AccountController.login(uname,pword))
         {
             // login is valid, redirect user
