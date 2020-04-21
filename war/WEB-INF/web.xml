@@ -97,6 +97,15 @@
     </servlet>
 
     <servlet-mapping>
+        <servlet-name>ServerErrorServlet</servlet-name>
+        <url-pattern>/error=500</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ServerErrorServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.ServerErrorServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
         <servlet-name>CompareServlet</servlet-name>
         <url-pattern>/compare</url-pattern>
     </servlet-mapping>

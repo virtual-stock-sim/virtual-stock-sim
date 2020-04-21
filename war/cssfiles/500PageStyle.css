@@ -1,0 +1,150 @@
+* {
+    box-sizing: border-box;
+}
+html {
+    font: 16px 'Roboto', sans-serif;
+    cursor: default;
+    pointer-events: none;
+
+    user-select: none;
+}
+body {
+    background: #000;
+}
+.vss-500 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    min-height: 100%;
+}
+@keyframes vss-500-text--entrance {
+    0% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+@keyframes vss-500-text--flicker {
+    0%, 29% {
+        opacity: 0.2;
+    }
+    30%, 34% {
+        opacity: 0.4;
+    }
+    35%, 39% {
+        opacity: 0.1;
+    }
+    40%, 49% {
+        opacity: 0.2;
+    }
+    50%, 100% {
+        opacity: 0.1;
+    }
+}
+@keyframes vss-500-text-letter--flicker {
+    0%, 9% {
+        opacity: 1;
+    }
+    10%, 29% {
+        opacity: 0.5;
+    }
+    30%, 34% {
+        opacity: 1;
+    }
+    35%, 49% {
+        opacity: 0;
+    }
+    50%, 100% {
+        opacity: 1;
+    }
+}
+.vss-500-text {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 28vmin;
+    font-weight: 700;
+    color: #ffffff;
+    z-index: 1;
+    animation: vss-500-text--flicker 3s ease infinite;
+}
+.vss-500-text span:nth-child(2) {
+    animation: vss-500-text-letter--flicker 1.5s ease infinite 0.2s;
+}
+.vss-500-text span:nth-child(3) {
+    animation: vss-500-text-letter--flicker 2s ease infinite 0.1s;
+}
+.vss-500-terminal {
+    position: absolute;
+    color: #aaa;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    padding: 2rem;
+}
+@keyframes vss-500-terminal-line--animate {
+    0% {
+        width: 0%;
+    }
+}
+@keyframes vss-500-terminal-line--entrance {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+.vss-500-terminal div {
+    width: 1100px;
+    overflow: hidden;
+    margin: 0.8rem 0;
+    white-space: nowrap;
+    font: 16px monospace;
+    letter-spacing: 2px;
+    animation: vss-500-terminal-line--animate 4s steps(100, end), vss-500-terminal-line--entrance 0.3s ease;
+    animation-fill-mode: backwards;
+}
+.vss-500-terminal div:nth-child(1) {
+    animation-delay: 0s;
+}
+.vss-500-terminal div:nth-child(2) {
+    animation-delay: 1.5s;
+}
+.vss-500-terminal div:nth-child(3) {
+    animation-delay: 3s;
+}
+.vss-500-terminal div:nth-child(4) {
+    animation-delay: 5s;
+}
+.vss-500-terminal div:nth-child(5) {
+    animation-delay: 7s;
+}
+
+button {
+    pointer-events: auto!important;
+    position: absolute;
+    bottom: 100px;
+    left: 44%;
+    background-color: #2a2a2a;
+    color:gray;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+
+}
+
+button:hover{
+    pointer-events: auto!important;
+    background-color: gray;
+    color:white;
+    cursor: pointer;
+}

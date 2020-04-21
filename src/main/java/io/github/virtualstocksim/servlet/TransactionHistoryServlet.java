@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/transactionHistory"})
 public class TransactionHistoryServlet extends HttpServlet
@@ -27,20 +28,32 @@ public class TransactionHistoryServlet extends HttpServlet
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("Transaction History Servlet Servlet: doGet");
         // check if session exists, if not the user is not logged in or timedout.
         HttpSession session = req.getSession(false);
-
-        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
 
         if (session == null) {
             logger.warn("Not logged in. Please login");
             resp.sendRedirect("/login");
-        } else {
-            logger.info("Transaction History Servlet Servlet: doGet");
-            TransactionHistory model = new TransactionHistory(localAcct.getTransactionHistory());
-            req.setAttribute("model", model);
-            logger.info("LOOK HERE BRETT " + localAcct.getTransactionHistory());
-            req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
+            return;
+        }
+        else
+        {
+            String username = session.getAttribute("username").toString();
+            Account localAcct = Account.Find(username).orElse(null);
+            if(localAcct !=null)
+            {
+                TransactionHistory model = new TransactionHistory(localAcct.getTransactionHistory());
+                req.setAttribute("model", model);
+                logger.info("LOOK HERE BRETT " + localAcct.getTransactionHistory());
+                req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
+            }
+            else
+            {
+                resp.sendRedirect("/error=500"); //500 error page
+                logger.error("Account not found");
+            }
+
         }
     }
 }

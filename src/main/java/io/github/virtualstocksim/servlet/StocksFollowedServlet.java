@@ -89,7 +89,7 @@ public class StocksFollowedServlet extends HttpServlet
         }
 
 
-
+        req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
 
     }
 
