@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
