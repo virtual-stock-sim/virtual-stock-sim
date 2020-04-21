@@ -99,25 +99,3 @@ i.fa-home{
 .fa-home{
     color: white;
 }
-
-
-
-/* Profile dropdown styling */
-
-.profile-menu i {
-    border-style:hidden;
-    display: inline-block;
-
-}
-
-.profile-menu{
-    color:black;
-    position: absolute;
-    top:30px;
-    right:150px;
-}
-
-
-li.link{
-    cursor: pointer;
-}

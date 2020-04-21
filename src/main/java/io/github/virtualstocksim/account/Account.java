@@ -502,6 +502,6 @@ public class Account extends DatabaseItem {
     }
 
     public static long ProfilePictureMaxFileSize() { return 2097152; }
-    public static int ProfilePictureMaxWidth() { return 228; }
-    public static int ProfilePictureMaxHeight() { return 228; }
+    public static int ProfilePictureMaxWidth() { return 328; }
+    public static int ProfilePictureMaxHeight() { return 328; }
 }
