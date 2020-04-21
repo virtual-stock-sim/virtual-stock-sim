@@ -1,5 +1,7 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Transaction;
@@ -27,19 +29,17 @@ public class TransactionHistoryServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // check if session exists, if not the user is not logged in or timedout.
         HttpSession session = req.getSession(false);
+
+        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
+
         if (session == null) {
             logger.warn("Not logged in. Please login");
             resp.sendRedirect("/login");
         } else {
             logger.info("Transaction History Servlet Servlet: doGet");
-            LinkedList<Transaction> transactions = new LinkedList<>();
-            transactions.add(new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), new BigDecimal("1252.2"), 2, Stock.Find(1).get()));
-            transactions.add(new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), new BigDecimal("50.12"), 3, Stock.Find(2).get()));
-            transactions.add(new Transaction(TransactionType.SELL, SQL.GetTimeStamp(), new BigDecimal("500.7"), 100, Stock.Find(3).get()));
-            transactions.add(new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), new BigDecimal("123.8"), 4, Stock.Find(4).get()));
-            transactions.add(new Transaction(TransactionType.SELL, SQL.GetTimeStamp(), new BigDecimal("65.2"), 120, Stock.Find(5).get()));
-            TransactionHistory model = new TransactionHistory(transactions);
+            TransactionHistory model = new TransactionHistory(localAcct.getTransactionHistory());
             req.setAttribute("model", model);
+            logger.info("LOOK HERE BRETT " + localAcct.getTransactionHistory());
             req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
         }
     }

@@ -41,9 +41,9 @@ export class HttpRequest
 export interface MessageParams
 {
     message: string;
-    protocol: string;
-    uri: string;
-    onReceived?: (response: string) => void;
-    headers?: {name: string, value: string}[];
-    useAsync?: boolean;
+    protocol: string;       //GET,POST
+    uri: string;    //where to send
+    onReceived?: (response: string) => void; //when don't care about response dont set
+    headers?: {name: string, value: string}[];  //Array of headers that you want to send
+    useAsync?: boolean;                         //Request should be sent to async?
 }

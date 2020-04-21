@@ -1,9 +1,12 @@
 package io.github.virtualstocksim.servlet;
 
+import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -22,6 +26,7 @@ import java.util.Optional;
 public class StocksFollowedServlet extends HttpServlet
 {
     private static final Logger logger = LoggerFactory.getLogger(StocksFollowedServlet.class);
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,29 +39,57 @@ public class StocksFollowedServlet extends HttpServlet
             resp.sendRedirect("/login");
             return;
         }
+        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
+        StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
 
-        ArrayList<Follow> followingList = new ArrayList<>();
-        followingList.add(new Follow(new BigDecimal(100), Stock.Find(1).get(), SQL.GetTimeStamp()));
-        followingList.add(new Follow(new BigDecimal(498), Stock.Find(2).get(), SQL.GetTimeStamp()));
-        followingList.add(new Follow(new BigDecimal(320), Stock.Find(3).get(), SQL.GetTimeStamp()));
-        followingList.add(new Follow(new BigDecimal(5), Stock.Find(4).get(), SQL.GetTimeStamp()));
-        followingList.add(new Follow(new BigDecimal(.12), Stock.Find(5).get(), SQL.GetTimeStamp()));
 
-        Optional<Stock> stock = Stock.Find(2);
-
-        /**
-         * TODO: Don't forget to check for the values of the stock being 0 (Could cause a divide by 0 error)
-         */
-        if(stock.isPresent())
-        {
-            Stock stockModel = stock.get();
-            req.setAttribute("stockModel", stockModel);
-        }
-
-        StocksFollowed model = new StocksFollowed(followingList);
         req.setAttribute("model", model);
 
         req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
 
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("StocksFollowed Servlet: doPost");
+        // check if session exists, if not the user is not logged in or timedout.
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            logger.warn("Not logged in. Please login");
+            resp.sendRedirect("/login");
+            return;
+        }
+
+        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
+        AccountController localController = new AccountController();
+        localController.setModel(localAcct);
+        StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
+
+
+        String sellShares = req.getParameter("shares-to-sell");
+        String buyShares = req.getParameter("shares-to-buy");
+
+
+        //We should add error checking here on MS4
+        //This is probably very bad, especially if the forms persist & you change between buy and sell
+        if(sellShares != null){
+            try {
+                localController.trade(TransactionType.SELL,"GOOGL",Integer.valueOf(sellShares));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if(buyShares !=null){
+            try {
+                localController.trade(TransactionType.BUY,"GOOGL",Integer.valueOf(buyShares));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+    }
+
 }

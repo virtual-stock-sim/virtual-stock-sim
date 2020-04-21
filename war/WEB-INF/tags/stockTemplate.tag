@@ -9,13 +9,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function() {
-    $('body').on('show.bs.collapse', '.collapse', function(e) {
-        $(this).closest('.panel').find('.panel-heading').addClass('active');
-    });
+        $('body').on('show.bs.collapse', '.collapse', function(e) {
+            $(this).closest('.panel').find('.panel-heading').addClass('active-${stock.symbol}');
+        });
 
-    $('body').on('hide.bs.collapse', '.collapse', function(e) {
-        $(this).closest('.panel').find('.panel-heading').removeClass('active');
-    });
+        $('body').on('hide.bs.collapse', '.collapse', function(e) {
+            $(this).closest('.panel').find('.panel-heading').removeClass('active-${stock.symbol}');
+        });
     })
 
 </script>
