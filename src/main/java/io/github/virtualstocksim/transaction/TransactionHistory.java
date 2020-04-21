@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.virtualstocksim.stock.Stock;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +71,19 @@ public class TransactionHistory
         System.out.println(s);
         JsonArray j  = JsonParser.parseString(s).getAsJsonArray();
         for(JsonElement x : j){
-            tempList.add(new Transaction(TransactionType.valueOf(x.getAsJsonObject().get("type").getAsString()), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString()),    x.getAsJsonObject().get("total").getAsBigDecimal(), x.getAsJsonObject().get("shares").getAsInt(), Stock.Find(x.getAsJsonObject().get("stock").getAsInt()).get()));
+            JsonObject obj = x.getAsJsonObject();
+
+            Stock stock = Stock.Find(obj.get("stock").getAsInt()).orElse(null);
+
+            if(stock != null)
+            {
+                TransactionType type = TransactionType.valueOf(obj.get("type").getAsString());
+                Timestamp timestamp = Timestamp.valueOf(obj.get("timestamp").getAsString());
+                BigDecimal pricePer = obj.get("price_per").getAsBigDecimal();
+                int numShares = obj.get("shares").getAsInt();
+
+                tempList.add(new Transaction(type, timestamp, pricePer, numShares, stock));
+            }
         }
        return tempList;
     }
