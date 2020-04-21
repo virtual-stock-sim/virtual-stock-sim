@@ -126,7 +126,7 @@ public class ProfileServlet extends HttpServlet {
             /* TODO: Look into a better way to check for the picture field being null**/
             /* TODO: Success message */
             // User is updating profile picture
-            if (!req.getParts().isEmpty())
+            if (req.getContentType().equals("multipart/form-data"))
             {
                 Part profilePic = req.getPart("file");
                 if (profilePic != null)
