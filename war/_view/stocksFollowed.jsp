@@ -24,8 +24,9 @@
 
 
 <div class="parent">
-<t:stockTemplate stock="${stockModel}"> </t:stockTemplate>
+    <c:forEach var="followItem" items="${model.stocksFollowed}">
+        <t:stockTemplate stock="${followItem.stock}"/>
+    </c:forEach>
 </div>
-
 </body>
 </html>
