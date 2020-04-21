@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,60 +33,50 @@ public class AccountController {
     }
 
 
-    public Account getModel(){
+    public Account getModel() {
         return this.acc;
     }
 
-    public void setModel (Account acc){
-        this.acc=acc;
+    public void setModel(Account acc) {
+        this.acc = acc;
     }
 
     /**
-     *
      * @param username username provided
-     * @param password  password provided - will be hashed and checked against that stored in database
+     * @param password password provided - will be hashed and checked against that stored in database
      * @return Account found with specified username and password parameters, if any
      */
-    public static boolean login(String username, String password)
-    {
+    public static boolean login(String username, String password) {
         logger.info("Logging user " + username + " in...");
 
         Optional<Account> acc = Account.Find(username);
-        if(!acc.isPresent())
-        {
+        if (!acc.isPresent()) {
             return false;
         }
         // check hash and salt against login credentials
         boolean isValid = Encryption.validateInput(password.toCharArray(), acc.get().getPasswordSalt(), acc.get().getPasswordHash());
 
         // check if credentials are valid
-        if (isValid)
-        {
-            logger.info("Logged user "+username+ " in successfully!");
-        }
-        else
-        {
-            logger.info("Couldn't find account with username "+username);
+        if (isValid) {
+            logger.info("Logged user " + username + " in successfully!");
+        } else {
+            logger.info("Couldn't find account with username " + username);
         }
 
         return isValid;
     }
 
 
-
     /**
-     *
-     * @param inputStream  file contents converted to input stream
-     * @param fileName file name user uploaded
+     * @param inputStream file contents converted to input stream
+     * @param fileName    file name user uploaded
      */
     public void updateProfilePicture(InputStream inputStream, String fileName) throws IOException, SQLException {
         File saveDir = new File("./war/" + Account.getProfilePictureDirectory()); // directory where images are stored
-        if(!saveDir.exists())
-        {
+        if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
-        try
-        {
+        try {
 
             BufferedImage img = ResizeBufferedImage(ImageIO.read(inputStream), Account.ProfilePictureMaxWidth(), Account.ProfilePictureMaxHeight());
 
@@ -95,11 +86,9 @@ public class AccountController {
             ImageIO.write(img, "jpg", picture);
             acc.setProfilePicture(imgName + ".jpg");
 
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new IOException("Error reading image: ", e);
         }
-
 
 
         acc.update();
@@ -107,7 +96,6 @@ public class AccountController {
     }
 
     /**
-     *
      * @param newUsername - new username that is being stored in database
      */
     public void updateUsername(String newUsername) {
@@ -115,60 +103,58 @@ public class AccountController {
         acc.setUsername(newUsername);
 
         // update username in db
-        try{
+        try {
             acc.update();
             logger.info("Username updated successfully!");
-        } catch(SQLException e){
+        } catch (SQLException e) {
             logger.error("Error: " + e.toString());
         }
     }
 
     /**
-     *
      * @param password password given by user to be hashed and stored in db
      */
-    public void updatePassword(String password){
+    public void updatePassword(String password) {
         // generate new hash and salt
         byte[] newSalt = Encryption.getNextSalt();
-        byte[] newHash = Encryption.hash(password.toCharArray(),newSalt);
+        byte[] newHash = Encryption.hash(password.toCharArray(), newSalt);
 
         // update account with newly created hash and salt
         acc.setPasswordHash(newHash);
         acc.setPasswordSalt(newSalt);
 
         /* update account in database */
-        try{
+        try {
             acc.update();
             logger.info("Password updated successfully!");
-        } catch(SQLException e){
+        } catch (SQLException e) {
             logger.error("Error: " + e.toString());
         }
     }
 
     /**
-     *
-     * @param newBio  updated bio given by user to be stored in DB
+     * @param newBio updated bio given by user to be stored in DB
      */
-    public void updateUserBio(String newBio){
-       acc.setBio(newBio);
-       try{
-           acc.update();
-           logger.info("Bio updated successfully!");
-       } catch(SQLException e){
-           logger.error("Error: " + e.toString());
-       }
+    public void updateUserBio(String newBio) {
+        acc.setBio(newBio);
+        try {
+            acc.update();
+            logger.info("Bio updated successfully!");
+        } catch (SQLException e) {
+            logger.error("Error: " + e.toString());
+        }
 
     }
 
     /**
      * Resize a buffered image
-     * @param image Image to be resized
-     * @param width Desired width
+     *
+     * @param image  Image to be resized
+     * @param width  Desired width
      * @param height Desired height
      * @return Resized buffered image
      */
-    private static BufferedImage ResizeBufferedImage(BufferedImage image, int width, int height)
-    {
+    private static BufferedImage ResizeBufferedImage(BufferedImage image, int width, int height) {
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 
@@ -178,39 +164,63 @@ public class AccountController {
         return resized;
     }
 
+    //to be used in MS4 view implementation
     public void followStock(String ticker) throws SQLException {
-        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
-        temp.addFollow(new Follow(Stock.Find(ticker).get().getCurrPrice(), Stock.Find(ticker).get(), SQL.GetTimeStamp() ));
+        Stock localStock = Stock.Find(ticker).orElse(null);
+        if (localStock == null) {
+            throw new TradeException("That stock could not be found in the schema. Please check that the ticker is formatted correctly", TradeExceptionType.STOCK_NOT_FOUND);
+        }
+        List<Account> queryResult = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
+        if (queryResult.isEmpty()) {
+            throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
+        }
+        Account localAccount = queryResult.get(0);
+
+        if (queryResult.get(0) == null) {
+            throw new TradeException("stock not found", TradeExceptionType.STOCK_NOT_FOUND);
+        }
+        StocksFollowed temp = new StocksFollowed(localAccount.getFollowedStocks());
+        temp.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
         acc.setFollowedStocks(temp.followObjectsToSting());
         acc.update();
     }
+
+    //to be used in MS4 view implementation
     public void unFollowStock(String ticker) throws SQLException {
-        StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
-        if(temp.containsStock(ticker)) {
+        //StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
+        List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
+        if (accounts.isEmpty() || accounts.get(0) == null) {
+            throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
+        }
+        StocksFollowed temp = new StocksFollowed(accounts.get(0).getFollowedStocks());
+        if (temp.containsStock(ticker)) {
             temp.removeFollow(ticker);
             acc.setFollowedStocks(temp.followObjectsToSting());
             acc.update();
-        }else{
+        } else {
             logger.error("Error: Control flow broke somewhere, user cannot unfollow a stock that they aren't following!~");
         }
     }
 
     public void trade(TransactionType type, String ticker, int numShares) throws SQLException {
-        if(numShares ==-1){
+        if (numShares == -1) {
             throw new TradeException("Please specify at least one stock to trade with", TradeExceptionType.NOT_ENOUGH_SHARES);
         }
         Stock localStock = Stock.Find(ticker).orElse(null);
-        if(localStock == null){
-            throw new TradeException("You are not following that stock! Please follow and wait for new cycle before trading",TradeExceptionType.NOT_FOLLOWING_STOCK);
+        if (localStock == null) {
+            throw new TradeException("You are not following that stock! Please follow and wait for new cycle before trading", TradeExceptionType.NOT_FOLLOWING_STOCK);
         }
 
         if (type.equals(TransactionType.BUY)) {
             //check that the user has the funds
-            int compareResult = acc.getWalletBalance().compareTo(Stock.Find(ticker).get().getCurrPrice().multiply(new BigDecimal(numShares)));
+            int compareResult = acc.getWalletBalance().compareTo(localStock.getCurrPrice().multiply(new BigDecimal(numShares)));
             if (compareResult != -1) {
-                LinkedList<Account> queryResult =  new LinkedList<Account>(Account.FindCustom("SELECT followed_stocks, invested_stocks, transaction_history, id FROM account WHERE UUID = ?", acc.getUUID())) ;
+                List<Account> queryResult = Account.FindCustom("SELECT followed_stocks, invested_stocks, transaction_history, id FROM account WHERE UUID = ?", acc.getUUID());
+                if (queryResult.isEmpty()) {
+                    throw new TradeException("Could not find user in schema!", TradeExceptionType.USER_NOT_FOUND);
+                }
                 Account localAccount = queryResult.get(0);
-                if(localAccount== null){
+                if (localAccount == null) {
                     throw new TradeException("could not find user in schema", TradeExceptionType.USER_NOT_FOUND);
                 }
                 StocksFollowed tempStocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
@@ -240,7 +250,7 @@ public class AccountController {
 
                     System.out.println("debug for the StocksFollowed object ");
                     tempStocksFollowed.removeFollow(ticker);
-                    for(Follow f : tempStocksFollowed.getStocksFollowed()){
+                    for (Follow f : tempStocksFollowed.getStocksFollowed()) {
                         System.out.println(f.getStock().getSymbol());
                     }
                     //update and push to DB
@@ -251,68 +261,67 @@ public class AccountController {
 
                     logger.info("Transaction success!");
                 } else {
-                    throw new TradeException("You are not following or invested in that stock. If you want to buy shares in this company, please follow the stock first",TradeExceptionType.NOT_FOLLOWING_STOCK);
+                    throw new TradeException("You are not following or invested in that stock. If you want to buy shares in this company, please follow the stock first", TradeExceptionType.NOT_FOLLOWING_STOCK);
                 }
-            }else {
-                throw new TradeException("You do not have enough funds for this purchase",TradeExceptionType.NOT_ENOUGH_FUNDS);
+            } else {
+                throw new TradeException("You do not have enough funds for this purchase", TradeExceptionType.NOT_ENOUGH_FUNDS);
             }
-        }else if(type.equals(TransactionType.SELL)){
+        } else if (type.equals(TransactionType.SELL)) {
             //check that the user has the particular stock they want to sell, as well as the quantity that they desire to sell
             //check that the lists are actually populated
-            InvestmentCollection investmentCollection = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getInvestedStocks());
-            StocksFollowed stocksFollowed = new StocksFollowed(Account.FindCustom("SELECT followed_stocks ,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getFollowedStocks());
-            if(investmentCollection.isInvested(ticker)){
-                    if(numShares == investmentCollection.getInvestment(ticker).getNumShares()){
-                        //if all of the shares are sold, then remove from invested and back to follow send out to DB
-                        investmentCollection.removeInvestment(ticker);
-                        stocksFollowed.removeFollow(ticker);
-                        acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
-                    }else if(numShares<investmentCollection.getInvestment(ticker).getNumShares()) {
-                        //already invested, just update the number of shares
-                        investmentCollection.getInvestment(ticker).setNumShares(investmentCollection.getInvestment(ticker).getNumShares()-numShares);
-                    }else{
-                        throw new TradeException("You do not own enough shares to complete that trade.",TradeExceptionType.NOT_ENOUGH_SHARES);
-                    }
-                    TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
-                    Stock stock = Stock.Find(ticker).orElse(null);
-                if( stock != null) {
-                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(),Stock.Find(ticker).get().getCurrPrice(),numShares, stock));
+            List<Account> queryResult = Account.FindCustom("SELECT invested_stocks, transaction_history, followed_stocks, id FROM account WHERE UUID = ?", acc.getUUID());
+            if (queryResult.isEmpty() || queryResult.get(0) == null) {
+                throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
+            }
+            Account localAccount = queryResult.get(0);
+            InvestmentCollection investmentCollection = new InvestmentCollection(localAccount.getInvestedStocks());
+            StocksFollowed stocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
+
+            if (investmentCollection.isInvested(ticker)) {
+                if (numShares == investmentCollection.getInvestment(ticker).getNumShares()) {
+                    //if all of the shares are sold, then remove from invested and back to follow send out to DB
+                    investmentCollection.removeInvestment(ticker);
+                    stocksFollowed.removeFollow(ticker);
+                    acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
+                } else if (numShares < investmentCollection.getInvestment(ticker).getNumShares()) {
+                    //already invested, just update the number of shares
+                    investmentCollection.getInvestment(ticker).setNumShares(investmentCollection.getInvestment(ticker).getNumShares() - numShares);
+                } else {
+                    throw new TradeException("You do not own enough shares to complete that trade.", TradeExceptionType.NOT_ENOUGH_SHARES);
+                }
+
+                //TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
+                TransactionHistory th = new TransactionHistory(localAccount.getTransactionHistory());
+                Stock stock = Stock.Find(ticker).orElse(null);
+                if (stock != null) {
+                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), Stock.Find(ticker).get().getCurrPrice(), numShares, stock));
                     acc.setTransactionHistory(th.buildTransactionJSON());
                     acc.setInvestedStocks(investmentCollection.buildJSON());
 
-                   acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
-               }
-                    acc.update();
-            }else{
-                throw new TradeException("You do not own any of that stock.",TradeExceptionType.NOT_INVESTED);
+                    acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
+                }
+                acc.update();
+            } else {
+                throw new TradeException("You do not own any of that stock.", TradeExceptionType.NOT_INVESTED);
             }
         }
 
     }
 
     /**
-     *
      * @param newBalance updated wallet balance for user
      */
-    public void updateWalletBalance(BigDecimal newBalance)
-    {
+    public void updateWalletBalance(BigDecimal newBalance) {
         // set new account balance
         acc.setWalletBalance(newBalance);
 
         // push to DB
-        try
-        {
+        try {
             acc.update();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             logger.error("Error updating balance in database.");
         }
     }
-
-
-
-
 
 
 }
