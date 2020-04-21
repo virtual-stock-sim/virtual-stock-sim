@@ -263,10 +263,13 @@ public class AccountController {
                     }
                     TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
                     Stock stock = Stock.Find(ticker).orElse(null);
+                if( stock != null) {
                     th.addTransaction(new Transaction(type, SQL.GetTimeStamp(),Stock.Find(ticker).get().getCurrPrice(),numShares, stock));
                     acc.setTransactionHistory(th.buildTransactionJSON());
                     acc.setInvestedStocks(investmentCollection.buildJSON());
-                    acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice()) ));
+
+                   acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
+               }
                     acc.update();
             }else{
                 throw new TradeException("You do not own any of that stock.",TradeExceptionType.NOT_INVESTED);

@@ -53,8 +53,6 @@ public class InvestmentCollection {
     }
 
 
-
-
     public boolean isInvested(String ticker){
         for(Investment i : this.investmentList){
             if(i.getTicker().equals(ticker) && i.getNumShares()>0){

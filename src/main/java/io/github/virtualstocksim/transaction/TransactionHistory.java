@@ -61,7 +61,11 @@ public class TransactionHistory
 
     //builds new transactionHistory from a Json Array
     public List<Transaction> parseTransactionFromJSON(String  s){
+
         List <Transaction>tempList = new LinkedList();
+        if(s == null || s.trim().isEmpty()){
+            return tempList;
+        }
         System.out.println("String input for parsetransaction from json");
         System.out.println(s);
         JsonArray j  = JsonParser.parseString(s).getAsJsonArray();
