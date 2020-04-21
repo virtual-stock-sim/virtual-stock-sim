@@ -247,14 +247,13 @@ public class AccountController {
         }else if(type.equals(TransactionType.SELL)){
             //check that the user has the particular stock they want to sell, as well as the quantity that they desire to sell
             //check that the lists are actually populated
-
             InvestmentCollection investmentCollection = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getInvestedStocks());
             StocksFollowed stocksFollowed = new StocksFollowed(Account.FindCustom("SELECT followed_stocks ,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getFollowedStocks());
             if(investmentCollection.isInvested(ticker)){
                     if(numShares == investmentCollection.getInvestment(ticker).getNumShares()){
                         //if all of the shares are sold, then remove from invested and back to follow send out to DB
                         investmentCollection.removeInvestment(ticker);
-                        stocksFollowed.addFollow(new Follow(Stock.Find(ticker).get().getCurrPrice(),Stock.Find(ticker).get(),SQL.GetTimeStamp()));
+                        stocksFollowed.removeFollow(ticker);
                         acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
                     }else if(numShares<investmentCollection.getInvestment(ticker).getNumShares()) {
                         //already invested, just update the number of shares
