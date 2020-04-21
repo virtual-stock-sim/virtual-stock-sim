@@ -38,13 +38,13 @@
             import_export</i>
             <span class="caret" style="display: inline-block;"></span></button>
         <u1 class="dropdown-menu" style="margin-top:5%;margin-left: -5%;">
-            <li class="link"><a type="button" data-toggle="modal" data-target="#buy-modal" style="cursor:pointer;">BUY</a></li>
+            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer;">BUY</a></li>
             <li class="divider"></li>
-            <li class="link"><a type="button" data-toggle="modal" data-target="#sell-modal" style="cursor:pointer;">SELL</a></li>
+            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
         </u1>
     </div>
     <div class="panel panel-collapse">
-        <div class="panel-heading" role="tab" id="comapnyDesc">
+        <div class="panel-heading" role="tab">
             <h2 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
 
@@ -62,7 +62,7 @@
                 </a>
             </h2>
         </div>
-        <div id="collapseDesc" class="collapse" role="tabpanel" aria-labelledby="companyDesc">
+        <div id="collapseDesc" class="collapse" role="tabpanel" >
             <div class="panel-body">
                 <p id="${stock.symbol}-desc"></p><br>
                 <table class="table table-condensed" style="width: 100%;">
