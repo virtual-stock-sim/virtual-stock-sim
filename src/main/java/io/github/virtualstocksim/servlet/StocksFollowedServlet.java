@@ -64,6 +64,7 @@ public class StocksFollowedServlet extends HttpServlet
         AccountController localController = new AccountController();
         localController.setModel(localAcct);
         StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
+        req.setAttribute("model", model);
 
 
         String sellShares = req.getParameter("shares-to-sell");
