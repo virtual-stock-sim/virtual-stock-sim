@@ -50,7 +50,6 @@ public class TransactionHistoryServlet extends HttpServlet
             }
             else
             {
-                resp.sendRedirect("/error=500"); //500 error page
                 logger.error("Account not found");
             }
 

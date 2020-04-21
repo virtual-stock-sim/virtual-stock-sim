@@ -39,19 +39,28 @@ public class StocksFollowedServlet extends HttpServlet
             resp.sendRedirect("/login");
             return;
         }
-        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
-        StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
+        Account localAcct = Account.Find(session.getAttribute("username").toString()).orElse(null);
+        if(localAcct != null)
+        {
+            StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
+            req.setAttribute("model", model);
+            req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
+        }
+        else
+        {
+            logger.error("Account not found");
+        }
 
-
-        req.setAttribute("model", model);
-
-        req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("StocksFollowed Servlet: doPost");
+
+        String errorMsg = null;
+        String buySuccessMsg = null;
+        String sellSuccessMsg = null;
         // check if session exists, if not the user is not logged in or timedout.
         HttpSession session = req.getSession(false);
         if (session == null) {
@@ -60,32 +69,42 @@ public class StocksFollowedServlet extends HttpServlet
             return;
         }
 
-        Account localAcct = Account.Find(session.getAttribute("username").toString()).get();
-        AccountController localController = new AccountController();
-        localController.setModel(localAcct);
-        StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
-        req.setAttribute("model", model);
+        Account localAcct = Account.Find(session.getAttribute("username").toString()).orElse(null);
+        if (localAcct != null)
+        {
+            AccountController localController = new AccountController();
+            localController.setModel(localAcct);
+            StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
+            req.setAttribute("model", model);
 
 
-        String sellShares = req.getParameter("shares-to-sell");
-        String buyShares = req.getParameter("shares-to-buy");
+            String sellShares = req.getParameter("shares-to-sell");
+            String buyShares = req.getParameter("shares-to-buy");
 
 
-        //We should add error checking here on MS4
-        //This is probably very bad, especially if the forms persist & you change between buy and sell
-        if(sellShares != null){
-            try {
-                localController.trade(TransactionType.SELL,"GOOGL",Integer.valueOf(sellShares));
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+            //We should add error checking here on MS4
+            //This is probably very bad, especially if the forms persist & you change between buy and sell
+            if (sellShares != null) {
+                try {
+                    localController.trade(TransactionType.SELL, "GOOGL", Integer.valueOf(sellShares));
+                    sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of Google stock.";
+                    req.setAttribute("sellSuccessMsg", sellSuccessMsg);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        if(buyShares !=null){
-            try {
-                localController.trade(TransactionType.BUY,"GOOGL",Integer.valueOf(buyShares));
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (buyShares != null) {
+                try {
+                    localController.trade(TransactionType.BUY, "GOOGL", Integer.valueOf(buyShares));
+                    buySuccessMsg="You have successfully purchased "+Integer.valueOf(buyShares)+" shares of Google stock.";
+                    req.setAttribute("buySuccessMsg", buySuccessMsg);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+        }else{
+            logger.error("Account not found");
         }
 
 

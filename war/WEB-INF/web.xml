@@ -89,7 +89,7 @@
 
     <servlet-mapping>
         <servlet-name>ErrorServlet</servlet-name>
-        <url-pattern>/error=404</url-pattern>
+        <url-pattern>/error404</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>ErrorServlet</servlet-name>
@@ -98,7 +98,7 @@
 
     <servlet-mapping>
         <servlet-name>ServerErrorServlet</servlet-name>
-        <url-pattern>/error=500</url-pattern>
+        <url-pattern>/error500</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>ServerErrorServlet</servlet-name>
@@ -127,11 +127,11 @@
     <!--Error Pages-->
     <error-page>
         <error-code> 404 </error-code>
-        <location>/error=404</location>
+        <location>/error404</location>
     </error-page>
     <error-page>
         <error-code> 500 </error-code>
-        <location>/error=500</location>
+        <location>/error500</location>
     </error-page>
 
 </web-app>
