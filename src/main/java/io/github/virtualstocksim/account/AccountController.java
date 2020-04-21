@@ -247,14 +247,13 @@ public class AccountController {
         }else if(type.equals(TransactionType.SELL)){
             //check that the user has the particular stock they want to sell, as well as the quantity that they desire to sell
             //check that the lists are actually populated
-
             InvestmentCollection investmentCollection = new InvestmentCollection(Account.FindCustom("SELECT invested_stocks,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getInvestedStocks());
             StocksFollowed stocksFollowed = new StocksFollowed(Account.FindCustom("SELECT followed_stocks ,id FROM account WHERE UUID = ?",acc.getUUID()).get(0).getFollowedStocks());
             if(investmentCollection.isInvested(ticker)){
                     if(numShares == investmentCollection.getInvestment(ticker).getNumShares()){
                         //if all of the shares are sold, then remove from invested and back to follow send out to DB
                         investmentCollection.removeInvestment(ticker);
-                        stocksFollowed.addFollow(new Follow(Stock.Find(ticker).get().getCurrPrice(),Stock.Find(ticker).get(),SQL.GetTimeStamp()));
+                        stocksFollowed.removeFollow(ticker);
                         acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
                     }else if(numShares<investmentCollection.getInvestment(ticker).getNumShares()) {
                         //already invested, just update the number of shares
@@ -264,10 +263,13 @@ public class AccountController {
                     }
                     TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
                     Stock stock = Stock.Find(ticker).orElse(null);
+                if( stock != null) {
                     th.addTransaction(new Transaction(type, SQL.GetTimeStamp(),Stock.Find(ticker).get().getCurrPrice(),numShares, stock));
                     acc.setTransactionHistory(th.buildTransactionJSON());
                     acc.setInvestedStocks(investmentCollection.buildJSON());
-                    acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice()) ));
+
+                   acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
+               }
                     acc.update();
             }else{
                 throw new TradeException("You do not own any of that stock.",TradeExceptionType.NOT_INVESTED);
