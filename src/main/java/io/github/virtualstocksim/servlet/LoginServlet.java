@@ -53,7 +53,7 @@ public class LoginServlet extends HttpServlet
             String pword = req.getParameter("pword");
             CreateAccountModel accountModel = new CreateAccountModel(uname);
 
-          if(!AccountController.login(uname,pword))
+          if(!AccountController.login(uname.trim(),pword.trim()))
           {
             // If user input is invalid, return error message with same page
             errorMessage = "Login Failed. Please enter a valid username and password.";
