@@ -18,28 +18,6 @@ body {
     right: 10px;
 }
 
-.profile-menu i {
-    border-style:hidden;
-    display: inline-block;
-
-}
-
-.profile-menu{
-    color:black;
-    position: absolute;
-    top:30px;
-    right:150px;
-}
-
-
-
-li.link{
-    cursor: pointer;
-
-}
-
-
-
 .leaderboard {
     float: left;
     width: 33.3%;
@@ -58,11 +36,6 @@ li.link{
 }
 
 
-.header {
-
-}
-
-
 button {
     background-color: #e7e7e7;
     color:black;
@@ -76,7 +49,7 @@ button {
 
 }
 
-button:hover{
+button:hover {
     background-color: gray;
-    color:white;
+    color: white;
 }
