@@ -1,4 +1,5 @@
 import {getStockData} from "./stockstorage.js";
+import {drawPriceHistoryGraph, GraphConfig} from "./graphs.js";
 
 if(!document.getElementById("stockInit"))
 {
@@ -23,4 +24,19 @@ if(!document.getElementById("stockInit"))
             desc.innerText = stockData.description;
         }
     });
+
+    window.addEventListener("load", () =>
+    {
+        let configs: GraphConfig[] = [];
+        for(let symbol of stockSymbols)
+        {
+            configs.push
+                   ({
+                        element: document.getElementById(symbol + "-depth-graph"),
+                        stockSymbol: symbol
+                    });
+        }
+        drawPriceHistoryGraph(configs);
+    });
+
 }

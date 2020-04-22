@@ -19,7 +19,7 @@
     })
 
 </script>
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
 
 
@@ -95,8 +95,7 @@
                                 ${stock.percentChange} %</span></td>
                     </tr>
                 </table>
-                <span class="graph">
-                    Graph here
+                <span id="${stock.symbol}-depth-graph">
                 </span>
             </div>
         </div>

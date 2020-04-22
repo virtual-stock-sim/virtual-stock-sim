@@ -1,4 +1,5 @@
 import { getStockData } from "./stockstorage.js";
+import { drawPriceHistoryGraph } from "./graphs.js";
 if (!document.getElementById("stockInit")) {
     let tag = document.createElement("div");
     tag.hidden = true;
@@ -14,5 +15,15 @@ if (!document.getElementById("stockInit")) {
             let desc = document.getElementById(stockData.symbol + "-desc");
             desc.innerText = stockData.description;
         }
+    });
+    window.addEventListener("load", () => {
+        let configs = [];
+        for (let symbol of stockSymbols) {
+            configs.push({
+                element: document.getElementById(symbol + "-depth-graph"),
+                stockSymbol: symbol
+            });
+        }
+        drawPriceHistoryGraph(configs);
     });
 }
