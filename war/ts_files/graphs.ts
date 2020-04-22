@@ -60,7 +60,7 @@ function createGraph(config: GraphConfig)
                     titleTextStyle:{color: '#FFFFFF'},
                     legend: {textStyle:{color: '#FFFFFF'}},
                     chartArea:{width: `50%`, height:`70%`},
-                   
+
                 };
 
         // Create and draw the chart

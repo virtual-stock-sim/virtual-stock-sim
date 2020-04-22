@@ -51,8 +51,16 @@
     </c:if>
 
     <c:if test="${bioUpdateSuccess==true}">
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible" id="bio-success" style="width:50%; margin-left:25%;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Success!</strong> Your bio was successfully updated.
+        </div>
+    </c:if>
+
+    <c:if test="${pictureUpdateSuccess==true}">
+        <div class="alert alert-success alert-dismissible" id ="profile-success" style="width:50%; margin-left:25%;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Your profile was successfully updated.
         </div>
     </c:if>
 

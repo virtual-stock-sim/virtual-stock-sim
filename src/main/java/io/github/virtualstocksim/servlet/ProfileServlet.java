@@ -149,6 +149,8 @@ public class ProfileServlet extends HttpServlet {
                         try
                         {
                             controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                            pictureUpdateSuccess = true;
+                            req.setAttribute("pictureUpdateSuccess", pictureUpdateSuccess);
                         }
                         catch (SQLException e)
                         {
