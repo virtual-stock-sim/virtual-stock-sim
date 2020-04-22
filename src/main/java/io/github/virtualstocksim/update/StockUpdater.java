@@ -91,15 +91,34 @@ public class StockUpdater
         }
 
         Timestamp lastUpdated = SQL.GetTimeStamp();
+        logger.info(String.valueOf(apiData));
         for(Stock stock : stocks)
         {
             JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
 
-            stock.setCurrPrice(data.get("latestPrice").getAsBigDecimal());
-            stock.setPrevClose(data.get("previousClose").getAsBigDecimal());
-            stock.setCurrVolume(data.get("volume").getAsInt());
-            stock.setPrevVolume(data.get("previousVolume").getAsInt());
-            stock.setLastUpdated(lastUpdated);
+            JsonElement latestPrice = data.get("latestPrice");
+            if(!latestPrice.isJsonNull())
+            {
+                stock.setCurrPrice(latestPrice.getAsBigDecimal());
+            }
+
+            JsonElement previousClose = data.get("previousClose");
+            if(!previousClose.isJsonNull())
+            {
+                stock.setPrevClose(previousClose.getAsBigDecimal());
+            }
+
+            JsonElement volume = data.get("volume");
+            if(!volume.isJsonNull())
+            {
+                stock.setCurrVolume(volume.getAsInt());
+            }
+
+            JsonElement previousVolume = data.get("previousVolume");
+            if(!previousClose.isJsonNull())
+            {
+                stock.setPrevVolume(previousVolume.getAsInt());
+            }
         }
 
         try(Connection conn = StockDatabase.getConnection())
