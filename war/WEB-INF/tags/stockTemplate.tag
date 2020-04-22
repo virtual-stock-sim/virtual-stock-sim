@@ -115,8 +115,8 @@
 
         <div class="modal-body">
             <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-buy-form" method="post" id="${stock.symbol}-buy-form">
-                <textarea class="form-control" form="${stock.symbol}-buy-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
-                <input class="btn btn-default" type="submit" value="Buy" onclick="this.value=''">
+                <textarea class="form-control" form="${stock.symbol}-buy-form" onsubmit="this.value=''" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
+                <input class="btn btn-default" type="submit" value="Buy">
             </form>
         </div>
     </div>
@@ -133,8 +133,8 @@
 
             <div class="modal-body">
                 <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-sell-form" method="post" id="${stock.symbol}-sell-form">
-                    <textarea class="form-control" form="${stock.symbol}-sell-form" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
-                    <input class="btn btn-default" type="submit" value="Sell" onclick="this.value=''">
+                    <textarea class="form-control" form="${stock.symbol}-sell-form" onsubmit="this.value=''" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
+                    <input class="btn btn-default" type="submit" value="Sell">
                 </form>
             </div>
         </div>
