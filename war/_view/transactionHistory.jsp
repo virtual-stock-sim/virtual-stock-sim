@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="../cssfiles/transactionHistoryStyle.css">
 
     <title>VSS - Transaction History</title>
-    <div class="bg-img"></div>
 </head>
+
+<div class="bg-img"></div>
+
 
 <div class = "navigation">
 <t:navbar/>
