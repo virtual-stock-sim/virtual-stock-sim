@@ -5,7 +5,7 @@ stockdb.uri=jdbc:derby:vss_stockdatabase.db
 accountdb.uri=jdbc:derby:vss_accountdatabase.db
 
 # API Url
-stockapi.url=https://sandbox.iexapis.com/stable/stock/market/batch?types=quote&token=pk_2a92f97f8f2e477aade42bc2b806217c&symbols=
+stockapi.url=https://cloud.iexapis.com/stable/stock/market/batch?types=quote&token=pk_2a92f97f8f2e477aade42bc2b806217c&symbols=
 
 # Stock API update time interval - hh:mm:ss
 update.stock.interval=00:01:00
@@ -25,5 +25,5 @@ update.stockdata.interval=24:00:00
     # 'immediately' (without quotes) for immediately on program startup
     # 'wait-interval' (without quotes) for wait the given interval before starting
 
-#update.stockdata.start=00:00:00
-update.stockdata.start=immediately
+update.stockdata.start=00:00:00
+#update.stockdata.start=immediately
