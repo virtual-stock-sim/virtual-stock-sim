@@ -281,7 +281,7 @@ public class AccountController {
                 if (numShares == investmentCollection.getInvestment(ticker).getNumShares()) {
                     //if all of the shares are sold, then remove from invested and back to follow send out to DB
                     investmentCollection.removeInvestment(ticker);
-                    stocksFollowed.removeFollow(ticker);
+                    stocksFollowed.setFollow( new Follow(localStock.getCurrPrice(),localStock,SQL.GetTimeStamp()));
                     acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
                 } else if (numShares < investmentCollection.getInvestment(ticker).getNumShares()) {
                     //already invested, just update the number of shares
