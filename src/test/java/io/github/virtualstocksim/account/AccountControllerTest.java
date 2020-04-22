@@ -222,7 +222,7 @@ public class AccountControllerTest
     public void testSell() throws SQLException {
         TransactionHistory transactionHistory = new TransactionHistory(conn.getModel().getTransactionHistory());
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
-        StocksFollowed stocksFollowed = new StocksFollowed(conn.getModel().getFollowedStocks());
+        StocksFollowed stocksFollowedSell = new StocksFollowed(conn.getModel().getFollowedStocks());
         int init_size = investmentCollection.getInvestments().size();
         int initial_num_transactions = transactionHistory.getTransactions().size();
 
@@ -230,7 +230,7 @@ public class AccountControllerTest
         assertTrue(investmentCollection.isInvested("AMZN"));
 
         assertTrue(investmentCollection.isInvested("TSLA"));
-        assertFalse(stocksFollowed.containsStock("TSLA"));
+        assertFalse(stocksFollowedSell.containsStock("TSLA"));
 
         conn.trade(TransactionType.SELL, "AMZN",10);
 
@@ -238,9 +238,10 @@ public class AccountControllerTest
 
 
         conn.getModel().update();
-        System.out.println("investment string: "+conn.getModel().getInvestedStocks());
         investmentCollection.updateInvestments(conn.getModel().getInvestedStocks());
-        stocksFollowed.updateStocksFollowed(conn.getModel().getFollowedStocks());
+        System.out.println("Stocks folllowed: " + conn.getModel().getFollowedStocks());
+
+        stocksFollowedSell.updateStocksFollowed(conn.getModel().getFollowedStocks());
 
 
         assertEquals(2, investmentCollection.getInvestment("AMZN").getNumShares());
@@ -249,7 +250,7 @@ public class AccountControllerTest
         //since we sold all shares of tesla, tesla should no longer be in the invested list
         //and should be moved back to followed
         assertFalse(investmentCollection.isInvested("TSLA"));
-        assertTrue(stocksFollowed.containsStock("TSLA"));
+        assertTrue(stocksFollowedSell.containsStock("TSLA"));
 
     }
 
@@ -267,7 +268,8 @@ public class AccountControllerTest
         conn.followStock("AMZN");
         conn.followStock("BDX");
 
-
+        tempFollow.updateStocksFollowed(conn.getModel().getFollowedStocks());
+        conn.getModel().update();
 
         assertTrue(tempFollow.containsStock("TSLA"));
         assertTrue(tempFollow.containsStock("AMZN"));
@@ -275,10 +277,7 @@ public class AccountControllerTest
     }
 
 
-    @Test
-    public void testUnfollowStock(){
 
-    }
 
 
 
