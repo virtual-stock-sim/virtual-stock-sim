@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -259,17 +260,19 @@ public class Stock extends DatabaseItem
         SQL.executeUpdate(conn, "DELETE FROM stock WHERE id = ?", id);
     }
 
-
+    private static final BigDecimal DECIMAL_1 = new BigDecimal("1.0");
+    private static final BigDecimal DECIMAL_100 = new BigDecimal("100.0");
     public double getPercentChange()
     {
-       double percentChange = this.currPrice.doubleValue()/this.prevClose.doubleValue();
-       if(percentChange < 1)
+       BigDecimal percentChange = this.currPrice.divide(this.prevClose, 9, RoundingMode.HALF_EVEN);
+       logger.error("" + percentChange);
+       if(percentChange.compareTo(DECIMAL_1) >= 0)
        {
-           percentChange = percentChange-1;
+           percentChange = percentChange.subtract(DECIMAL_1);
        }
+       percentChange = percentChange.multiply(DECIMAL_100);
 
        DecimalFormat df = new DecimalFormat("#.##");
-       percentChange= percentChange*100;
        return Double.parseDouble(df.format(percentChange));
 
     }

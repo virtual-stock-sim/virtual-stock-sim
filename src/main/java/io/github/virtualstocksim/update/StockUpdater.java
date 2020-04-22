@@ -108,7 +108,7 @@ public class StockUpdater
                 stock.setPrevClose(previousClose.getAsBigDecimal());
             }
 
-            JsonElement volume = data.get("volume");
+            JsonElement volume = data.get("latestVolume");
             if(!volume.isJsonNull())
             {
                 stock.setCurrVolume(volume.getAsInt());
