@@ -95,8 +95,8 @@
                                 ${stock.percentChange} %</span></td>
                     </tr>
                 </table>
-                <span id="${stock.symbol}-depth-graph">
-                </span>
+                <div id="${stock.symbol}-depth-graph">
+                </div>
             </div>
         </div>
     </div>

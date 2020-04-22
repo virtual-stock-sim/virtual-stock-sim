@@ -144,8 +144,7 @@ body{
 
 
 .panel-body {
-    display: inline-block;
-    width: 80%;
+    width: 75%;
 }
 
 .panel-heading > .dropdown .dropdown-toggle {
