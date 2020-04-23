@@ -35,6 +35,8 @@ export interface Stock
     currPrice: string;
     /** Last closing of price per share */
     prevClose: string;
+    /** Percent change of different between current price and last closing price */
+    percentChange: string;
     /** Current market volume */
     currVolume: string;
     /** Last market volume */

@@ -48,9 +48,9 @@
             <h2 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
 
-                    <span class="${stock.symbol}-glance-symbol">${stock.symbol}</span>
-                    <span class="${stock.symbol}-glance-curr_price">$${stock.currPrice}</span>
-                    <span class="${stock.symbol}-glance-pchange"<c:choose>
+                    <span name="${stock.symbol}-symbol">${stock.symbol}</span>
+                    <span name="${stock.symbol}-curr_price">$${stock.currPrice}</span>
+                    <span name="${stock.symbol}-pchange"<c:choose>
                         <c:when test="${stock.percentChange  ge 0.0}">
                             style="color:green!important;"
                         </c:when>
@@ -68,23 +68,23 @@
                 <table class="table table-condensed" style="width: 100%;">
                     <tr>
                         <th>Current Price:</th>
-                        <td><span class="${stock.symbol}-depth-curr_price">$${stock.currPrice}</span></td>
+                        <td><span name="${stock.symbol}-curr_price">$${stock.currPrice}</span></td>
                     </tr>
                     <tr>
                         <th>Previous Closing Price:</th>
-                        <td><span class="${stock.symbol}-depth-prev_close">$${stock.prevClose}</span></td>
+                        <td><span name="${stock.symbol}-prev_close">$${stock.prevClose}</span></td>
                     </tr>
                     <tr>
                         <th>Current Volume:</th>
-                        <td><span class="${stock.symbol}-depth-curr_volume">${stock.currVolume}</span></td>
+                        <td><span name="${stock.symbol}-curr_volume">${stock.currVolume}</span></td>
                     </tr>
                     <tr>
                         <th>Previous Volume:</th>
-                        <td><span class="${stock.symbol}-depth-prev_volume">${stock.prevVolume}</span></td>
+                        <td><span name="${stock.symbol}-prev_volume">${stock.prevVolume}</span></td>
                     </tr>
                     <tr>
                         <th>Percent Change:</th>
-                        <td><span class="${stock.symbol}-depth-pchange"<c:choose>
+                        <td><span name="${stock.symbol}-pchange"<c:choose>
                             <c:when test="${stock.percentChange  ge 0.0}">
                                 style="color:green!important;"
                             </c:when>
@@ -114,7 +114,7 @@
         </div>
 
         <div class="modal-body">
-            <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-buy-form" method="post" id="${stock.symbol}-buy-form">
+            <form action=${pageContext.servletContext.contextPath}/following name="${stock.symbol}-buy-form" method="post" id="${stock.symbol}-buy-form">
                 <textarea class="form-control" form="${stock.symbol}-buy-form" onsubmit="this.value=''" rows="1" cols="5" placeholder="Enter the number of shares you'd like to buy" name="shares-to-buy"></textarea><br>
                 <input class="btn btn-default" type="submit" value="Buy">
             </form>
@@ -132,7 +132,7 @@
             </div>
 
             <div class="modal-body">
-                <form action=${pageContext.servletContext.contextPath}/following class="${stock.symbol}-sell-form" method="post" id="${stock.symbol}-sell-form">
+                <form action=${pageContext.servletContext.contextPath}/following name="${stock.symbol}-sell-form" method="post" id="${stock.symbol}-sell-form">
                     <textarea class="form-control" form="${stock.symbol}-sell-form" onsubmit="this.value=''" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
                     <input class="btn btn-default" type="submit" value="Sell">
                 </form>

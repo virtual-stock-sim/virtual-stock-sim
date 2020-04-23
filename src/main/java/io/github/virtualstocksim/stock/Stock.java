@@ -265,7 +265,6 @@ public class Stock extends DatabaseItem
     public double getPercentChange()
     {
        BigDecimal percentChange = this.currPrice.divide(this.prevClose, 9, RoundingMode.HALF_EVEN);
-       logger.error("" + percentChange);
        if(percentChange.compareTo(DECIMAL_1) >= 0)
        {
            percentChange = percentChange.subtract(DECIMAL_1);

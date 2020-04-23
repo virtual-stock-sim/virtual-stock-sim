@@ -50,7 +50,7 @@ public class StockRequestHandler implements HttpRequestListener
                         JsonObject stockObj = new JsonObject();
                         stockObj.addProperty("symbol", stock.getSymbol());
                         stockObj.addProperty("currPrice", stock.getCurrPrice());
-                        stockObj.addProperty("prevClose", stock.getPrevClose());
+                        stockObj.addProperty("percentChange", stock.getPercentChange());
                         stockObj.addProperty("currVolume", stock.getCurrVolume());
                         stockObj.addProperty("lastUpdated", stock.getLastUpdated().toString());
 
@@ -78,7 +78,6 @@ public class StockRequestHandler implements HttpRequestListener
             returnObj.add("data", dataArr);
 
             resp.setContentType("application/json");
-            logger.info(String.valueOf(returnObj));
             PrintWriter writer = resp.getWriter();
             writer.write(String.valueOf(returnObj));
             writer.flush();
