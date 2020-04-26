@@ -12,16 +12,16 @@ public class Investment {
     private int numShares;
     private BigDecimal pricePerShare,totalHoldings;
     private Timestamp timeStamp;
-    private String ticker;
+    private String symbol;
 
     private static final Logger logger = LoggerFactory.getLogger(Investment.class);
     //The price will change DYNAMICALLY!!! from the DB there is no need to store that information in some local variables unless the need for calculations arise at a later time
     //This is the real difference between this class and transaction, really
-    public Investment(int numShares, String ticker, Timestamp timestamp){
-            this.ticker=ticker;
+    public Investment(int numShares, String symbol, Timestamp timestamp){
+            this.symbol=symbol;
             this.timeStamp=timestamp;
             this.numShares=numShares;
-            this.pricePerShare= Stock.Find(ticker).get().getCurrPrice();
+            this.pricePerShare= Stock.Find(symbol).get().getCurrPrice();
             this.totalHoldings = this.pricePerShare.multiply(new BigDecimal(numShares));
     }
 
@@ -37,8 +37,8 @@ public class Investment {
     public Timestamp timestamp(){
         return this.timestamp();
     }
-    public String getTicker(){
-        return this.ticker;
+    public String getSymbol(){
+        return this.symbol;
     }
     public int getNumShares(){
         return this.numShares;

@@ -165,10 +165,10 @@ public class AccountController {
     }
 
     //to be used in MS4 view implementation
-    public void followStock(String ticker) throws SQLException {
-        Stock localStock = Stock.Find(ticker).orElse(null);
+    public void followStock(String symbol) throws SQLException {
+        Stock localStock = Stock.Find(symbol).orElse(null);
         if (localStock == null) {
-            throw new TradeException("That stock could not be found in the schema. Please check that the ticker is formatted correctly", TradeExceptionType.STOCK_NOT_FOUND);
+            throw new TradeException("That stock could not be found in the schema. Please check that the symbol is formatted correctly", TradeExceptionType.STOCK_NOT_FOUND);
         }
         List<Account> queryResult = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
         if (queryResult.isEmpty()) {
@@ -186,15 +186,15 @@ public class AccountController {
     }
 
     //to be used in MS4 view implementation
-    public void unFollowStock(String ticker) throws SQLException {
+    public void unFollowStock(String symbol) throws SQLException {
         //StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
         List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
         if (accounts.isEmpty() || accounts.get(0) == null) {
             throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
         }
         StocksFollowed temp = new StocksFollowed(accounts.get(0).getFollowedStocks());
-        if (temp.containsStock(ticker)) {
-            temp.removeFollow(ticker);
+        if (temp.containsStock(symbol)) {
+            temp.removeFollow(symbol);
             acc.setFollowedStocks(temp.followObjectsToSting());
             acc.update();
         } else {
@@ -202,11 +202,11 @@ public class AccountController {
         }
     }
 
-    public void trade(TransactionType type, String ticker, int numShares) throws SQLException {
+    public void trade(TransactionType type, String symbol, int numShares) throws SQLException {
         if (numShares == -1) {
             throw new TradeException("Please specify at least one stock to trade with", TradeExceptionType.NOT_ENOUGH_SHARES);
         }
-        Stock localStock = Stock.Find(ticker).orElse(null);
+        Stock localStock = Stock.Find(symbol).orElse(null);
         if (localStock == null) {
             throw new TradeException("You are not following that stock! Please follow and wait for new cycle before trading", TradeExceptionType.NOT_FOLLOWING_STOCK);
         }
@@ -228,8 +228,8 @@ public class AccountController {
                 InvestmentCollection ic = new InvestmentCollection(localAccount.getInvestedStocks());
 
                 //StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
-                //if it contains the ticker, remove it from the following list
-                if (tempStocksFollowed.containsStock(ticker) || ic.isInvested(ticker)) {
+                //if it contains the symbol, remove it from the following list
+                if (tempStocksFollowed.containsStock(symbol) || ic.isInvested(symbol)) {
                     //add the stock to transactionHistory
                     //add the transaction using a method with a string
                     TransactionHistory tempTransactionHistory = new TransactionHistory(localAccount.getTransactionHistory());
@@ -241,7 +241,7 @@ public class AccountController {
 
                     //add the stock to investments   Exactly like transactionhistory minus the enum
                     InvestmentCollection investments = new InvestmentCollection(localAccount.getInvestedStocks());
-                    Investment tempInvestment = new Investment(numShares, ticker, SQL.GetTimeStamp());
+                    Investment tempInvestment = new Investment(numShares, symbol, SQL.GetTimeStamp());
                     investments.addInvestment(tempInvestment);
                     acc.setWalletBalance(acc.getWalletBalance().subtract(new BigDecimal(numShares).multiply(localStock.getCurrPrice())));
                     //update and push to DB
@@ -249,7 +249,7 @@ public class AccountController {
 
 
                     System.out.println("debug for the StocksFollowed object ");
-                    tempStocksFollowed.removeFollow(ticker);
+                    tempStocksFollowed.removeFollow(symbol);
                     for (Follow f : tempStocksFollowed.getStocksFollowed()) {
                         System.out.println(f.getStock().getSymbol());
                     }
@@ -277,24 +277,24 @@ public class AccountController {
             InvestmentCollection investmentCollection = new InvestmentCollection(localAccount.getInvestedStocks());
             StocksFollowed stocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
 
-            if (investmentCollection.isInvested(ticker)) {
-                if (numShares == investmentCollection.getInvestment(ticker).getNumShares()) {
+            if (investmentCollection.isInvested(symbol)) {
+                if (numShares == investmentCollection.getInvestment(symbol).getNumShares()) {
                     //if all of the shares are sold, then remove from invested and back to follow send out to DB
-                    investmentCollection.removeInvestment(ticker);
+                    investmentCollection.removeInvestment(symbol);
                     stocksFollowed.setFollow( new Follow(localStock.getCurrPrice(),localStock,SQL.GetTimeStamp()));
                     acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
-                } else if (numShares < investmentCollection.getInvestment(ticker).getNumShares()) {
+                } else if (numShares < investmentCollection.getInvestment(symbol).getNumShares()) {
                     //already invested, just update the number of shares
-                    investmentCollection.getInvestment(ticker).setNumShares(investmentCollection.getInvestment(ticker).getNumShares() - numShares);
+                    investmentCollection.getInvestment(symbol).setNumShares(investmentCollection.getInvestment(symbol).getNumShares() - numShares);
                 } else {
                     throw new TradeException("You do not own enough shares to complete that trade.", TradeExceptionType.NOT_ENOUGH_SHARES);
                 }
 
                 //TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
                 TransactionHistory th = new TransactionHistory(localAccount.getTransactionHistory());
-                Stock stock = Stock.Find(ticker).orElse(null);
+                Stock stock = Stock.Find(symbol).orElse(null);
                 if (stock != null) {
-                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), Stock.Find(ticker).get().getCurrPrice(), numShares, stock));
+                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), Stock.Find(symbol).get().getCurrPrice(), numShares, stock));
                     acc.setTransactionHistory(th.buildTransactionJSON());
                     acc.setInvestedStocks(investmentCollection.buildJSON());
 

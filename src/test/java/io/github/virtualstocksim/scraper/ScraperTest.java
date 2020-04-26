@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 public class ScraperTest {
     private static final Logger logger = LoggerFactory.getLogger(ScraperTest.class);
 
-    private static List<String> stressTickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "ABMD", "ACN", "ATVI", "ADBE", "AMD", "AAP", "AES",
+    private static List<String> stressSymbols = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "ABMD", "ACN", "ATVI", "ADBE", "AMD", "AAP", "AES",
             "AFL", "AMZN", "TSLA", "T", "F", "ABC", "AME", "BA", "BR", "COG",
             "CAT", "CE", "CTL", "SCHW", "CB", "CHD", "C", "ORCL", "IBM", "PH",
             "PYPL", "PEP", "PPL", "RL", "LUV", "AAL", "WU", "WHR", "GE", "GM"));      //fourty example Stocks to search for
 
 
-    private static List<String> tickers = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "GOOGL", "LUV"));
+    private static List<String> symbols = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "GOOGL", "LUV"));
     private static List<String> descriptions = new LinkedList<String>();
     private static List<JsonArray> JsonArrays = new LinkedList<JsonArray>();
     private static List<JsonArray> stressJsonArrays = new LinkedList<JsonArray>();
@@ -59,12 +59,12 @@ public class ScraperTest {
         logger.info("Setting up scraper tests");
         Random r = new Random();
 
-        for (int i = 0; i < tickers.size(); i++) {
+        for (int i = 0; i < symbols.size(); i++) {
             JsonObject jo = new JsonObject();
-            if (i != 0 && i != tickers.size()) {
+            if (i != 0 && i != symbols.size()) {
                 pause();
             }
-            JsonArrays.add(scraper.getDescriptionAndHistory(tickers.get(i), TimeInterval.ONEMONTH));
+            JsonArrays.add(scraper.getDescriptionAndHistory(symbols.get(i), TimeInterval.ONEMONTH));
 
         }
     }
@@ -97,7 +97,7 @@ public class ScraperTest {
                     temp.add(openPrice.getAsBigDecimal());
 
                 }
-                priceMap.put(tickers.get(x-1),temp);
+                priceMap.put(symbols.get(x-1),temp);
             }
         }
         List <BigDecimal> googleList = priceMap.get("GOOGL");       //I know this is really inefficient, but the test is already slow from webscraping limitations
@@ -153,12 +153,12 @@ public class ScraperTest {
     public void stressTest() throws InterruptedException, IOException {
         Random r = new Random();
         Scraper scraper = new Scraper();
-        for  (int i=0; i< stressTickers.size();i++){
+        for  (int i=0; i< stressSymbols.size();i++){
             JsonObject jo = new JsonObject();
             int y = r.nextInt(6);
             System.out.println("Testing next stock");
-            if(i!=0 && i!=stressTickers.size()){TimeUnit.SECONDS.sleep(10+y); }
-            stressJsonArrays.add(scraper.getDescriptionAndHistory(stressTickers.get(i),TimeInterval.ONEMONTH));
+            if(i!=0 && i!=stressSymbols.size()){TimeUnit.SECONDS.sleep(10+y); }
+            stressJsonArrays.add(scraper.getDescriptionAndHistory(stressSymbols.get(i),TimeInterval.ONEMONTH));
         }
         assertEquals(stressJsonArrays.size(),40);
         System.out.println("done");

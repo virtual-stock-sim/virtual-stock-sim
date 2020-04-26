@@ -25,17 +25,17 @@ public class Scraper {
     private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
 
     //will be called within the getJson method
-    public static String getDescription(String tickerSymbol) throws IOException, ConnectException {
-        logger.info("Getting company description for stock symbol: " + tickerSymbol);
-        String URL = "https://finance.yahoo.com/quote/" + tickerSymbol + "/profile?p=" + tickerSymbol;
+    public static String getDescription(String symbolSymbol) throws IOException, ConnectException {
+        logger.info("Getting company description for stock symbol: " + symbolSymbol);
+        String URL = "https://finance.yahoo.com/quote/" + symbolSymbol + "/profile?p=" + symbolSymbol;
         Document doc = Jsoup.connect(URL).timeout(0).get();//timeout set to 0 indicates infinite
         Element s = doc.getElementsByClass("Mt(15px) Lh(1.6)").first();
         return s.text();
     }
 
     //Might not need to use this depending on what we end up doing with the API
-    public static BigDecimal getCurrentPrice(String tickerSymbol)throws IOException{
-        String URL = "https://finance.yahoo.com/quote/"+tickerSymbol+"/profile?p="+tickerSymbol;
+    public static BigDecimal getCurrentPrice(String symbolSymbol)throws IOException{
+        String URL = "https://finance.yahoo.com/quote/"+symbolSymbol+"/profile?p="+symbolSymbol;
 
         Document doc = Jsoup.connect(URL).get();
         Element e = doc.getElementsByClass("Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)").first();
@@ -45,10 +45,10 @@ public class Scraper {
     //this method checks if the stock exists on Yahoo finance
     //Because Yahoo finance doesn't 404 if you look for a stock that isn't there
     //I just checked if it redirected to a "lookup" page rather than a "quote" page
-    public static boolean checkStockExists(String ticker) throws IOException {
-        logger.info("Checking if stock symbol `" + ticker + "` exists");
+    public static boolean checkStockExists(String symbol) throws IOException {
+        logger.info("Checking if stock symbol `" + symbol + "` exists");
         try {
-            Connection.Response response = Jsoup.connect("https://finance.yahoo.com/quote/"+ticker).followRedirects(true).execute();
+            Connection.Response response = Jsoup.connect("https://finance.yahoo.com/quote/"+symbol).followRedirects(true).execute();
             int statusCode = response.statusCode();
             String redirect = response.url().toString();
 
@@ -60,29 +60,29 @@ public class Scraper {
                 //stock is in yahoo finance
                 return true;
             }
-        }catch (HttpStatusException e){ //this will account for MALFORMED tickers only (ex: starting name with a slash)
+        }catch (HttpStatusException e){ //this will account for MALFORMED symbols only (ex: starting name with a slash)
             logger.warn("Status code of " + e.getStatusCode() + " returned from " + e.getUrl() + "\n", e);
         }
         return false;
     }
 
 
-    public static JsonObject getDescriptionAndHistory(String ticker, TimeInterval timeInterval) throws IOException, IllegalArgumentException {
-        logger.info("Getting company description and price history for stock symbol `" + ticker + "`");
+    public static JsonObject getDescriptionAndHistory(String symbol, TimeInterval timeInterval) throws IOException, IllegalArgumentException {
+        logger.info("Getting company description and price history for stock symbol `" + symbol + "`");
         long unixTime = System.currentTimeMillis() / 1000L;
         //calculate seconds passed & sub from current unix time
 
 
         JsonObject result = new JsonObject();
-        result.addProperty("symbol", ticker);
-        result.addProperty("description", getDescription(ticker));
+        result.addProperty("symbol", symbol);
+        result.addProperty("description", getDescription(symbol));
 
         JsonArray priceHistory = new JsonArray();
-        if(checkStockExists(ticker)) {
+        if(checkStockExists(symbol)) {
 
-            logger.info("Getting max price history for `" + ticker + "` with time interval of " + timeInterval.getPeriod());
+            logger.info("Getting max price history for `" + symbol + "` with time interval of " + timeInterval.getPeriod());
             //since unix time calculates time from epoch, 0 and current time are really min and max values, do not need integer.max
-            String webResponse = new Scanner(new URL("https://query1.finance.yahoo.com/v7/finance/download/" + ticker + "?period1=" + "0" + "&period2=" + unixTime + "&interval="+timeInterval.getPeriod()+"&events=history").openStream(), "UTF-8").useDelimiter("\\A").next();
+            String webResponse = new Scanner(new URL("https://query1.finance.yahoo.com/v7/finance/download/" + symbol + "?period1=" + "0" + "&period2=" + unixTime + "&interval="+timeInterval.getPeriod()+"&events=history").openStream(), "UTF-8").useDelimiter("\\A").next();
 
             List<String> rowsList = new LinkedList<String>(Arrays.asList(webResponse.split("\\n")));//get rows separated by line
             rowsList.remove(0);      //get rid of header
@@ -109,8 +109,8 @@ public class Scraper {
 
             return result;
         }else{
-            logger.warn("Stock symbol `" + ticker + "` does not exist. Unable to retrieve description and history");
-            throw new IllegalArgumentException("Stock symbol " + ticker + " does not exist");
+            logger.warn("Stock symbol `" + symbol + "` does not exist. Unable to retrieve description and history");
+            throw new IllegalArgumentException("Stock symbol " + symbol + " does not exist");
         }
 
         //return gson.toJson(ja); this would enable pretty printing if returned

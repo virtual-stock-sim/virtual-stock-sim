@@ -63,16 +63,16 @@ public class StocksFollowed {
     }
 
 
-    public void removeFollow(String ticker){
+    public void removeFollow(String symbol){
         for(int i =0; i< stocksFollowed.size();i++){
-            if(stocksFollowed.get(i).getStock().getSymbol().toUpperCase().equals(ticker.toUpperCase())){
+            if(stocksFollowed.get(i).getStock().getSymbol().toUpperCase().equals(symbol.toUpperCase())){
                 stocksFollowed.remove(i);
             }
         }
     }
 
-    public boolean containsStock(String ticker){
-        if(followObjectsToSting().contains(ticker)){
+    public boolean containsStock(String symbol){
+        if(followObjectsToSting().contains(symbol)){
             return true;
         }else {
             return false;

@@ -39,10 +39,10 @@ public class InvestmentCollection {
 
     //upon adding investment, check if already exists and add to numshares, otherwise add new share
     public void addInvestment(Investment in ) {
-        if(isInvested(in.getTicker())) {
+        if(isInvested(in.getSymbol())) {
             for (Investment i : investmentList) {
-                //look through all of the tickers, if there is a match just update the number of shares of that stock
-                if (in.getTicker().equals(i.getTicker())) {
+                //look through all of the symbols, if there is a match just update the number of shares of that stock
+                if (in.getSymbol().equals(i.getSymbol())) {
                     i.setNumShares(i.getNumShares() + in.getNumShares());
                     break;
                 }
@@ -53,9 +53,9 @@ public class InvestmentCollection {
     }
 
 
-    public boolean isInvested(String ticker){
+    public boolean isInvested(String symbol){
         for(Investment i : this.investmentList){
-            if(i.getTicker().equals(ticker) && i.getNumShares()>0){
+            if(i.getSymbol().equals(symbol) && i.getNumShares()>0){
                 return true;
             }
         }
@@ -63,23 +63,23 @@ public class InvestmentCollection {
     }
 
 
-    public Investment getInvestment(String ticker){
-        if(isInvested(ticker)) {
+    public Investment getInvestment(String symbol){
+        if(isInvested(symbol)) {
             for (Investment i : this.investmentList) {
-                if (i.getTicker().equals(ticker)) {
+                if (i.getSymbol().equals(symbol)) {
                     return i;
                 }
             }
         }else{
-        logger.error("Could not find that stock in investments! PLease check that the stock is in the STOCK DB and the ticker is spelled & formatted correctly ");
+        logger.error("Could not find that stock in investments! PLease check that the stock is in the STOCK DB and the symbol is spelled & formatted correctly ");
         }
         return null;
     }
 
 
-    public void removeInvestment(String ticker){
+    public void removeInvestment(String symbol){
         for(int i=0; i<this.investmentList.size();i++){
-            if(investmentList.get(i).getTicker().equals(ticker)) {
+            if(investmentList.get(i).getSymbol().equals(symbol)) {
                 this.investmentList.remove(i);
                 return;
             }
@@ -90,9 +90,9 @@ public class InvestmentCollection {
 
         JsonArray ja = new JsonArray();
         for(Investment i  : this.investmentList){
-            JsonObject jo = new JsonObject();                               //Shares, Ticker, Timestamp
+            JsonObject jo = new JsonObject();                               //Shares, Symbol, Timestamp
             jo.addProperty("shares",i.getNumShares());
-            jo.addProperty("ticker",i.getTicker());
+            jo.addProperty("symbol",i.getSymbol());
             jo.addProperty("timestamp",i.getTimestamp().toString());
             ja.add(jo);
         }
@@ -107,7 +107,7 @@ public class InvestmentCollection {
         {
             JsonArray j = elem.getAsJsonArray();
             for(JsonElement x : j ){
-                temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),x.getAsJsonObject().get("ticker").getAsString(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
+                temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),x.getAsJsonObject().get("symbol").getAsString(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
             }
         }
 

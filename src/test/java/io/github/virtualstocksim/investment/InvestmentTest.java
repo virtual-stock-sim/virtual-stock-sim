@@ -67,12 +67,12 @@ public class InvestmentTest {
     }
 
     @Test
-    public void testGetTicker(){
-        assertTrue(investmentList.get(0).getTicker().equals("AMZN"));
-        assertTrue(investmentList.get(1).getTicker().equals("TSLA"));
-        assertTrue(investmentList.get(2).getTicker().equals("GOOGL"));
-        assertTrue(investmentList.get(3).getTicker().equals("F"));
-        assertTrue(investmentList.get(4).getTicker().equals("BDX"));
+    public void testGetSymbol(){
+        assertTrue(investmentList.get(0).getSymbol().equals("AMZN"));
+        assertTrue(investmentList.get(1).getSymbol().equals("TSLA"));
+        assertTrue(investmentList.get(2).getSymbol().equals("GOOGL"));
+        assertTrue(investmentList.get(3).getSymbol().equals("F"));
+        assertTrue(investmentList.get(4).getSymbol().equals("BDX"));
 
     }
 }

@@ -31,31 +31,31 @@ public class InvestmentCollectionTest {
     @Test
     public void testConstructors(){
 
-        assertTrue(control.getInvestments().get(0).getTicker().equals("AMZN"));
+        assertTrue(control.getInvestments().get(0).getSymbol().equals("AMZN"));
         assertTrue(control.getInvestments().get(0).getNumShares() == 1);
 
-        assertTrue(control.getInvestments().get(1).getTicker().equals("TSLA"));
+        assertTrue(control.getInvestments().get(1).getSymbol().equals("TSLA"));
         assertTrue(control.getInvestments().get(1).getNumShares() == 100);
 
-        assertTrue(control.getInvestments().get(2).getTicker().equals("GOOGL"));
+        assertTrue(control.getInvestments().get(2).getSymbol().equals("GOOGL"));
         assertTrue(control.getInvestments().get(2).getNumShares() == 3);
 
-        assertTrue(control.getInvestments().get(3).getTicker().equals("F"));
+        assertTrue(control.getInvestments().get(3).getSymbol().equals("F"));
         assertTrue(control.getInvestments().get(3).getNumShares() == 7);
 
 
 
 
-        assertTrue(experimental.getInvestments().get(0).getTicker().equals("AMZN"));
+        assertTrue(experimental.getInvestments().get(0).getSymbol().equals("AMZN"));
         assertTrue(experimental.getInvestments().get(0).getNumShares() == 1);
 
-        assertTrue(experimental.getInvestments().get(1).getTicker().equals("TSLA"));
+        assertTrue(experimental.getInvestments().get(1).getSymbol().equals("TSLA"));
         assertTrue(experimental.getInvestments().get(1).getNumShares() == 100);
 
-        assertTrue(experimental.getInvestments().get(2).getTicker().equals("GOOGL"));
+        assertTrue(experimental.getInvestments().get(2).getSymbol().equals("GOOGL"));
         assertTrue(experimental.getInvestments().get(2).getNumShares() == 3);
 
-        assertTrue(experimental.getInvestments().get(3).getTicker().equals("F"));
+        assertTrue(experimental.getInvestments().get(3).getSymbol().equals("F"));
         assertTrue(experimental.getInvestments().get(3).getNumShares() == 7);
 
     }
@@ -63,7 +63,7 @@ public class InvestmentCollectionTest {
     @Test
     public void testAddInvestment(){
         //New investments in stocks that already exist in the list should result in an update in the number of shares
-        //NO new investments appended to the list! except in the case of a brand new ticker being added to the investment list
+        //NO new investments appended to the list! except in the case of a brand new symbol being added to the investment list
         //all of the checking for this is done in the add method. no need to do it here. Or more importantly, later in the AccounController :)
         control.addInvestment(new Investment(5, "AMZN", SQL.GetTimeStamp()));
         assertEquals(control.getInvestments().get(0).getNumShares(),6);
