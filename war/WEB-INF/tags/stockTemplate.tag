@@ -2,32 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="stock" required="true" type="io.github.virtualstocksim.stock.Stock" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function() {
-    $('body').on('show.bs.collapse', '.collapse', function(e) {
-        $(this).closest('.panel').find('.panel-heading').addClass('active-${stock.symbol}');
-    });
-
-    $('body').on('hide.bs.collapse', '.collapse', function(e) {
-        $(this).closest('.panel').find('.panel-heading').removeClass('active-${stock.symbol}');
-    });
-    })
-
-</script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
 
-
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-<link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
 <div class="stock-template" style="margin-left: 5%;">
     <div hidden class="stockSymbol">${stock.symbol}</div>
@@ -46,7 +23,7 @@
     <div class="panel panel-collapse">
         <div class="panel-heading" role="tab">
             <h2 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseDesc" aria-controls="collapseDesc">
+                <a id="${stock.symbol}-dropdown-toggle" data-toggle="collapse" data-target="#${stock.symbol}-dropdown" aria-controls="#${stock.symbol}-dropdown">
 
                     <span name="${stock.symbol}-symbol">${stock.symbol}</span>
                     <span name="${stock.symbol}-curr_price">$${stock.currPrice}</span>
@@ -62,7 +39,7 @@
                 </a>
             </h2>
         </div>
-        <div id="collapseDesc" class="collapse" role="tabpanel" >
+        <div id="${stock.symbol}-dropdown" class="collapse" role="tabpanel" >
             <div class="panel-body">
                 <p id="${stock.symbol}-desc"></p><br>
                 <table class="table table-condensed" style="width: 100%;">

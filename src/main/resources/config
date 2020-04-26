@@ -25,5 +25,5 @@ update.stockdata.interval=24:00:00
     # 'immediately' (without quotes) for immediately on program startup
     # 'wait-interval' (without quotes) for wait the given interval before starting
 
-update.stockdata.start=00:00:00
-#update.stockdata.start=immediately
+#update.stockdata.start=00:00:00
+update.stockdata.start=immediately
