@@ -165,7 +165,7 @@ public class Stock extends DatabaseItem
      * @param stockDataId ID of referenced StockData
      * @return Stock instance of the newly created stock
      */
-    private static Optional<Stock> Create(
+    public static Optional<Stock> Create(
             String symbol,
             BigDecimal currPrice,
             BigDecimal prevClose,
