@@ -150,10 +150,8 @@ public class StockUpdater
      */
     public static void updateStockDatas(List<Stock> stocks, TimeInterval interval, int delay, int delayLowerBound, int delayUpperBound) throws UpdateException
     {
-        Iterator<Stock> stockIt = stocks.iterator();
-        while (stockIt.hasNext())
+        for(Stock stock : stocks)
         {
-            Stock stock = stockIt.next();
             // Get the stock data for the stock
             List<StockData> stockDatas = StockData.FindCustom("SELECT id FROM stock_data WHERE id = ?", stock.getStockDataId());
             if(!stockDatas.isEmpty())
@@ -185,43 +183,6 @@ public class StockUpdater
                 {
                     throw new UpdateException(
                             "Exception while committing updates for Stock with symbol " + stock.getSymbol(), e);
-                }
-
-                // Only sleep if necessary
-                if (stockIt.hasNext())
-                {
-                    pauseStockDataUpdate(delay, delayUpperBound, delayLowerBound);
-                }
-            }
-        }
-    }
-
-    private static void pauseStockDataUpdate(int delay, int delayUpperBound, int delayLowerBound) throws UpdateException
-    {
-        // Attempt to sleep
-        int attempts = 0;
-        int maxAttempts = 2;
-        boolean sleepSuccess = false;
-        while(!sleepSuccess)
-        {
-            Random r = new Random();
-            try
-            {
-                int randDelay = delay + r.nextInt(delayUpperBound - delayLowerBound + 1) + delayLowerBound;
-                logger.info("Sleeping for " + randDelay + " seconds");
-                TimeUnit.SECONDS.sleep(randDelay);
-                sleepSuccess = true;
-            }
-            catch (InterruptedException e)
-            {
-                if(attempts < maxAttempts)
-                {
-                    logger.warn("Exception while sleeping on attempt #" + attempts + " while updating static stock data. Trying again...\n", e);
-                    ++attempts;
-                }
-                else
-                {
-                    throw new UpdateException("Max exceptions reached for attempting to sleep while updating static stock data", e);
                 }
             }
         }
