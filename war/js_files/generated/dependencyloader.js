@@ -10,10 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export function loadDependencies(dependencies) {
     return __awaiter(this, void 0, void 0, function* () {
         let head = document.getElementsByTagName("head")[0];
+        // Get current script and css tags in page
         let currentScripts = Array.from(document.getElementsByTagName("script")).map(elem => { return elem.src; });
         let currentCSS = Array.from(document.getElementsByTagName("link")).map(elem => { return elem.href; });
         for (let dependency of dependencies) {
             if (dependency.type === "script") {
+                // If the dependency isn't already in the page, add it
                 if (!currentScripts.some(url => dependency.uri === url)) {
                     let script = document.createElement("script");
                     script.src = dependency.uri;
@@ -25,6 +27,7 @@ export function loadDependencies(dependencies) {
                 }
             }
             else if (dependency.type === "stylesheet") {
+                // If the dependency isn't already in the page, add it
                 if (!currentCSS.some(url => dependency.uri === url)) {
                     let css = document.createElement("link");
                     css.rel = "stylesheet";

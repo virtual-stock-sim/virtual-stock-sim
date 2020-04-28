@@ -3,7 +3,7 @@ import {drawPriceHistoryGraph, GraphConfig} from "./graphs.js";
 import {DataStream} from "./datastream.js";
 import * as json from "./jsonformats.js"
 import {HttpRequest, MessageParams} from "./httprequest.js";
-import {DataRequest, Stock, StockRequestResult} from "./jsonformats.js";
+import {DataRequest, StockRequestResult} from "./jsonformats.js";
 import {Dependency, loadDependencies} from "./dependencyloader.js";
 
 if(!document.getElementById("stockInit"))
@@ -80,67 +80,8 @@ if(!document.getElementById("stockInit"))
                     });
         }
         drawPriceHistoryGraph(configs);
-
-        // Setup the "in-depth" dropdown for the template
-/*        for(let symbol of stockSymbols)
-        {
-            let dropdownToggle = document.getElementById(symbol + "-dropdown-toggle");
-            dropdownToggle.addEventListener("show.bs.collapse", () =>
-            {
-                let dropdownHeading = document.getElementById(symbol + "-dropdown-heading");
-                dropdownHeading.classList.add("active")
-            });
-            dropdownToggle.addEventListener("hide.bs.collapse", () =>
-            {
-
-            });
-        }*/
     });
 }
-/*
-async function loadDependencies()
-{
-    let requiredScripts =
-            [
-                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js",
-                "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js",
-                "https://www.gstatic.com/charts/loader.js"
-            ]
-
-    let currentScripts = Array.from(document.getElementsByTagName("script")).map(elem => { return elem.src; });
-
-    for(let scriptUrl of requiredScripts)
-    {
-        if(!currentScripts.some(url => scriptUrl === url))
-        {
-            let script: HTMLScriptElement = document.createElement("script");
-            script.src = scriptUrl;
-            script.type = "text/javascript";
-            script.async = false;
-            document.getElementsByTagName("head")[0].appendChild(script);
-        }
-    }
-
-    let requiredCSS =
-            [
-                    "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css",
-                    "https://fonts.googleapis.com/icon?family=Material+Icons",
-                    "../../cssfiles/stockTemplateStyle.css"
-            ]
-
-    let currentCSS = Array.from(document.getElementsByTagName("link")).map(elem => { return elem.href; })
-
-    for(let cssUrl of requiredCSS)
-    {
-        if(!currentCSS.some(url => cssUrl === url))
-        {
-            let css: HTMLLinkElement = document.createElement("link");
-            css.rel = "stylesheet";
-            css.href = cssUrl;
-            document.getElementsByTagName("head")[0].appendChild(css);
-        }
-    }
-}*/
 
 function findStocksInPage(): string[]
 {
