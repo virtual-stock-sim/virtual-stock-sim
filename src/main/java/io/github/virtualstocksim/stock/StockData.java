@@ -1,5 +1,7 @@
 package io.github.virtualstocksim.stock;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
 import org.slf4j.Logger;
@@ -119,7 +121,7 @@ public class StockData extends DatabaseItem
      * @param lastUpdated Timestamp of when this was last updated
      * @return StockData instance of the newly created stock
      */
-    static Optional<StockData> Create(String data, Timestamp lastUpdated)
+    public static Optional<StockData> Create(String data, Timestamp lastUpdated)
     {
         logger.info("Creating new stock data...");
 
@@ -190,5 +192,11 @@ public class StockData extends DatabaseItem
     {
         logger.info(String.format("Removing Stock data with ID %d from database", id));
         SQL.executeUpdate(conn, "DELETE FROM stocks WHERE id = ?", id);
+    }
+
+
+    public JsonObject getAsJsonObject()
+    {
+        return JsonParser.parseString(data).getAsJsonObject();
     }
 }

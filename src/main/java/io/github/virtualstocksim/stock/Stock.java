@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
 import org.slf4j.Logger;
@@ -274,5 +275,19 @@ public class Stock extends DatabaseItem
        DecimalFormat df = new DecimalFormat("#.##");
        return Double.parseDouble(df.format(percentChange));
 
+    }
+
+    public JsonObject getAsJsonObject()
+    {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("symbol", symbol);
+        obj.addProperty("currPrice", currPrice);
+        obj.addProperty("prevClose", prevClose);
+        obj.addProperty("percentChange", getPercentChange());
+        obj.addProperty("currVolume", currVolume);
+        obj.addProperty("prevVolume", prevVolume);
+        obj.addProperty("lastUpdated", lastUpdated.toString());
+
+        return obj;
     }
 }
