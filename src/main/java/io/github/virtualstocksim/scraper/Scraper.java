@@ -3,6 +3,7 @@ package io.github.virtualstocksim.scraper;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import io.github.virtualstocksim.config.Config;
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -24,8 +25,24 @@ public class Scraper {
     private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private static final long DELAY = TimeUnit.SECONDS.toMillis(10);
+    private static final long DELAY;
     private static final AtomicLong LAST_SCRAPE = new AtomicLong(0);
+
+    static
+    {
+        long _delay = 0;
+        try
+        {
+            _delay = TimeUnit.SECONDS.toMillis(Long.parseLong(Config.getConfig("scraper.delay")));
+        }
+        catch (NumberFormatException e)
+        {
+            logger.error("Unable to parse configuration `scraper.delay` to long\n", e);
+            System.exit(-1);
+        }
+
+        DELAY = _delay;
+    }
 
     //will be called within the getJson method
     public static String getDescription(String symbol) throws IOException {
@@ -111,11 +128,19 @@ public class Scraper {
         Future<T> result = executor.submit(() ->
                                {
                                    T _result;
-                                   // Sleep for the delay if there is not DELAY time between now
-                                   // and last task execution
-                                   if(Instant.now().toEpochMilli() - DELAY <= LAST_SCRAPE.get())
+                                   // Has DELAY time passed between last scrape?
+                                   long now = Instant.now().toEpochMilli();
+                                   long lastScrape = LAST_SCRAPE.get();
+                                   if(now - DELAY <= lastScrape)
                                    {
-                                       TimeUnit.MILLISECONDS.sleep(DELAY);
+                                       long timeDiff = now - lastScrape;
+                                       long sleepTime = DELAY - timeDiff;
+                                       logger.info(
+                                               "Last scraper task was " + TimeUnit.MILLISECONDS.toSeconds(timeDiff) + " seconds ago. " +
+                                               "Sleeping for " + TimeUnit.MILLISECONDS.toSeconds(sleepTime) + " seconds before next task"
+                                                  );
+                                       // Sleep for the remaining time left in the desired delay
+                                       TimeUnit.MILLISECONDS.sleep(sleepTime);
                                    }
                                    // Execute the task
                                    _result = task.call();

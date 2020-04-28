@@ -27,3 +27,7 @@ update.stockdata.interval=24:00:00
 
 #update.stockdata.start=00:00:00
 update.stockdata.start=immediately
+
+# Scraper Delay
+    # Maximum delay between scraper tasks in seconds
+scraper.delay = 13
