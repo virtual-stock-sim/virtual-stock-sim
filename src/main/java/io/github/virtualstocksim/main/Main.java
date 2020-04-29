@@ -93,7 +93,7 @@ public class Main
         ClientUpdater.scheduleStockUpdates();
 
         // Start server
-        logger.info("Starting web server on port {}...\n", DEFAULT_PORT);
+        logger.info("Starting web server on port {}...\n", port);
         server.start();
 
         logger.info("Server started successfully");
