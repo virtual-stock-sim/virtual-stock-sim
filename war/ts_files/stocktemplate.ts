@@ -29,7 +29,7 @@ if(!document.getElementById("stockInit"))
         // Attempt to deserialize the incoming message
         let msg: {update: string} = json.deserialize(event.data);
         // Make sure that the message is valid and contains something we want
-        if(msg && msg.update == 'stock')
+        if(msg && msg.update === 'stock')
         {
             // Form and send the request for updated stocks
             let dataRequest: DataRequest = {type: "stock", symbols: findStocksInPage()}

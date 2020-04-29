@@ -21,7 +21,7 @@ if (!document.getElementById("stockInit")) {
         // Attempt to deserialize the incoming message
         let msg = json.deserialize(event.data);
         // Make sure that the message is valid and contains something we want
-        if (msg && msg.update == 'stock') {
+        if (msg && msg.update === 'stock') {
             // Form and send the request for updated stocks
             let dataRequest = { type: "stock", symbols: findStocksInPage() };
             let params = {
@@ -62,7 +62,7 @@ if (!document.getElementById("stockInit")) {
                 stockSymbol: symbol
             };
             configs.push(config);
-            //TODO: Range slider has weird width until collapse then expand again after first collapse
+            //TODO: Range slider has weird width until collapse then expand again after first collapse if graph is not drawn beforehand
             document.getElementById(symbol + "-dropdown").addEventListener("shown.bs.collapse", () => drawPriceHistoryGraph([config]));
         }
         drawPriceHistoryGraph(configs);
