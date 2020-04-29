@@ -9,6 +9,12 @@ export function serialize(obj: object)
     return JSON.stringify(obj);
 }
 
+export interface UpdateMessage
+{
+    /* Type of update being pushed. stock or stockData */
+    update: string;
+}
+
 export interface DataRequest
 {
     type: string;
@@ -25,6 +31,20 @@ export interface StockDataRequestResult
 {
     type: string;
     data: StockData[];
+}
+
+export interface StockSearchResultObj
+{
+    symbol: string;
+    stock: Stock;
+    stockData: StockData;
+    error?: string;
+}
+
+export interface StockSearchResult
+{
+    type: string;
+    data: StockSearchResultObj[];
 }
 
 export interface Stock

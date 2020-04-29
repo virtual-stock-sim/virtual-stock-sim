@@ -50,14 +50,20 @@ if (!document.getElementById("stockInit")) {
         }
     });
     window.addEventListener("load", () => {
-        // Draw graphs
-        // After window load (to make sure that the google graph script has loaded) draw the graphs
+        let script = document.createElement("script");
+        script.type = "text/javascript";
+        script.text = "let shownBsCollapseEvent = new Event('shown.bs.collapse'); $('.collapse').on('shown.bs.collapse', (event) => { event.target.dispatchEvent(shownBsCollapseEvent); });";
+        document.head.appendChild(script);
         let configs = [];
+        let stockSymbols = findStocksInPage();
         for (let symbol of stockSymbols) {
-            configs.push({
+            let config = {
                 element: document.getElementById(symbol + "-depth-graph"),
                 stockSymbol: symbol
-            });
+            };
+            configs.push(config);
+            //TODO: Range slider has weird width until collapse then expand again after first collapse
+            document.getElementById(symbol + "-dropdown").addEventListener("shown.bs.collapse", () => drawPriceHistoryGraph([config]));
         }
         drawPriceHistoryGraph(configs);
     });

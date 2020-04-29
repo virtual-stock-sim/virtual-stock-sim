@@ -142,11 +142,34 @@ public class Scraper {
                                        // Sleep for the remaining time left in the desired delay
                                        TimeUnit.MILLISECONDS.sleep(sleepTime);
                                    }
-                                   // Execute the task
-                                   _result = task.call();
-                                   // Update the last task execution time
-                                   LAST_SCRAPE.set(Instant.now().toEpochMilli());
-                                   return _result;
+                                   int attempts = 0;
+                                   while(true)
+                                   {
+                                       try
+                                       {
+                                           // Execute the task
+                                           _result = task.call();
+                                           // Update the last task execution time
+                                           LAST_SCRAPE.set(Instant.now().toEpochMilli());
+                                           return _result;
+                                       }
+                                       catch (ExecutionException e)
+                                       {
+                                           if (e.getCause() instanceof HttpStatusException)
+                                           {
+                                               // Only throw the exception is max attempts are exceeded, otherwise
+                                               // try again
+                                               if(++attempts >= 2)
+                                               {
+                                                   throw e;
+                                               }
+                                           }
+                                           else
+                                           {
+                                               throw e;
+                                           }
+                                       }
+                                   }
                                });
         try
         {
@@ -174,7 +197,7 @@ public class Scraper {
             String URL = "https://finance.yahoo.com/quote/" + symbol + "/profile?p=" + symbol;
             Document doc = Jsoup.connect(URL).timeout(0).get();//timeout set to 0 indicates infinite
             Element s = doc.getElementsByClass("Mt(15px) Lh(1.6)").first();
-            return s.text();
+            return s == null ? "N/A" : s.text();
         }
     }
 
@@ -190,6 +213,8 @@ public class Scraper {
         public Boolean call() throws IOException
         {
             logger.info("Checking if stock symbol `" + symbol + "` exists");
+            // Symbols that start with a '^' are stock indexes, not company stocks
+            if(symbol.contains("^")) return  false;
             try {
                 Connection.Response response = Jsoup.connect("https://finance.yahoo.com/quote/"+symbol).followRedirects(true).execute();
                 int statusCode = response.statusCode();
@@ -221,7 +246,7 @@ public class Scraper {
         }
 
         @Override
-        public JsonObject call() throws IOException, IllegalArgumentException, HttpStatusException
+        public JsonObject call() throws IOException, IllegalArgumentException, HttpStatusException, InterruptedException
         {
             logger.info("Getting company description and price history for stock symbol `" + symbol + "`");
             long unixTime = Instant.now().toEpochMilli();

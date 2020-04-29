@@ -27,7 +27,6 @@ export function getStockData(symbolArr: string[], onDataRetrieved: (results: jso
         if(data)
         {
             let stockData: json.StockData = json.deserialize(data)
-
             // Has the date expired
             if(Date.parse(stockData.lastUpdated) + parseInt(stockData.ttl) >= Date.now())
             {

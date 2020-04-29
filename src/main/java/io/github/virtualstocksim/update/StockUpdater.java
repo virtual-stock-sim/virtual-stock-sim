@@ -94,37 +94,41 @@ public class StockUpdater
         logger.info(String.valueOf(apiData));
         for(Stock stock : stocks)
         {
-            JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
-
-            JsonElement latestPrice = data.get("latestPrice");
-            if(!latestPrice.isJsonNull())
+            if(apiData.has(stock.getSymbol()))
             {
-                stock.setCurrPrice(latestPrice.getAsBigDecimal());
-            }
+                JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
 
-            JsonElement previousClose = data.get("previousClose");
-            if(!previousClose.isJsonNull())
-            {
-                stock.setPrevClose(previousClose.getAsBigDecimal());
-            }
+                JsonElement latestPrice = data.get("latestPrice");
+                if(!latestPrice.isJsonNull())
+                {
+                    stock.setCurrPrice(latestPrice.getAsBigDecimal());
+                }
 
-            JsonElement volume = data.get("latestVolume");
-            if(!volume.isJsonNull())
-            {
-                stock.setCurrVolume(volume.getAsInt());
-            }
+                JsonElement previousClose = data.get("previousClose");
+                if(!previousClose.isJsonNull())
+                {
+                    stock.setPrevClose(previousClose.getAsBigDecimal());
+                }
 
-            JsonElement previousVolume = data.get("previousVolume");
-            if(!previousClose.isJsonNull())
-            {
-                stock.setPrevVolume(previousVolume.getAsInt());
+                JsonElement volume = data.get("latestVolume");
+                if(!volume.isJsonNull())
+                {
+                    stock.setCurrVolume(volume.getAsInt());
+                }
+
+                JsonElement previousVolume = data.get("previousVolume");
+                if(!previousClose.isJsonNull())
+                {
+                    stock.setPrevVolume(previousVolume.getAsInt());
+                }
+
+                stock.setLastUpdated(SQL.GetTimeStamp());
             }
         }
 
         try(Connection conn = StockDatabase.getConnection())
         {
             conn.setAutoCommit(false);
-
             for(Stock s : stocks)
             {
                 s.update(conn);
