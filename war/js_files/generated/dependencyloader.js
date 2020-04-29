@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export function loadDependencies(dependencies) {
     return __awaiter(this, void 0, void 0, function* () {
-        let head = document.getElementsByTagName("head")[0];
         // Get current script and css tags in page
         let currentScripts = Array.from(document.getElementsByTagName("script")).map(elem => { return elem.src; });
         let currentCSS = Array.from(document.getElementsByTagName("link")).map(elem => { return elem.href; });
@@ -23,7 +22,7 @@ export function loadDependencies(dependencies) {
                     if (dependency.async === false) {
                         script.async = false;
                     }
-                    head.appendChild(script);
+                    document.head.appendChild(script);
                 }
             }
             else if (dependency.type === "stylesheet") {
@@ -32,7 +31,7 @@ export function loadDependencies(dependencies) {
                     let css = document.createElement("link");
                     css.rel = "stylesheet";
                     css.href = dependency.uri;
-                    head.appendChild(css);
+                    document.head.appendChild(css);
                 }
             }
         }

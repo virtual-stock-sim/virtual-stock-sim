@@ -10,7 +10,6 @@ export interface Dependency
 
 export async function loadDependencies(dependencies: Dependency[])
 {
-    let head = document.getElementsByTagName("head")[0];
     // Get current script and css tags in page
     let currentScripts = Array.from(document.getElementsByTagName("script")).map(elem => { return elem.src; });
     let currentCSS = Array.from(document.getElementsByTagName("link")).map(elem => { return elem.href; })
@@ -29,7 +28,7 @@ export async function loadDependencies(dependencies: Dependency[])
                 {
                     script.async = false;
                 }
-                head.appendChild(script);
+                document.head.appendChild(script);
             }
         }
         else if(dependency.type === "stylesheet")
@@ -40,7 +39,7 @@ export async function loadDependencies(dependencies: Dependency[])
                 let css: HTMLLinkElement = document.createElement("link");
                 css.rel = "stylesheet";
                 css.href = dependency.uri;
-                head.appendChild(css);
+                document.head.appendChild(css);
             }
         }
     }
