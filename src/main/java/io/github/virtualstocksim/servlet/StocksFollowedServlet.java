@@ -2,10 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/stocksFollowed"})
 public class StocksFollowedServlet extends HttpServlet

@@ -1,25 +1,21 @@
 package io.github.virtualstocksim.leaderboard;
 
 import io.github.virtualstocksim.account.Account;
-import io.github.virtualstocksim.account.AccountDatabase;
 import io.github.virtualstocksim.account.TradeException;
 import io.github.virtualstocksim.account.TradeExceptionType;
-import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.transaction.InvestmentCollection;
-import javafx.util.Pair;
 
-import javax.sql.rowset.CachedRowSet;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class LeaderBoard {
 
     private List <Account> accounts = new LinkedList<>();
 
-    List<Pair<String, BigDecimal>> usernameValuePair = new LinkedList<>();
+    List<Map.Entry<String, BigDecimal>> usernameValuePair = new LinkedList<>();
 
     public List <Account> getAccounts(){
          return this.accounts;
@@ -95,7 +91,7 @@ public class LeaderBoard {
               usernameValuePair.add(acct.getNameAndValue());
           }
           System.out.println("unsorted:");
-          for(Pair p : usernameValuePair){
+          for(Map.Entry<String, BigDecimal> p : usernameValuePair){
               System.out.println(p.getKey() + " , " +p.getValue() );
           }
           Collections.sort(usernameValuePair, (a,b) -> b.getValue().compareTo(a.getValue()));

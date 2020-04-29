@@ -25,8 +25,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * TODO: The update methods shouldn't abort the entire update process if

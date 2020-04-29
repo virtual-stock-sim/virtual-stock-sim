@@ -5,6 +5,16 @@
 		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Everything</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
     <display-name>Virtual Stock Sim</display-name>
     <welcome-file-list>
         <welcome-file>/home</welcome-file>

@@ -5,7 +5,6 @@ import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.transaction.Investment;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -520,8 +519,8 @@ public class Account extends DatabaseItem {
         return totalValue;
     }
 
-    public Pair<String, BigDecimal> getNameAndValue(){
-        return new Pair <String,BigDecimal> (this.username,this.getTotalValueOfAccount());
+    public AbstractMap.SimpleEntry<String, BigDecimal> getNameAndValue(){
+        return new AbstractMap.SimpleEntry<>(this.username,this.getTotalValueOfAccount());
     }
 
     public static long ProfilePictureMaxFileSize() { return 2097152; }

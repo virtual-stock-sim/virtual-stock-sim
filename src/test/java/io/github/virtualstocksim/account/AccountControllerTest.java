@@ -4,10 +4,8 @@ import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.*;
-import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,11 +15,11 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import static org.junit.Assert.*;
 
 public class AccountControllerTest
