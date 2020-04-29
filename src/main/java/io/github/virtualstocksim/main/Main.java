@@ -3,7 +3,13 @@ package io.github.virtualstocksim.main;
 import io.github.virtualstocksim.update.ClientUpdater;
 import org.apache.commons.cli.*;
 import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -15,6 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 public class Main
 {
@@ -109,6 +116,12 @@ public class Main
     // sslCertPath == null means no ssl
     private static Server createServer(int port, int securePort, String sslCertPath, String keyStorePassword, String keyManagerPassword)
     {
+        WebAppContext webAppContext = new WebAppContext();
+        String warPath = new File(warDir).getAbsolutePath();
+        webAppContext.setDescriptor(warPath + "/WEB-INF/web.xml");
+        webAppContext.setContextPath("/");
+        webAppContext.setWar(warPath);
+
         Server server;
         if(sslCertPath == null)
         {
@@ -126,6 +139,7 @@ public class Main
 
             server = new Server();
 
+            // Http connection
             HttpConfiguration httpConfig = new HttpConfiguration();
             httpConfig.setSecureScheme("https");
             httpConfig.setSecurePort(securePort);
@@ -134,6 +148,7 @@ public class Main
             http.setPort(port);
             server.addConnector(http);
 
+            // Https configuration
             HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
             httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
@@ -144,11 +159,10 @@ public class Main
             ServerConnector https = new ServerConnector(server, new SslConnectionFactory(sslContext, HttpVersion.HTTP_1_1.asString()), new HttpConnectionFactory(httpsConfig));
             https.setPort(securePort);
             server.addConnector(https);
-        }
 
-        WebAppContext webAppContext = new WebAppContext();
-        webAppContext.setContextPath("/");
-        webAppContext.setWar(new File(warDir).getAbsolutePath());
+            // Add security constraint override
+            webAppContext.addOverrideDescriptor(warPath + "/WEB-INF/https.xml");
+        }
 
         Configuration.ClassList classList = Configuration.ClassList.setServerDefault(server);
         classList.addBefore(
