@@ -85,8 +85,9 @@ else  {
 
 <div class="leaderboard">
     <h1>Leading Investors</h1>
-    <p>1) Jeff Bezos - $98091239.78 </p>
-    <p>2) Bill Gates - $3123233.23 </p>
+    <c:forEach var="userName" items="${model.currentRanks}">
+        <p>${userName}</p>
+    </c:forEach>
 </div>
 
 <div class="top-stocks">

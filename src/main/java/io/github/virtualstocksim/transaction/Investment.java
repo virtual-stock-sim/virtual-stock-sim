@@ -26,7 +26,11 @@ public class Investment {
     }
 
     public BigDecimal getTotalHoldings(){
-       return this.totalHoldings;
+        Stock tempStock = Stock.Find(symbol).orElseGet(null);
+        if(tempStock == null){
+            logger.error("No stock in the database for that investment!");
+        }
+       return tempStock.getCurrPrice().multiply(new BigDecimal(this.getNumShares()));
     }
     public int numShares(){
         return this.numShares();

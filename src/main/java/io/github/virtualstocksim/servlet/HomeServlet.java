@@ -3,6 +3,7 @@ package io.github.virtualstocksim.servlet;
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.CreateAccountModel;
+import io.github.virtualstocksim.leaderboard.LeaderBoard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,8 @@ public class HomeServlet extends HttpServlet
             Account acc = Account.Find(username).orElse(null);
             AccountController controller = new AccountController();
             controller.setModel(acc);
+            LeaderBoard leaderBoard = new LeaderBoard();
+            req.setAttribute("model",leaderBoard);
             if(controller.getModel() !=null)
             {
                 req.setAttribute("CreateAccountModel", accountModel);

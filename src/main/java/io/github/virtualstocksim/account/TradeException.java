@@ -12,7 +12,7 @@ public class TradeException extends RuntimeException
         this.type = type;
     }
 
-    TradeException(String message, TradeExceptionType reason)
+    public TradeException(String message, TradeExceptionType reason)
     {
         super(message);
         this.type = reason;

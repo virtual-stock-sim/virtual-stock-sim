@@ -141,6 +141,7 @@ public class AccountControllerTest
     public void testBuy() throws SQLException, TradeException {
         TransactionHistory transactionHistory = new TransactionHistory(conn.getModel().getTransactionHistory());
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
+        System.out.println("Parsing to investmentCollection" + conn.getModel().getInvestedStocks());
         StocksFollowed stocksFollowed = new StocksFollowed(conn.getModel().getFollowedStocks());
         int init_size = investmentCollection.getInvestments().size();
         int initial_num_transactions = transactionHistory.getTransactions().size();
@@ -239,6 +240,7 @@ public class AccountControllerTest
 
         conn.getModel().update();
         investmentCollection.updateInvestments(conn.getModel().getInvestedStocks());
+        System.out.println(conn.getModel().getInvestedStocks());
         System.out.println("Stocks folllowed: " + conn.getModel().getFollowedStocks());
 
         stocksFollowedSell.updateStocksFollowed(conn.getModel().getFollowedStocks());

@@ -3,6 +3,9 @@ package io.github.virtualstocksim.account;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
+import io.github.virtualstocksim.transaction.Investment;
+import io.github.virtualstocksim.transaction.InvestmentCollection;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +89,8 @@ public class Account extends DatabaseItem {
         this.creationDate = creationDate;
 
     }
+
+
 
 
 
@@ -501,6 +506,22 @@ public class Account extends DatabaseItem {
         // deleting an account from database
         logger.info(String.format("Removing Account with ID %d from database", id));
         SQL.executeUpdate(conn, "DELETE FROM account WHERE id = ?", id);
+    }
+
+    //used for the leaderboard, will return the wallet balance
+    //in addition to the value of all of the assets associated with that account
+    public BigDecimal getTotalValueOfAccount(){
+        BigDecimal totalValue= new BigDecimal(0);
+        totalValue = totalValue.add(this.walletBalance);
+        InvestmentCollection invc = new InvestmentCollection(this.getInvestedStocks());
+        for(Investment invest : invc.getInvestments()){
+           totalValue= totalValue.add(invest.getTotalHoldings());
+        }
+        return totalValue;
+    }
+
+    public Pair<String, BigDecimal> getNameAndValue(){
+        return new Pair <String,BigDecimal> (this.username,this.getTotalValueOfAccount());
     }
 
     public static long ProfilePictureMaxFileSize() { return 2097152; }

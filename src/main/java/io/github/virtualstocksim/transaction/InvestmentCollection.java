@@ -101,6 +101,9 @@ public class InvestmentCollection {
 
     public List<Investment> stringToInvestmentList(String s ){
          List<Investment> temp = new LinkedList<>();
+         if(s ==null || s.trim().isEmpty()){
+             return temp;
+         }else{
 
         JsonElement elem = JsonParser.parseString(s);
         if(elem.isJsonArray())
@@ -109,8 +112,10 @@ public class InvestmentCollection {
             for(JsonElement x : j ){
                 temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),x.getAsJsonObject().get("symbol").getAsString(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
             }
+
         }
 
         return temp;
+        }
     }
 }

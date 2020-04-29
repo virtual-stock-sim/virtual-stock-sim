@@ -20,12 +20,9 @@ public class StocksFollowed {
         this.stocksFollowed = stocksFollowed;
     }
     public StocksFollowed(String s){
-        if(s!="") {
-            setStocksFollowed(this.stringToFollowObjects(s));
-        }else{
-            //avoids a call to StringtoFollowObjects, and any
-            this.stocksFollowed.clear();
-        }
+        //method takes care of null check
+        setStocksFollowed(this.stringToFollowObjects(s));
+
     }
     public List<Follow> getStocksFollowed()
     {
@@ -82,6 +79,9 @@ public class StocksFollowed {
     //to create following objects from DB string into Follow objects (to be used in string constructor)
     public List stringToFollowObjects(String input){
         LinkedList<Follow> temp = new LinkedList<>();
+        if(input==null || input.trim().isEmpty()){
+            return temp;
+        }
         for(String s : input.split(";")){
             LinkedList <String> args = new LinkedList<>();
             args.addAll(Arrays.asList(s.split(",")));
