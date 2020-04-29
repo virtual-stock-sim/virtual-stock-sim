@@ -265,28 +265,34 @@ public class Stock extends DatabaseItem
     private static final BigDecimal DECIMAL_100 = new BigDecimal("100.0");
     public double getPercentChange()
     {
-       BigDecimal percentChange = this.currPrice.divide(this.prevClose, 9, RoundingMode.HALF_EVEN);
-       if(percentChange.compareTo(DECIMAL_1) >= 0)
-       {
-           percentChange = percentChange.subtract(DECIMAL_1);
-       }
-       percentChange = percentChange.multiply(DECIMAL_100);
+        if(currPrice != null && prevClose != null)
+        {
+            BigDecimal percentChange = this.currPrice.divide(this.prevClose, 9, RoundingMode.HALF_EVEN);
+            if(percentChange.compareTo(DECIMAL_1) >= 0)
+            {
+                percentChange = percentChange.subtract(DECIMAL_1);
+            }
+            percentChange = percentChange.multiply(DECIMAL_100);
 
-       DecimalFormat df = new DecimalFormat("#.##");
-       return Double.parseDouble(df.format(percentChange));
-
+            DecimalFormat df = new DecimalFormat("#.##");
+            return Double.parseDouble(df.format(percentChange));
+        }
+        else
+        {
+            throw new NullPointerException("Current price and/or previous closing prices are null");
+        }
     }
 
     public JsonObject getAsJsonObject()
     {
         JsonObject obj = new JsonObject();
-        obj.addProperty("symbol", symbol);
-        obj.addProperty("currPrice", currPrice);
-        obj.addProperty("prevClose", prevClose);
-        obj.addProperty("percentChange", getPercentChange());
-        obj.addProperty("currVolume", currVolume);
-        obj.addProperty("prevVolume", prevVolume);
-        obj.addProperty("lastUpdated", lastUpdated.toString());
+        if(symbol != null) obj.addProperty("symbol", symbol);
+        if(currPrice != null) obj.addProperty("currPrice", currPrice);
+        if(prevClose != null) obj.addProperty("prevClose", prevClose);
+        if(currPrice != null && prevClose != null) obj.addProperty("percentChange", getPercentChange());
+        if(currVolume != -1) obj.addProperty("currVolume", currVolume);
+        if(prevVolume != -1) obj.addProperty("prevVolume", prevVolume);
+        if(lastUpdated != null) obj.addProperty("lastUpdated", lastUpdated.toString());
 
         return obj;
     }
