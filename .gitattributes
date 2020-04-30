@@ -1,2 +1,3 @@
 pom.xml linguist-generated=true
-js_files/generated/** linguist_generated=true
+js_files/generated/** linguist-generated=true
+generalCSS/** linguist-generated=true
