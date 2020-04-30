@@ -3,15 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
-<script>
-    function logout() {
-        location.href = "landing";
-    }
-
-    function redirectProfile() {
-        location.href="profile";
-    }
-</script>
+<script src="/js_files/redirect.js"></script>
 
 <html>
 <head>

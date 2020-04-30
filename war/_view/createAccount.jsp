@@ -7,6 +7,7 @@
 <head>
         <title>Create an Account - Virtual Stock Sim</title>
         <style><%@include file="../cssfiles/accountPageStyle.css"%></style>
+        <script src="/js_files/redirect.js"></script>
 </head>
 
 <body>
@@ -37,11 +38,7 @@
 
         <div class ="return-to-home">
                 <button onClick="redirectHome()">HOME</button>
-                <script>
-                        function redirectHome() {
-                                location.href = "home";
-                        }
-                </script>
+
         </div>
 </body>
 

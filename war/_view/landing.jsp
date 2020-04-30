@@ -7,15 +7,16 @@
 <head>
     <title>VSS: Virtual Stock Sim</title>
     <link rel="stylesheet" href="../cssfiles/landingPageStyle.css">
-    <div class = "header">
-          <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
-          <h2>Simulated Investing, Reimagined</h2>
-  </div>
-
-
+    <script src="/js_files/redirect.js"></script>
 </head>
 <body>
 <div class = "bg-img"></div>
+
+<div class = "header">
+    <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
+    <h2>Simulated Investing, Reimagined</h2>
+</div>
+
 
 <div class = "invest">
     <h1>Invest in something you can track</h1>
@@ -29,14 +30,7 @@
     <button onClick="redirectLogin()"style=" font-familyamily:Segoe UI,Arial,sans-serif;
     font-weight:400;letter-spacing: 4px;">LOGIN</button>
 
-    <script>
-        function redirectAccount() {
-            location.href = "createAccount";
-        }
-        function redirectLogin() {
-            location.href = "login";
-        }
-    </script>
+
 </div>
 
 </body>

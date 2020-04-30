@@ -10,6 +10,7 @@
     <link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href= "../cssfiles/loginPageStyle.css">
+    <script src="/js_files/redirect.js"></script>
 
     </head>
     <body>
@@ -35,11 +36,6 @@
             <input type="password" class ="password" id="pword" name="pword"  required="true" placeholder=" Password" />
             <input type="submit" class ="submit" value ="Login"/>
             <button onClick="redirectAccount()">Join the Team</button>
-            <script>
-                function redirectAccount() {
-                    location.href = "createAccount";
-                }
-            </script>
         </form>
     </div>
 
