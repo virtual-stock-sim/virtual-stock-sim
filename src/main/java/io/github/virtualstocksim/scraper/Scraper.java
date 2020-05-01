@@ -44,6 +44,11 @@ public class Scraper {
         DELAY = _delay;
     }
 
+    public static void shutdown()
+    {
+        executor.shutdownNow();
+    }
+
     //will be called within the getJson method
     public static String getDescription(String symbol) throws IOException {
         try
@@ -248,11 +253,10 @@ public class Scraper {
         @Override
         public JsonObject call() throws IOException, IllegalArgumentException, HttpStatusException, InterruptedException
         {
-            logger.info("Getting company description and price history for stock symbol `" + symbol + "`");
             long unixTime = Instant.now().toEpochMilli();
             //calculate seconds passed & sub from current unix time
 
-            logger.info("Getting max price history for `" + symbol + "` with time interval of " + timeInterval.getPeriod());
+            logger.info("Getting company description and price history for `" + symbol + "` with time interval of " + timeInterval.getPeriod());
             try
             {
                 //since unix time calculates time from epoch, 0 and current time are really min and max values, do not need integer.max
@@ -275,15 +279,35 @@ public class Scraper {
 
                 JsonArray priceHistory = new JsonArray();
                 for (int i = 0; i < col.size() - 6; i += 7) {
-                    JsonObject jo = new JsonObject();
-                    jo.addProperty("date", col.get(i));
-                    jo.addProperty("open", col.get(i + 1));
-                    jo.addProperty("high", col.get(i + 2));
-                    jo.addProperty("low", col.get(i + 3));
-                    jo.addProperty("close", col.get(i + 4));
-                    jo.addProperty("adjclose", col.get(i + 5));
-                    jo.addProperty("volume", col.get(i + 6));
-                    priceHistory.add(jo);
+                    String[] properties = new String[7];
+                    // Fill properties array with time period property values
+                    //  and make sure that none of the properties are null.
+                    //  Yahoo Finance returns null for the time period if the time period
+                    //  is too new and there isn't data available yet.
+                    //      i.e. With a time interval of one month and the update is being run
+                    //          on the first of the month before the market opens
+                    boolean periodIsNull = false;
+                    for(int j = 0; j < 7 && !periodIsNull; ++j)
+                    {
+                        properties[j] = col.get(i+j);
+                        if(properties[j].equals("null"))
+                        {
+                            periodIsNull = true;
+                        }
+                    }
+
+                    if(!periodIsNull)
+                    {
+                        JsonObject jo = new JsonObject();
+                        jo.addProperty("date",      properties[0]);
+                        jo.addProperty("open",      properties[1]);
+                        jo.addProperty("high",      properties[2]);
+                        jo.addProperty("low",       properties[3]);
+                        jo.addProperty("close",     properties[4]);
+                        jo.addProperty("adjclose",  properties[5]);
+                        jo.addProperty("volume",    properties[6]);
+                        priceHistory.add(jo);
+                    }
                 }
                 result.add("history", priceHistory);
 
