@@ -15,6 +15,22 @@ public class StockDatabase
     private static final Logger logger = LoggerFactory.getLogger(StockData.class);
     private final DataSource dataSource;
     private static final String dbPath = Config.getConfig("stockdb.uri");
+    private static final int maxSymbolLen;
+
+    static
+    {
+        int len = 0;
+        try
+        {
+            len = Integer.parseInt(Config.getConfig("stockdb.maxSymbolLen"));
+        }
+        catch (NumberFormatException e)
+        {
+            logger.error("stockdb.maxSymbolLen must be an integer");
+            System.exit(-1);
+        }
+        maxSymbolLen = len;
+    }
 
     private static class StaticContainer
     {
@@ -31,6 +47,11 @@ public class StockDatabase
     public static Connection getConnection() throws SQLException
     {
         return getInstance().dataSource.getConnection();
+    }
+
+    public static int getMaxSymbolLen()
+    {
+        return maxSymbolLen;
     }
 
 }

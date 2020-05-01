@@ -1,5 +1,6 @@
 # Stock database
 stockdb.uri=jdbc:derby:vss_stockdatabase.db
+stockdb.maxSymbolLen=10
 
 # Account database
 accountdb.uri=jdbc:derby:vss_accountdatabase.db
