@@ -8,13 +8,28 @@
 <head>
     <link rel="stylesheet" href="../cssfiles/aboutPageStyle.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+    <script src="/js_files/redirect.js"></script>
+    <script src="/js_files/general.js"></script>
+
+
+
     <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
     <title>About - VSS: Virtual Stock Sim</title>
 </head>
 <body>
 
-<t:navbar/>
+<t:navbar account="${account}"/>
+
 <div class = vss-container style="padding:10px 16px" id ="about">
     <h3 class = "vss-center">ABOUT VSS</h3>
     <p class ="vss-center">What we bring to the table</p>

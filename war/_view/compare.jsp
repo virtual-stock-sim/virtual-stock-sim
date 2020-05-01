@@ -18,10 +18,11 @@
     </head>
 
     <body>
+
+    <t:navbar account="${account}"/>
+
     <div class = "bg-img"></div>
 
-
-        <t:navbar/>
     <div class="heading">
         <h1>COMPARE STOCKS</h1>
         <h3>FRESH DATA AT YOUR FINGERTIPS</h3>

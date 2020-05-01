@@ -1,18 +1,22 @@
 <%@tag description="navigation bar" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@attribute name="account" required="true" type="io.github.virtualstocksim.account.Account" %>
+
 <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
 <script src="/js_files/redirect.js"></script>
 <link rel="stylesheet" href="../../cssfiles/generalCSS/generalStyle.css">
 
 
 
-<nav class="navbar navbar-toggleable-md fixed-top navbar-brand" color-on-scroll="500" style="width:100%;">
+<nav class="navbar navbar-toggleable-md fixed-top ">
     <div class="container">
         <div class="navbar-translate">
-            <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-bar"></span>
                 <span class="navbar-toggler-bar"></span>
                 <span class="navbar-toggler-bar"></span>
@@ -45,13 +49,41 @@
                         <p class="hidden-lg-up">Transaction History</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" rel="tooltip" title="My Account" data-placement="bottom" onclick="redirectProfile()" target="_blank">
-                        <i class="fa fa-user"></i>
-                        <p class="hidden-lg-up">My Account</p>
-                    </a>
-                </li>
+                <c:choose>
+                <c:when test= "${empty account}">
+                    <li class="nav-item">
+                        <a onclick="redirectLogin()" class="btn btn-neutral btn-round">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a onclick="redirectAccount()" class="btn btn-neutral btn-round">Create an Account</a>
+                    </li>
+                </c:when>
+                <c:otherwise>
+                    <!--Profile menu dropdown, simple logout button for now-->
+                    <div class = "dropdown">
+                        <button class="btn btn-neutral dropdown-toggle" type="button" data-toggle="dropdown" style="padding: 0px 0px 0px 0px; width: 70px; display: inline-block;">
+                            <c:choose>
+                          <c:when test="${account.profilePicture.length() == 0}">
+                                <img class="img-rounded" style="max-height: 40px; max-width: 40px;" alt="avatar"  src="../../_view/resources/images/home/question-mark.jpg">
+                            </c:when>
+                            <c:otherwise>
+                                <img class="img-rounded" style="max-height: 40px; max-width: 40px;" alt="avatar" src="${account.profilePictureWithDir}">
+                            </c:otherwise>
+                        </c:choose>
+                        <!--End IMG Tag-->
 
+                            <span class="caret" style="color:white;"></span></button>
+                        <u1 class="dropdown-menu">
+                            <li class="dropdown-header large"> Hi, ${account.username}</li>
+                            <li class="dropdown-item"><a onclick="redirectProfile()">My Account<i class="fa fa-user" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
+                            <li class="dropdown-item"><a>Wallet Balance: $${account.walletBalance}<i class="material-icons" style="font-size: 15px;border-style: hidden;padding: 4px;
+                                                                                        position:relative;top:2px;"></i></a></li>
+
+                            <li class="dropdown-item"><a onclick="logout()">Sign out<i class="fa fa-sign-out" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
+                        </u1>
+                    </div>
+                </c:otherwise>
+                    </c:choose>
 
             </ul>
         </div>

@@ -30,28 +30,15 @@ public class HomeServlet extends HttpServlet
         if(session!=null)
         {
             String username = (String) session.getAttribute("username");
-            CreateAccountModel accountModel = new CreateAccountModel(username);
-            Account acc = Account.Find(username).orElse(null);
+            Account account = Account.Find(username).orElse(null);
             AccountController controller = new AccountController();
-            controller.setModel(acc);
+            controller.setModel(account);
             LeaderBoard leaderBoard = new LeaderBoard();
             req.setAttribute("model",leaderBoard);
-            if(controller.getModel() !=null)
+            if(account !=null)
             {
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.setAttribute("account", acc);
-                if(controller.getModel().getProfilePicture().length() == 0)
-                {
-                    // if the user has not uploaded a profile picture, default it to question mark
-                    req.setAttribute("picturepath", "../_view/resources/images/home/question-mark.jpg");
 
-                    logger.info("profile picture was null - defaulted to Question Mark");
-                }
-                else
-                {
-                    req.setAttribute("picturepath", controller.getModel().getProfilePictureWithDir());
-                }
-                req.setAttribute("username", username);
+                req.setAttribute("account", account);
                 logger.info(username + " is logged in");
 
             }

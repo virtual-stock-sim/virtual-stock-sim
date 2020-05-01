@@ -14,9 +14,7 @@
 <div class="bg-img"></div>
 
 
-<div class = "navigation">
-<t:navbar/>
-</div>
+<t:navbar account="${account}"/>
 
 <div class="header">
     <h1>TRANSACTION HISTORY</h1>

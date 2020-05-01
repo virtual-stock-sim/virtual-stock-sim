@@ -36,7 +36,7 @@
 </head>
 <body>
 
-    <t:navbar/>
+<t:navbar account="${account}"/>
     <div class="built-by">
         <h1>MY ACCOUNT</h1>
         <h2>BUILT BY YOU, FROM THE GROUND UP.</h2>

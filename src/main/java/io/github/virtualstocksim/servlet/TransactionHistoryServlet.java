@@ -37,6 +37,7 @@ public class TransactionHistoryServlet extends HttpServlet
             {
                 TransactionHistory model = new TransactionHistory(localAcct.getTransactionHistory());
                 req.setAttribute("model", model);
+                req.setAttribute("account", localAcct);
                 logger.info("LOOK HERE BRETT " + localAcct.getTransactionHistory());
                 req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
             }

@@ -20,7 +20,7 @@ import java.util.*;
 public class Account extends DatabaseItem {
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
     private static final String EMPTY_STRING = "";
-    private static final BigDecimal EMPTY_BD = new BigDecimal("0.0");
+    private static final BigDecimal DEFAULT_WALLET_BALANCE = new BigDecimal("10000.0");
     private static final String PROFILE_PICTURE_DIR ="/userdata/ProfilePictures/";
 
     private final String uuid;
@@ -405,7 +405,7 @@ public class Account extends DatabaseItem {
                                        EMPTY_STRING,
                                        EMPTY_STRING,
                                        EMPTY_STRING,
-                                       EMPTY_BD,
+                                       DEFAULT_WALLET_BALANCE,
                                        defaultLeaderboardRank,
                                        EMPTY_STRING,
                                        EMPTY_STRING,
@@ -426,7 +426,7 @@ public class Account extends DatabaseItem {
                                     EMPTY_STRING,
                                     EMPTY_STRING,
                                     EMPTY_STRING,
-                                    EMPTY_BD,
+                                    DEFAULT_WALLET_BALANCE,
                                     defaultLeaderboardRank,
                                     EMPTY_STRING,
                                     EMPTY_STRING,

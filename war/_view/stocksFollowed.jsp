@@ -13,9 +13,8 @@
 <body>
 <div class = "bg-img"></div>
 
-<div class = "navigation">
-    <t:navbar/>
-</div>
+<t:navbar account="${account}"/>
+
 
 <div class ="followed-heading">
     <h1>FOLLOWED STOCKS</h1>
