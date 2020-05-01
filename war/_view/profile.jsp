@@ -19,10 +19,7 @@
 
     <!-- JS functions -->
     <script src="/js_files/redirect.js"></script>
-
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="/js_files/general.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
     <link href="../cssfiles/profilePageStyle.css" rel="stylesheet">
@@ -37,6 +34,9 @@
 <body>
 
 <t:navbar account="${account}"/>
+
+<div class="bg-img"></div>
+
     <div class="built-by">
         <h1>MY ACCOUNT</h1>
         <h2>BUILT BY YOU, FROM THE GROUND UP.</h2>

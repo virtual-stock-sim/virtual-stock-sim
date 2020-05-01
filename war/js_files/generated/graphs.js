@@ -83,11 +83,5 @@ function createGraph(config) {
         });
         dashboard.bind(rangeSlider, chartWrapper);
         dashboard.draw(data);
-        /*        // Create and draw the chart
-                // @ts-ignore
-                let chart = new google.visualization.ComboChart(config.element);
-                // @ts-ignore
-                let dataTable = google.visualization.arrayToDataTable(data);
-                chart.draw(dataTable, options);*/
     });
 }

@@ -27,7 +27,7 @@ function redirectCompare(){
 }
 
 function redirectTransHist(){
-    location.href="transactionHistory"
+    location.href="transactionhistory"
 }
 
 function redirectAbout(){
