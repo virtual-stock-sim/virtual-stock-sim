@@ -1,38 +1,21 @@
-import { HttpRequest } from "./httprequest.js";
 import * as json from "./jsonformats.js";
 import { storeStockData } from "./stockstorage.js";
+import { StockRequest } from "./stockrequest.js";
 export function stockSearch(stockSymbol, onStockFound, onStockNotFound) {
-    let params = {
-        // @ts-ignore
-        message: "dataRequest=" + json.serialize({ type: "stockSearch", symbols: [stockSymbol] }),
-        protocol: "POST",
-        uri: "/dataStream",
-        headers: [{ name: "Listener-name", value: "stockRequest" }]
-    };
-    params.onReceived = response => {
-        let resp = json.deserialize(response);
-        if (resp && resp.data.length > 0) {
-            let stockDatas = [];
-            for (let value of resp.data) {
-                // Only add to the array if this
-                // value actually has a stock data field
-                if (value.stockData) {
-                    stockDatas.push(value.stockData);
-                }
-            }
-            if (stockDatas.length > 0) {
-                storeStockData(stockDatas);
-            }
-            let stocks = [];
-            for (let value of resp.data)
-                stocks.push(value.stock);
-            onStockFound(stocks);
+    let onSearchResult = (responseItems) => {
+        if (responseItems) {
+            let data = responseItems[0].data;
+            if (data)
+                storeStockData([data]);
+            onStockFound(responseItems[0]);
         }
         else {
-            onStockNotFound();
+            onStockNotFound(json.StockResponseCode.SERVER_ERROR);
         }
     };
-    let request = new HttpRequest(params);
+    // TODO: Allow different type types. Maybe embed an attribute in the input element for ezStockSearch to read
+    let requestItem = new json.StockRequestItem(json.StockType.BOTH, stockSymbol);
+    let request = new StockRequest([requestItem], onSearchResult);
     request.send();
 }
 export function ezStockSearch(inputElement, onStockFound, onStockNotFound) {

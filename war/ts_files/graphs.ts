@@ -31,31 +31,29 @@ function createGraph(config: GraphConfig)
         {
             // Should this period be included in graph
             let include = true;
-            let date = new Date();
-            date.setTime(Date.parse(period.date));
 
             if(config.minDate && config.maxDate)
             {
-                include = date >= config.minDate && date <= config.maxDate;
+                include = period.date >= config.minDate && period.date <= config.maxDate;
             }
             else if(config.minDate)
             {
-                include = date >= config.minDate;
+                include = period.date >= config.minDate;
             }
             else if(config.maxDate)
             {
-                include = date <= config.maxDate;
+                include = period.date <= config.maxDate;
             }
 
             if(include)
             {
-                hAxisTicks.push(date);
+                hAxisTicks.push(period.date);
                 data.push
                     ([
-                         date,
-                         parseFloat(period.high),
-                         parseFloat(period.low),
-                         parseFloat(period.adjclose)
+                         period.date,
+                         period.high,
+                         period.low,
+                         period.adjclose
                      ]);
             }
         }
