@@ -70,7 +70,7 @@ export class Jsonable {
         }
     }
     static serialize(jsonable) {
-        return jsonable === undefined ? undefined : jsonable.toJson();
+        return jsonable === undefined ? undefined : JSON.stringify(jsonable._toJsonObject());
     }
 }
 export class UpdateMessage extends Jsonable {
@@ -93,8 +93,8 @@ export class UpdateMessage extends Jsonable {
             return undefined;
         }
     }
-    toJson() {
-        return JSON.stringify({ update: this._type });
+    _toJsonObject() {
+        return { update: this._type };
     }
 }
 export class StockRequestItem extends Jsonable {
@@ -124,9 +124,8 @@ export class StockRequestItem extends Jsonable {
             return undefined;
         }
     }
-    toJson() {
-        return `{"type": "${this._type}", "symbol": "${this._symbol}"}`;
-        // return JSON.stringify({type: this._type, symbol: this._symbol});
+    _toJsonObject() {
+        return { type: this._type, symbol: this._symbol };
     }
 }
 export class StockRequest extends Jsonable {
@@ -149,9 +148,9 @@ export class StockRequest extends Jsonable {
             return undefined;
         }
     }
-    toJson() {
-        return `{"items": [${this._items.map(item => Jsonable.serialize(item))}]}`;
-        // return JSON.stringify({items: this._items.map(item => Jsonable.serialize(item))});
+    _toJsonObject() {
+        //return `{"items": [${this._items.map(item => Jsonable.serialize(item))}]}`;
+        return { items: this._items.map(item => item._toJsonObject()) };
     }
 }
 export class StockResponseItem extends Jsonable {
@@ -202,8 +201,8 @@ export class StockResponseItem extends Jsonable {
             return undefined;
         }
     }
-    toJson() {
-        return JSON.stringify({ code: this._code, type: this._type, symbol: this._symbol, stock: Jsonable.serialize(this._stock), data: Jsonable.serialize(this._data) });
+    _toJsonObject() {
+        return { code: this._code, type: this._type, symbol: this._symbol, stock: this._stock._toJsonObject(), data: this._data._toJsonObject() };
     }
 }
 export class StockResponse extends Jsonable {
@@ -231,8 +230,8 @@ export class StockResponse extends Jsonable {
         }
         return undefined;
     }
-    toJson() {
-        return JSON.stringify({ code: this._code, items: this._items.map(item => Jsonable.serialize(item)) });
+    _toJsonObject() {
+        return { code: this._code, items: this._items.map(item => item._toJsonObject()) };
     }
 }
 export class Stock extends Jsonable {
@@ -290,15 +289,15 @@ export class Stock extends Jsonable {
     }
     fromJsonObject(jsonObj) {
         let obj = jsonObj;
-        if (obj.symbol && obj.currPrice && obj.prevClose && obj.percentChange && obj.currVolume && obj.prevVolume && obj.lastUpdated) {
+        if (obj.symbol && !isNaN(obj.currPrice) && !isNaN(obj.prevClose) && !isNaN(obj.percentChange) && !isNaN(obj.currVolume) && !isNaN(obj.prevVolume) && obj.lastUpdated) {
             return new Stock(obj.symbol, parseFloat(obj.currPrice), parseFloat(obj.prevClose), parseFloat(obj.percentChange), parseInt(obj.currVolume), parseInt(obj.prevVolume), parseDate(obj.lastUpdated));
         }
         else {
             return undefined;
         }
     }
-    toJson() {
-        return JSON.stringify({
+    _toJsonObject() {
+        return {
             symbol: this._symbol,
             currPrice: this._currPrice,
             prevClose: this._prevClose,
@@ -306,7 +305,7 @@ export class Stock extends Jsonable {
             currVolume: this._currVolume,
             prevVolume: this._prevVolume,
             lastUpdated: this._lastUpdated
-        });
+        };
     }
 }
 export class StockData extends Jsonable {
@@ -350,19 +349,19 @@ export class StockData extends Jsonable {
     }
     fromJsonObject(jsonObj) {
         let obj = jsonObj;
-        if (obj && obj.symbol && obj.description && obj.history !== undefined && obj.lastUpdated && obj.ttl) {
+        if (obj && obj.symbol && obj.description && obj.history !== undefined && obj.lastUpdated && !isNaN(obj.ttl)) {
             return new StockData(obj.symbol, obj.description, obj.history.map(item => Jsonable.deserialize(StockHistoricalData, item)), parseDate(obj.lastUpdated), parseInt(obj.ttl));
         }
         return undefined;
     }
-    toJson() {
-        return JSON.stringify({
+    _toJsonObject() {
+        return {
             symbol: this._symbol,
             description: this._description,
-            history: this._history.map(item => Jsonable.serialize(item)),
+            history: this._history.map(item => item._toJsonObject()),
             lastUpdated: this._lastUpdated,
             ttl: this._ttl
-        });
+        };
     }
 }
 export class StockHistoricalData extends Jsonable {
@@ -420,13 +419,13 @@ export class StockHistoricalData extends Jsonable {
     }
     fromJsonObject(jsonObj) {
         let obj = jsonObj;
-        if (obj && obj.date && obj.open && obj.high && obj.low && obj.close && obj.adjclose && obj.volume) {
+        if (obj && obj.date && !isNaN(obj.open) && !isNaN(obj.high) && !isNaN(obj.low) && !isNaN(obj.close) && !isNaN(obj.adjclose) && !isNaN(obj.volume)) {
             return new StockHistoricalData(parseDate(obj.date), parseFloat(obj.open), parseFloat(obj.high), parseFloat(obj.low), parseFloat(obj.close), parseFloat(obj.adjclose), parseFloat(obj.volume));
         }
         return undefined;
     }
-    toJson() {
-        return JSON.stringify({
+    _toJsonObject() {
+        return {
             date: this._date,
             open: this._open,
             high: this._high,
@@ -434,7 +433,7 @@ export class StockHistoricalData extends Jsonable {
             close: this._close,
             adjclose: this._adjclose,
             volume: this._close
-        });
+        };
     }
 }
 function parseDate(date) {

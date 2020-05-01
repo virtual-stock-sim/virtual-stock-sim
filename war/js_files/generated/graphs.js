@@ -62,7 +62,7 @@ function createGraph(config) {
             containerId: chartElem.id,
             options: {
                 title: config.stockSymbol + ' - Monthly Share Prices', textStyle: { color: '#FFFFFF' },
-                hAxis: { title: 'Date', /*ticks: hAxisTicks,*/ titleTextStyle: { color: '#FFFFFF' }, textStyle: { color: '#FFFFFF' } },
+                hAxis: { title: 'Date', format: "MMM, YY", ticks: hAxisTicks, titleTextStyle: { color: '#FFFFFF' }, textStyle: { color: '#FFFFFF' } },
                 vAxis: { title: 'Price Per Share', titleTextStyle: { color: '#FFFFFF' }, textStyle: { color: '#FFFFFF' } },
                 seriesType: 'bars',
                 series: { 2: { type: 'line' } },
@@ -70,6 +70,16 @@ function createGraph(config) {
                 titleTextStyle: { color: '#FFFFFF' },
                 legend: { textStyle: { color: '#FFFFFF' } },
             }
+        });
+        google.visualization.events.addListener(rangeSlider, "statechange", (changeState) => {
+            let range = rangeSlider.getState().range;
+            let start = range.start.getTime();
+            let end = range.end.getTime();
+            let ticks = hAxisTicks.filter((date, index, arr) => {
+                let time = date.getTime();
+                return time >= start && time <= end;
+            });
+            chartWrapper.setOption("hAxis.ticks", ticks);
         });
         dashboard.bind(rangeSlider, chartWrapper);
         dashboard.draw(data);

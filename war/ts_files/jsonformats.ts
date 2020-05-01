@@ -62,7 +62,7 @@ export abstract class Jsonable<U>
     protected constructor() { }
     protected fromJson(json: string): U { return this.fromJsonObject(JSON.parse(json)); }
     protected abstract fromJsonObject(jsonObj: object): U;
-    protected abstract toJson(): string;
+    public abstract _toJsonObject(): object;
     public static deserialize<T extends Jsonable<T>>(type: {new(): T;}, json: string | object): T
     {
         if(type === undefined || json === undefined) return undefined;
@@ -91,7 +91,7 @@ export abstract class Jsonable<U>
     }
     public static serialize<T extends Jsonable<T>>(jsonable: T): string
     {
-        return jsonable === undefined ? undefined : jsonable.toJson();
+        return jsonable === undefined ? undefined : JSON.stringify(jsonable._toJsonObject());
     }
 }
 
@@ -132,9 +132,9 @@ export class UpdateMessage extends Jsonable<UpdateMessage>
         }
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify({update: this._type});
+        return {update: this._type};
     }
 }
 
@@ -188,10 +188,9 @@ export class StockRequestItem extends Jsonable<StockRequestItem>
         }
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return `{"type": "${this._type}", "symbol": "${this._symbol}"}`;
-        // return JSON.stringify({type: this._type, symbol: this._symbol});
+        return {type: this._type, symbol: this._symbol};
     }
 }
 
@@ -231,10 +230,10 @@ export class StockRequest extends Jsonable<StockRequest>
         }
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return `{"items": [${this._items.map(item => Jsonable.serialize(item))}]}`;
-        // return JSON.stringify({items: this._items.map(item => Jsonable.serialize(item))});
+        //return `{"items": [${this._items.map(item => Jsonable.serialize(item))}]}`;
+        return {items: this._items.map(item => item._toJsonObject())};
     }
 }
 
@@ -334,9 +333,9 @@ export class StockResponseItem extends Jsonable<StockResponseItem>
         }
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify({code: this._code, type: this._type, symbol: this._symbol, stock: Jsonable.serialize(this._stock), data: Jsonable.serialize(this._data)});
+        return {code: this._code, type: this._type, symbol: this._symbol, stock: this._stock._toJsonObject(), data: this._data._toJsonObject()};
     }
 }
 
@@ -391,9 +390,9 @@ export class StockResponse extends Jsonable<StockResponse>
         return undefined;
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify({code: this._code, items: this._items.map(item => Jsonable.serialize(item))});
+        return {code: this._code, items: this._items.map(item => item._toJsonObject())};
     }
 
 }
@@ -403,15 +402,15 @@ interface IStock
     /** Stock symbol */
     symbol: string;
     /** Current price per share */
-    currPrice: string;
+    currPrice: any;
     /** Last closing of price per share */
-    prevClose: string;
+    prevClose: any;
     /** Percent change of different between current price and last closing price */
-    percentChange: string;
+    percentChange: any;
     /** Current market volume */
-    currVolume: string;
+    currVolume: any;
     /** Last market volume */
-    prevVolume: string;
+    prevVolume: any;
     /** 'Stringified' date of when this data was last updated */
     lastUpdated: string;
 }
@@ -518,7 +517,7 @@ export class Stock extends Jsonable<Stock>
     protected fromJsonObject(jsonObj: object): Stock
     {
         let obj = jsonObj as IStock;
-        if(obj.symbol && obj.currPrice && obj.prevClose && obj.percentChange && obj.currVolume && obj.prevVolume && obj.lastUpdated)
+        if(obj.symbol && !isNaN(obj.currPrice) && !isNaN(obj.prevClose) && !isNaN(obj.percentChange) && !isNaN(obj.currVolume) && !isNaN(obj.prevVolume) && obj.lastUpdated)
         {
             return new Stock(
                     obj.symbol,
@@ -536,10 +535,9 @@ export class Stock extends Jsonable<Stock>
         }
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify(
-                {
+        return {
                     symbol: this._symbol,
                     currPrice: this._currPrice,
                     prevClose: this._prevClose,
@@ -547,7 +545,7 @@ export class Stock extends Jsonable<Stock>
                     currVolume: this._currVolume,
                     prevVolume: this._prevVolume,
                     lastUpdated: this._lastUpdated
-                });
+                };
     }
 }
 
@@ -562,7 +560,7 @@ interface IStockData
     /** 'Stringified' date of when this data was last updated */
     lastUpdated: string;
     /** Time to live of object in milliseconds */
-    ttl: string;
+    ttl: any;
 }
 export class StockData extends Jsonable<StockData>
 {
@@ -634,7 +632,7 @@ export class StockData extends Jsonable<StockData>
     protected fromJsonObject(jsonObj: object): StockData
     {
         let obj = jsonObj as IStockData;
-        if(obj && obj.symbol && obj.description && obj.history !== undefined && obj.lastUpdated && obj.ttl)
+        if(obj && obj.symbol && obj.description && obj.history !== undefined && obj.lastUpdated && !isNaN(obj.ttl))
         {
             return new StockData(
                     obj.symbol,
@@ -647,16 +645,15 @@ export class StockData extends Jsonable<StockData>
         return undefined;
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify(
-                {
+        return {
                     symbol: this._symbol,
                     description: this._description,
-                    history: this._history.map(item => Jsonable.serialize(item)),
+                    history: this._history.map(item => item._toJsonObject()),
                     lastUpdated: this._lastUpdated,
                     ttl: this._ttl
-                });
+                };
     }
 }
 
@@ -665,17 +662,17 @@ interface IStockHistoricalData
     /** Starting date of time period */
     date: string;
     /** Opening share price */
-    open: string;
+    open: any;
     /** Share price high */
-    high: string;
+    high: any;
     /** Share price low */
-    low: string;
+    low: any;
     /** Closing share price */
-    close: string;
+    close: any;
     /** Adjusted closing share price */
-    adjclose: string;
+    adjclose: any;
     /** Volume of shares */
-    volume: string;
+    volume: any;
 }
 export class StockHistoricalData extends Jsonable<StockHistoricalData>
 {
@@ -779,7 +776,7 @@ export class StockHistoricalData extends Jsonable<StockHistoricalData>
     protected fromJsonObject(jsonObj: object): StockHistoricalData
     {
         let obj = jsonObj as IStockHistoricalData;
-        if(obj && obj.date && obj.open && obj.high && obj.low && obj.close && obj.adjclose && obj.volume)
+        if(obj && obj.date && !isNaN(obj.open) && !isNaN(obj.high) && !isNaN(obj.low) && !isNaN(obj.close) && !isNaN(obj.adjclose) && !isNaN(obj.volume))
         {
             return new StockHistoricalData(
                     parseDate(obj.date),
@@ -794,10 +791,9 @@ export class StockHistoricalData extends Jsonable<StockHistoricalData>
         return undefined;
     }
 
-    protected toJson(): string
+    _toJsonObject(): object
     {
-        return JSON.stringify(
-                {
+        return {
                     date: this._date,
                     open: this._open,
                     high: this._high,
@@ -805,7 +801,7 @@ export class StockHistoricalData extends Jsonable<StockHistoricalData>
                     close: this._close,
                     adjclose: this._adjclose,
                     volume: this._close
-                });
+                };
     }
 
 }
