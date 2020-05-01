@@ -1,15 +1,10 @@
 package io.github.virtualstocksim.main;
 
+import io.github.virtualstocksim.scraper.Scraper;
 import io.github.virtualstocksim.update.ClientUpdater;
 import org.apache.commons.cli.*;
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -21,7 +16,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 
 public class Main
 {
@@ -106,6 +100,9 @@ public class Main
         logger.info("Server started successfully");
 
         server.join();
+
+        ClientUpdater.shutdown();
+        Scraper.shutdown();
     }
 
     private static Server createServer(int port)
