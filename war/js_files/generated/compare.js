@@ -1,6 +1,6 @@
 import { DataStream } from "./datastream.js";
 import { drawPriceHistoryGraph } from "./graphs.js";
-import { HttpRequest } from "./httprequest.js";
+import { StockRequest } from "./stockrequest.js";
 import * as json from "./jsonformats.js";
 import { ezStockSearch } from "./stocksearch.js";
 import { storeStockData } from "./stockstorage.js";
@@ -8,43 +8,51 @@ import { storeStockData } from "./stockstorage.js";
 let stocks = [];
 let stream = new DataStream("stockStream", "/dataStream");
 stream.onMessageReceived = (event) => {
-    let msg = json.deserialize(event.data);
-    if (stocks.length > 0 && msg && msg.update === 'stockData') {
-        let params = {
-            message: "dataRequest=" + json.serialize({ type: "stockData", symbols: stocks }),
-            protocol: "POST",
-            uri: "/dataStream",
-            headers: [{ name: "Listener-name", value: "stockRequest" }],
-            onReceived: onStockUpdate
-        };
-        let request = new HttpRequest(params);
+    let msg = json.Jsonable.deserialize(json.UpdateMessage, event.data);
+    if (stocks.length > 0 && msg && msg.type === json.StockType.STOCK_DATA) {
+        let requestItems = stocks.map(stock => new json.StockRequestItem(json.StockType.STOCK_DATA, stock));
+        let request = new StockRequest(requestItems, onStockUpdate);
         request.send();
     }
 };
 let inputField = document.getElementById("search-input");
 let graphsInPage = new Map();
-ezStockSearch(inputField, results => {
+ezStockSearch(inputField, result => {
     // Reset error text
     document.getElementById("error-text").innerText = "";
-    let stock = results[0];
-    stocks.push(stock.symbol);
-    let element = document.getElementById(stock.symbol + "-graph");
-    if (!element) {
-        element = document.createElement("div");
-        element.id = stock.symbol + "-graph";
-        document.body.appendChild(element);
+    if (result.code === json.StockResponseCode.PROCESSING) {
+        // TODO: Notify user that stock will be available soon
     }
-    let config = { element: element, stockSymbol: stock.symbol, minDate: null, maxDate: null };
-    drawPriceHistoryGraph([config]);
-    graphsInPage.set(element.id, config);
-}, () => {
-    document.getElementById("error-text").innerText = inputField.value + " not found";
+    if (result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)) {
+        stocks.push(result.symbol);
+        let element = document.getElementById(result.symbol + "-graph");
+        if (!element) {
+            element = document.createElement("div");
+            element.id = result.symbol + "-graph";
+            document.body.appendChild(element);
+        }
+        let config = { element: element, stockSymbol: result.symbol, minDate: null, maxDate: null };
+        drawPriceHistoryGraph([config]);
+        graphsInPage.set(element.id, config);
+    }
+    else {
+        document.getElementById("error-text").innerText = "Error: " + result.code;
+    }
+}, errorCode => {
+    document.getElementById("error-text").innerText = inputField.value + " not found. Error Code: " + errorCode;
 });
 function onStockUpdate(response) {
-    console.log(response);
-    let resp = json.deserialize(response);
-    if (resp && resp.type === "stockData") {
-        storeStockData(resp.data);
-        drawPriceHistoryGraph(Array.from(graphsInPage.values()));
+    let updatedStocks = [];
+    for (let item of response) {
+        if (item.data && (item.code == json.StockResponseCode.OK || item.code == json.StockResponseCode.PROCESSING)) {
+            updatedStocks.push(item.data);
+        }
+        else {
+            // TODO: Handle error
+            console.log(item);
+        }
     }
+    console.log(response);
+    storeStockData(updatedStocks);
+    drawPriceHistoryGraph(Array.from(graphsInPage.values()));
 }

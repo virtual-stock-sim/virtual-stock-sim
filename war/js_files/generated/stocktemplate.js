@@ -2,8 +2,8 @@ import { getStockData } from "./stockstorage.js";
 import { drawPriceHistoryGraph } from "./graphs.js";
 import { DataStream } from "./datastream.js";
 import * as json from "./jsonformats.js";
-import { HttpRequest } from "./httprequest.js";
 import { loadDependencies } from "./dependencyloader.js";
+import { StockRequest } from "./stockrequest.js";
 if (!document.getElementById("stockInit")) {
     let dependencies = [
         { uri: "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js", type: "script", async: false },
@@ -19,19 +19,12 @@ if (!document.getElementById("stockInit")) {
     let stream = new DataStream("stockStream");
     stream.onMessageReceived = (event) => {
         // Attempt to deserialize the incoming message
-        let msg = json.deserialize(event.data);
+        let msg = json.Jsonable.deserialize(json.UpdateMessage, event.data);
         // Make sure that the message is valid and contains something we want
-        if (msg && msg.update === 'stock') {
+        if (msg && msg.type === json.StockType.STOCK) {
             // Form and send the request for updated stocks
-            let dataRequest = { type: "stock", symbols: findStocksInPage() };
-            let params = {
-                message: "dataRequest=" + json.serialize(dataRequest),
-                protocol: "POST",
-                uri: "/dataStream",
-                headers: [{ name: "Listener-name", value: "stockRequest" }],
-                onReceived: response => updateStocks(response)
-            };
-            let request = new HttpRequest(params);
+            let requestItems = findStocksInPage().map(stock => new json.StockRequestItem(json.StockType.STOCK, stock));
+            let request = new StockRequest(requestItems, updateStocks);
             request.send();
         }
     };
@@ -76,10 +69,13 @@ function findStocksInPage() {
     }
     return stockSymbols;
 }
-function updateStocks(response) {
-    let result = json.deserialize(response);
-    if (response && result.type == 'stock') {
-        for (let stock of result.data) {
+function updateStocks(responseItems) {
+    for (let item of responseItems) {
+        if (item.code === json.StockResponseCode.PROCESSING) {
+            // TODO: Notify user
+        }
+        else if (item.code === json.StockResponseCode.OK && item.stock) {
+            let stock = item.stock;
             let tags;
             if (stock.currPrice) {
                 let tags = document.getElementsByName(stock.symbol + "-curr_price");
@@ -94,22 +90,24 @@ function updateStocks(response) {
             if (stock.currVolume) {
                 tags = document.getElementsByName(stock.symbol + "-curr_volume");
                 for (let tag of tags)
-                    tag.innerHTML = stock.currVolume;
+                    tag.innerHTML = stock.currVolume.toString();
             }
             if (stock.prevVolume) {
                 tags = document.getElementsByName(stock.symbol + "-curr_volume");
                 for (let tag of tags)
-                    tag.innerHTML = stock.currVolume;
+                    tag.innerHTML = stock.currVolume.toString();
             }
             if (stock.percentChange) {
                 tags = document.getElementsByName(stock.symbol + "-pchange");
-                let pChangeColor = parseFloat(stock.percentChange) >= 0.0 ? "green!important" : "red!important";
+                let pChangeColor = stock.percentChange >= 0.0 ? "green!important" : "red!important";
                 let percentChange = stock.percentChange + "%";
                 for (let tag of tags) {
                     tag.style.color = pChangeColor;
                     tag.innerHTML = percentChange;
                 }
             }
+        }
+        else {
         }
     }
 }

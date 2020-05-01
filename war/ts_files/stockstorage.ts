@@ -1,5 +1,6 @@
 import * as json from "./jsonformats.js";
-import {HttpRequest, MessageParams} from "./httprequest.js";
+import {StockRequest} from "./stockrequest.js";
+import {StockData, StockRequestItem} from "./jsonformats.js";
 
 /**
  * Stores the given stock data objects with the symbol as the key
@@ -7,7 +8,7 @@ import {HttpRequest, MessageParams} from "./httprequest.js";
  */
 export function storeStockData(dataArr: json.StockData[])
 {
-    dataArr.forEach((data) => window.localStorage.setItem(data.symbol, json.serialize(data)));
+    dataArr.forEach((data) => window.localStorage.setItem(data.symbol, json.Jsonable.serialize(data)));
 }
 
 /**
@@ -26,9 +27,9 @@ export function getStockData(symbolArr: string[], onDataRetrieved: (results: jso
         let data = window.localStorage.getItem(symbol);
         if(data)
         {
-            let stockData: json.StockData = json.deserialize(data)
-            // Has the date expired
-            if(Date.parse(stockData.lastUpdated) + parseInt(stockData.ttl) >= Date.now())
+            let stockData: json.StockData = json.Jsonable.deserialize(StockData, data);
+            // Is the data still unexpired
+            if(stockData.lastUpdated.getTime() + stockData.ttl >= Date.now())
             {
                 validStocks.push(stockData);
             }
@@ -44,36 +45,47 @@ export function getStockData(symbolArr: string[], onDataRetrieved: (results: jso
     }
 
     // Only query server for data if there is invalid stock data
-    if(invalidStocks.length > 0)
+    if(invalidStocks.length <= 0)
     {
-        let params: MessageParams =
-                {
-                    message: "dataRequest=" + json.serialize({type: "stockData", symbols: invalidStocks}),
-                    protocol: "POST",
-                    uri: "/dataStream",
-                    headers: [{name: "Listener-name", value: "stockRequest"}]
-                };
-        params.onReceived = (response) =>
-        {
-            let resp: json.StockDataRequestResult = json.deserialize(response);
-            // Check that response contents are valid
-            if(!resp && resp.type !== "stockData")
-            {
-                throw "Data request failed - Wrong type returned. 'stockData' should be returned but '" + resp.type + "' was instead";
-            }
-            else
-            {
-                storeStockData(resp.data);
-                validStocks.push(...resp.data);
-                onDataRetrieved(validStocks);
-            }
-        }
-
-        let request = new HttpRequest(params);
-        request.send();
+        onDataRetrieved(validStocks);
     }
     else
     {
-        onDataRetrieved(validStocks);
+        console.log("??");
+        // Assemble a list of StockRequestItems from the invalid stocks
+        let requestItems = invalidStocks.map(stock => new StockRequestItem(json.StockType.STOCK_DATA, stock));
+
+        let responseReceived = (response: json.StockResponseItem[]) =>
+        {
+            try
+            {
+                for(let item of response)
+                {
+                    // Make sure response is either okay or processing
+                    // Since this is just storing/retrieving stock data, we don't care if
+                    // the dynamic stock data isn't available yet
+                    if(item.data && (item.code === json.StockResponseCode.OK || item.code === json.StockResponseCode.PROCESSING))
+                    {
+                        storeStockData([item.data]);
+                        validStocks.push(item.data);
+                    }
+                    else
+                    {
+                        console.log(item);
+                        // TODO: Handle error
+                    }
+                }
+            }
+            catch (e)
+            {
+                console.log(e);
+                // TODO: Handle error
+            }
+
+            onDataRetrieved(validStocks);
+        }
+
+        let request = new StockRequest(requestItems, responseReceived);
+        request.send();
     }
 }

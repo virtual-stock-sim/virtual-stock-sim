@@ -52,6 +52,12 @@ public class StockData extends DatabaseItem
             return Optional.of(stockDatas.get(0));
         }
     }
+    public static Optional<StockData> Find(String symbol)
+    {
+        List<StockData> results =
+                FindCustom("SELECT stock.data_id, stock_data.id, stock_data.data, stock_data.last_updated FROM stock, stock_data WHERE stock.symbol = ? AND stock.data_id = stock_data.id", symbol);
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
 
     public static List<StockData> FindAll()
     {
@@ -195,8 +201,10 @@ public class StockData extends DatabaseItem
     }
 
 
-    public JsonObject getAsJsonObject()
+    public JsonObject asJson()
     {
-        return JsonParser.parseString(data).getAsJsonObject();
+        JsonObject json = JsonParser.parseString(data).getAsJsonObject();
+        json.addProperty("lastUpdated", lastUpdated.toString());
+        return json;
     }
 }

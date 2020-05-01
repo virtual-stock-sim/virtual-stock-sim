@@ -1,9 +1,11 @@
 package io.github.virtualstocksim.update;
 
+import com.google.gson.JsonObject;
 import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.scraper.TimeInterval;
 import io.github.virtualstocksim.servlet.DataStreamServlet;
 import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.stock.stockrequest.StockType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +97,11 @@ public class ClientUpdater
         scheduler.scheduleAtFixedRate(task, startDelay, interval.toNanos(), TimeUnit.NANOSECONDS);
     }
 
+    public static void shutdown()
+    {
+        getInstance().scheduler.shutdownNow();
+    }
+
     public static void scheduleStockUpdates()
     {
         getInstance().scheduleUpdateTask(getStockUpdateInterval(), Config.getConfig("update.stock.start"), () ->
@@ -102,10 +109,11 @@ public class ClientUpdater
             try
             {
                 StockUpdater.updateStocks(Stock.FindAll());
-                String message = "{\"update\": \"stock\"}";
+                JsonObject updateMessage = new JsonObject();
+                updateMessage.addProperty("type", StockType.STOCK.asString());
                 for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
                 {
-                    DataStreamServlet.sendSimpleMessage(ac, message);
+                    DataStreamServlet.sendSimpleMessage(ac, String.valueOf(updateMessage));
                 }
             }
             catch (UpdateException e)
@@ -118,11 +126,12 @@ public class ClientUpdater
         {
             try
             {
-                StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEMONTH, 10, 1, 3);
-                String message = "{\"update\": \"stockData\"}";
+                StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEMONTH);
+                JsonObject updateMessage = new JsonObject();
+                updateMessage.addProperty("type", StockType.STOCK.asString());
                 for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
                 {
-                    DataStreamServlet.sendSimpleMessage(ac, message);
+                    DataStreamServlet.sendSimpleMessage(ac, String.valueOf(updateMessage));
                 }
             }
             catch (UpdateException e)

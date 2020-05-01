@@ -50,7 +50,7 @@ public class StockUpdaterTest
     public void testStockDataUpdate()
     {
         List<StockData> original = StockData.FindAll();
-        StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.THREEMONTH, 10, 1, 3);
+        StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.THREEMONTH);
 
         List<StockData> updated = StockData.FindAll();
 

@@ -1,8 +1,35 @@
 # Stock database
 stockdb.uri=jdbc:derby:vss_test_stockdatabase.db
+stockdb.maxSymbolLen=10
 
 # Account database
 accountdb.uri=jdbc:derby:vss_test_accountdatabase.db
 
 # API Url
 stockapi.url=https://sandbox.iexapis.com/stable/stock/market/batch?types=quote&token=Tpk_2375b638cd794fc8b05ed84f5f45036f&symbols=
+
+# Stock API update time interval - hh:mm:ss
+update.stock.interval=00:01:00
+
+# Stock API update start time
+    # hh:mm:ss for specific time
+    # 'immediately' (without quotes) for immediately on program startup
+    # 'wait-interval' (without quotes) for wait the given interval before starting
+
+update.stock.start=wait-interval
+#update.stock.start=immediately
+
+# Stock Data Web scraper update time interval - hh:mm:ss
+update.stockdata.interval=24:00:00
+
+# Stock Data Web scraper update start time - hh:mm:ss
+    # hh:mm:ss for specific time
+    # 'immediately' (without quotes) for immediately on program startup
+    # 'wait-interval' (without quotes) for wait the given interval before starting
+
+update.stockdata.start=00:00:00
+#update.stockdata.start=immediately
+
+# Scraper Delay
+    # Maximum delay between scraper tasks in seconds
+scraper.delay = 13

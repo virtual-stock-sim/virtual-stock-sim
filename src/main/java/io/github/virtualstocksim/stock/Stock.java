@@ -283,7 +283,7 @@ public class Stock extends DatabaseItem
         }
     }
 
-    public JsonObject getAsJsonObject()
+    public JsonObject asJson()
     {
         JsonObject obj = new JsonObject();
         if(symbol != null) obj.addProperty("symbol", symbol);

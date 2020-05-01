@@ -1,6 +1,6 @@
 package io.github.virtualstocksim.servlet;
 
-import io.github.virtualstocksim.stock.StockRequestHandler;
+import io.github.virtualstocksim.stock.stockrequest.StockRequestHandler;
 import org.eclipse.jetty.io.RuntimeIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

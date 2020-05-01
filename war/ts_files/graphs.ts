@@ -31,31 +31,29 @@ function createGraph(config: GraphConfig)
         {
             // Should this period be included in graph
             let include = true;
-            let date = new Date();
-            date.setTime(Date.parse(period.date));
 
             if(config.minDate && config.maxDate)
             {
-                include = date >= config.minDate && date <= config.maxDate;
+                include = period.date >= config.minDate && period.date <= config.maxDate;
             }
             else if(config.minDate)
             {
-                include = date >= config.minDate;
+                include = period.date >= config.minDate;
             }
             else if(config.maxDate)
             {
-                include = date <= config.maxDate;
+                include = period.date <= config.maxDate;
             }
 
             if(include)
             {
-                hAxisTicks.push(date);
+                hAxisTicks.push(period.date);
                 data.push
                     ([
-                         date,
-                         parseFloat(period.high),
-                         parseFloat(period.low),
-                         parseFloat(period.adjclose)
+                         period.date,
+                         period.high,
+                         period.low,
+                         period.adjclose
                      ]);
             }
         }
@@ -100,7 +98,7 @@ function createGraph(config: GraphConfig)
                     options:
                             {
                                 title: config.stockSymbol + ' - Monthly Share Prices', textStyle:{color: '#FFFFFF'},
-                                hAxis: {title: 'Date', /*ticks: hAxisTicks,*/ titleTextStyle:{color: '#FFFFFF'}, textStyle:{color:'#FFFFFF'}},
+                                hAxis: {title: 'Date', format: "MMM, YY", ticks: hAxisTicks, titleTextStyle:{color: '#FFFFFF'}, textStyle:{color:'#FFFFFF'}},
                                 vAxis: {title: 'Price Per Share', titleTextStyle:{color: '#FFFFFF'}, textStyle:{color:'#FFFFFF'}},
                                 seriesType: 'bars',
                                 series: {2: {type: 'line'}},
@@ -111,15 +109,22 @@ function createGraph(config: GraphConfig)
                 }
         );
 
+        google.visualization.events.addListener(rangeSlider, "statechange", (changeState) =>
+        {
+            let range: {start: Date, end: Date} = rangeSlider.getState().range;
+            let start = range.start.getTime();
+            let end = range.end.getTime();
+            let ticks = hAxisTicks.filter((date, index, arr) =>
+                    {
+                        let time = date.getTime();
+                        return time >= start && time <= end;
+                    });
+            chartWrapper.setOption("hAxis.ticks", ticks);
+        });
+
         dashboard.bind(rangeSlider, chartWrapper);
         dashboard.draw(data);
 
-/*        // Create and draw the chart
-        // @ts-ignore
-        let chart = new google.visualization.ComboChart(config.element);
-        // @ts-ignore
-        let dataTable = google.visualization.arrayToDataTable(data);
-        chart.draw(dataTable, options);*/
     });
 }
 

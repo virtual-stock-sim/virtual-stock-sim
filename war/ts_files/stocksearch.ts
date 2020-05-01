@@ -1,55 +1,29 @@
-import {HttpRequest, MessageParams} from "./httprequest.js";
 import * as json from "./jsonformats.js";
 import {storeStockData} from "./stockstorage.js";
+import {StockRequest} from "./stockrequest.js";
 
-export function stockSearch(stockSymbol: string, onStockFound: (data: json.Stock[]) => void, onStockNotFound: () => void)
+export function stockSearch(stockSymbol: string, onStockFound: (data: json.StockResponseItem) => void, onStockNotFound: (errorCode: json.StockResponseCode) => void)
 {
-    let params: MessageParams =
-            {
-                // @ts-ignore
-                message: "dataRequest=" + json.serialize({type: "stockSearch", symbols: [stockSymbol]}),
-                protocol: "POST",
-                uri: "/dataStream",
-                headers: [{name: "Listener-name", value: "stockRequest"}]
-            };
-    params.onReceived = response =>
+    let onSearchResult = (responseItems: json.StockResponseItem[]) =>
     {
-        let resp: json.StockSearchResult = json.deserialize(response);
-        if(resp && resp.data.length > 0)
+        if(responseItems)
         {
-            let stockDatas: json.StockData[] = [];
-
-            for(let value of resp.data)
-            {
-                // Only add to the array if this
-                // value actually has a stock data field
-                if(value.stockData)
-                {
-                    stockDatas.push(value.stockData);
-                }
-            }
-
-            if(stockDatas.length > 0)
-            {
-                storeStockData(stockDatas);
-            }
-
-            let stocks: json.Stock[] = [];
-            for(let value of resp.data) stocks.push(value.stock);
-
-            onStockFound(stocks);
+            let data = responseItems[0].data;
+            if(data) storeStockData([data]);
+            onStockFound(responseItems[0]);
         }
         else
         {
-            onStockNotFound();
+            onStockNotFound(json.StockResponseCode.SERVER_ERROR);
         }
     }
-
-    let request = new HttpRequest(params);
+    // TODO: Allow different type types. Maybe embed an attribute in the input element for ezStockSearch to read
+    let requestItem = new json.StockRequestItem(json.StockType.BOTH, stockSymbol);
+    let request = new StockRequest([requestItem], onSearchResult);
     request.send();
 }
 
-export function ezStockSearch(inputElement: HTMLElement, onStockFound: (stock: json.Stock[]) => void, onStockNotFound: () => void)
+export function ezStockSearch(inputElement: HTMLElement, onStockFound: (stock: json.StockResponseItem) => void, onStockNotFound: (errorCode: json.StockResponseCode) => void)
 {
     inputElement.addEventListener("keyup", (e) =>
     {
@@ -61,3 +35,4 @@ export function ezStockSearch(inputElement: HTMLElement, onStockFound: (stock: j
         }
     });
 }
+
