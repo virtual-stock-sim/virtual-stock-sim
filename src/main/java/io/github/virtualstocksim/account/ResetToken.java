@@ -66,8 +66,7 @@ public class ResetToken extends DatabaseItem
      */
     public static Optional<ResetToken> Find(String token)
     {
-        byte[] decoded = Base64.getUrlDecoder().decode(token);
-        return Find("token", decoded);
+        return Find("token", token);
     }
 
     /**
