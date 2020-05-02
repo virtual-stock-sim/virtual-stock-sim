@@ -1,9 +1,9 @@
 # Stock database
-stockdb.uri=jdbc:derby:vss_stockdatabase.db
+stockdb.uri=jdbc:derby:vss_stockdatabase.db;create=true
 stockdb.maxSymbolLen=10
 
 # Account database
-accountdb.uri=jdbc:derby:vss_accountdatabase.db
+accountdb.uri=jdbc:derby:vss_accountdatabase.db;create=true
 
 # API Url
 stockapi.url=https://cloud.iexapis.com/stable/stock/market/batch?types=quote&token=pk_2a92f97f8f2e477aade42bc2b806217c&symbols=

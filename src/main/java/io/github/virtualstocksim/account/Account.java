@@ -39,6 +39,7 @@ public class Account extends DatabaseItem {
     private final Timestamp creationDate;
 
 
+
     /**
      *
      * @param id account ID for referencing in database
@@ -292,7 +293,6 @@ public class Account extends DatabaseItem {
                                 "FROM account"
                 );
     }
-
 
     /**
      * Search for one or more accounts with a custom SQL command

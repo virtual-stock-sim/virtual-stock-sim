@@ -5,6 +5,11 @@ import * as json from "./jsonformats.js";
 import { DependencyType, loadDependencies } from "./dependencyloader.js";
 import { StockRequest } from "./stockrequest.js";
 if (!document.getElementById("stockInit")) {
+    // Create a hidden div to indicate that this script has already run
+    let tag = document.createElement("div");
+    tag.hidden = true;
+    tag.id = "stockInit";
+    document.body.append(tag);
     let dependencies = [
         { uri: "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js", type: DependencyType.SCRIPT, async: false },
         { uri: "https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js", type: DependencyType.SCRIPT, async: false },
@@ -28,11 +33,6 @@ if (!document.getElementById("stockInit")) {
             request.send();
         }
     };
-    // Create a hidden div to indicate that this script has already run
-    let tag = document.createElement("div");
-    tag.hidden = true;
-    tag.id = "stockInit";
-    document.body.append(tag);
     // Find the symbols of all the stock templates in the page
     let stockSymbols = findStocksInPage();
     // Add the stock data to each of the templates

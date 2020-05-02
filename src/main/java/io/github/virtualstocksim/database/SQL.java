@@ -182,6 +182,21 @@ public class SQL
     }
 
     /**
+     * Does the specified table exist
+     * @param conn Database connection
+     * @param table Database table
+     * @return If the table exists in the database
+     * @throws SQLException
+     */
+    public static boolean tableExists(Connection conn, String table) throws SQLException
+    {
+        DatabaseMetaData metaData = conn.getMetaData();
+        ResultSet rs = metaData.getTables(null, "APP", table.toUpperCase(), null);
+
+        return rs.next() && rs.getString(3).equals(table.toUpperCase());
+    }
+
+    /**
      * Sets the parameters for a PreparedStatement
      * @param stmt PreparedStatement to have its parameters set
      * @param params Parameters for the PreparedStatement
