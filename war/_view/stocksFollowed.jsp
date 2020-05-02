@@ -7,29 +7,30 @@
 <html>
 <head>
     <!-- jQuery library -->
-<%--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>--%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <!-- Popper JS -->
-<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>--%>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-<%--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>--%>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 
     <script src="/js_files/redirect.js"></script>
-<%--    <script src="/js_files/general.js"></script>--%>
 
-
-    <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <link href="../cssfiles/stocksFollowedStyle.css" rel="stylesheet">
 
-    <title>VSS - Stocks Followed</title>
+    <title>Stocks Followed - VSS: Virtual Stock Sim</title>
 </head>
 <body>
-<div class = "bg-img"></div>
 
 <t:navbar account="${account}"/>
 
+<div class = "bg-img"></div>
 
 <div class ="followed-heading">
     <h1>FOLLOWED STOCKS</h1>

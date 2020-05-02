@@ -2,19 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="account" required="true" type="io.github.virtualstocksim.account.Account" %>
 
-<link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-
-<script src="/js_files/redirect.js"></script>
-<link rel="stylesheet" href="../../cssfiles/generalCSS/generalStyle.css">
+<!--Mandatory Scripts-->
+<script type="module" src="../../js_files/generated/navbar.js"></script>
 
 
 
-<nav class="navbar navbar-toggleable-md fixed-top ">
+
+<nav class="navbar navbar-toggleable-md static-top ">
     <div class="container">
         <div class="navbar-translate">
             <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">

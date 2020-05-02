@@ -4,9 +4,6 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page session = "false" %>
 
-<%--@elvariable id="errorMsg" type="java.lang.String"--%>
-<%--@elvariable id="account" type="io.github.virtualstocksim.account.Account"--%>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,17 +16,16 @@
 
     <!-- JS functions -->
     <script src="/js_files/redirect.js"></script>
-    <script src="/js_files/general.js"></script>
-
-    <link href='https://fonts.googleapis.com/css?family=Staatliches' rel='stylesheet'>
-    <link href="../cssfiles/profilePageStyle.css" rel="stylesheet">
     <script src="js_files/tabscript.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link href="../cssfiles/profilePageStyle.css" rel="stylesheet">
 
     <title>My Account - VSS: Virtual Stock Sim</title>
-
-    <div class="bg-img"></div>
-
 </head>
 <body>
 
@@ -90,7 +86,7 @@
             <h2>Edit your bio</h2>
             <form action=${pageContext.servletContext.contextPath}/profile class="bio-form" method="post" id="bio-form">
             <textarea class="form-control" form="bio-form" rows="5" cols="100" placeholder="Tell us about yourself" id="bio" name="bio">${account.bio}</textarea><br>
-                <input type="submit" value="SAVE">
+                <input type="submit" value="Save">
             </form>
         </div>
 
@@ -98,7 +94,7 @@
             <h2>Update Your Profile Picture</h2>
             <form action=${pageContext.servletContext.contextPath}/profile class="form-group" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" />
-                <input type="submit" value="UPLOAD"/>
+                <input type="submit" value="Upload"/>
             </form>
         </div>
 
@@ -111,7 +107,7 @@
                     <input type="text" id="username" name ="username" class="form-control" placeholder="${account.username}"><br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
-                    <input type="submit" value="SAVE">
+                    <input type="submit" value="Save">
             </form>
 
         </div>

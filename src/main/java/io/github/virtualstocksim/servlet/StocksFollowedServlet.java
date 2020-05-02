@@ -38,6 +38,7 @@ public class StocksFollowedServlet extends HttpServlet
         {
             StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
             req.setAttribute("model", model);
+            req.setAttribute("account", localAcct);
             req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
         }
         else

@@ -4,9 +4,6 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
-<script src=""></script>
-
-<link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
 
 
@@ -24,9 +21,9 @@
             <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
         </u1>
     </div>
-    <div class="panel panel-collapse">
-        <div class="panel-heading" role="tab">
-            <h2 class="panel-title">
+    <div class="vss-panel vss-panel-collapse">
+        <div class="vss-panel-heading" role="tab">
+            <h2 class="vss-panel-title">
                 <a id="${stock.symbol}-dropdown-toggle" data-toggle="collapse" data-target="#${stock.symbol}-dropdown" aria-controls="#${stock.symbol}-dropdown">
 
                     <span name="${stock.symbol}-symbol">${stock.symbol}</span>
@@ -44,7 +41,7 @@
             </h2>
         </div>
         <div id="${stock.symbol}-dropdown" class="collapse" role="tabpanel" >
-            <div class="panel-body">
+            <div class="vss-panel-body">
                 <p id="${stock.symbol}-desc"></p><br>
                 <table class="table table-condensed" style="width: 100%;">
                     <tr>

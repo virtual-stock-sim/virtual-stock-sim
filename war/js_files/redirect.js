@@ -33,3 +33,7 @@ function redirectTransHist(){
 function redirectAbout(){
     location.href="about"
 }
+
+function redirectResetPass(){
+    location.href="reset"
+}

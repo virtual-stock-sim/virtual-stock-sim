@@ -1,9 +1,7 @@
-
 body {
     color: whitesmoke;
     background-color: #404040;
     text-align: center;
-    font-family: 'Bebas Neue';font-size: 25px;
     letter-spacing: 3px;
 }
 
@@ -83,8 +81,8 @@ button {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-family: 'Bebas Neue';font-size: 25px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 button:hover{
@@ -99,7 +97,8 @@ input[type=submit] {
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
-    font-family: 'Bebas Neue';font-size: 25px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 input[type=submit]:hover {
@@ -139,6 +138,7 @@ input[type=submit]:hover {
     background: white;
     transition: 250ms background ease-in;
     color:black;
+    font-weight: bold;
 }
 
 
@@ -156,3 +156,6 @@ input[type=submit]:hover {
 }
 
 
+.login-form > .login-text a:hover{
+    text-decoration: underline;
+}

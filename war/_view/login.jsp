@@ -6,9 +6,11 @@
 <html>
 <head>
     <title>Login - VSS: Virtual Stock Sim</title>
-    <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
-    <link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" href="/cssfiles/generalCSS/generalStyle.css">
     <link rel="stylesheet" href= "../cssfiles/loginPageStyle.css">
     <script src="/js_files/redirect.js"></script>
 
@@ -17,18 +19,18 @@
 
     <div class = "bg-img"></div>
 
-    <div class ="header">
-        <h1>Virtual Stock Sim: Deadly Accurate Investments</h1>
-        <h2>SIMULATED INVESTING, REIMAGINED</h2>
+    <div class ="heading">
+        <h1>VSS: Virtual Stock Sim</h1>
+        <h2>Simulated Investing, Reimagined</h2>
     </div>
 
-    <h5>Be here, from your computer.</h5>
+    <h5>Experience Wall Street, from your computer</h5>
 
     <c:if test="${! empty errorMessage}">
         <div class="error">${errorMessage}</div>
     </c:if>
-    <div class = "login-credentials">
-        <form action="${pageContext.servletContext.contextPath}/login" class="login-form" method="post">
+    <div class = "login-form">
+        <form action="${pageContext.servletContext.contextPath}/login" method="post">
             <p class="login-text">
             <h6>WELCOME BACK</h6>
             </p>
@@ -36,7 +38,9 @@
             <input type="password" class ="password" id="pword" name="pword"  required="true" placeholder=" Password" />
             <input type="submit" class ="submit" value ="Login"/>
             <button onClick="redirectAccount()">Join the Team</button>
-        </form>
+        </form><br>
+        <a class="login-text" href="/reset" style="color:white; font-size:14px;text-decoration: none">FORGOT PASSWORD?
+        </a>
     </div>
 
 </body>

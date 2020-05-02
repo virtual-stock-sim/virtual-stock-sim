@@ -2,7 +2,6 @@ body {
     font-family: "Lato", sans-serif!important;
     background-color: #404040;
     text-shadow: #0a0a0a;
-    mix-blend-mode: difference;
 }
 
 
@@ -22,16 +21,9 @@ body {
 
 }
 
-.navigation {
-    color:white;
-    text-align: center;
-    font-family: "Lato", sans-serif;
-}
-
 .followed-heading {
+    font-size: 0.7em;
     text-align: center;
-    padding-top: 100px;
-    padding-bottom: 50px;
     color:white!important;
 }
 
@@ -52,7 +44,6 @@ h4{
 }
 
 .followed-item{
-
     border-color:#333;
     border-style: solid;
     border-radius: 6px;
@@ -70,13 +61,9 @@ a { color: inherit;}
      flex: 0 0 200px;
  }
 
-.percentSub{
+.percentSub {
     text-decoration: none;
     flex: 0 0 200px;
-
-}
-.parent {
-
 }
 
 .wrapper{

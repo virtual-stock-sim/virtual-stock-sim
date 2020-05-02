@@ -28,8 +28,7 @@
         <h3>FRESH DATA AT YOUR FINGERTIPS</h3>
     </div>
         <label>
-            Search Symbol:
-            <input type="text" id="search-input">
+            <input type="text" id="search-input" placeholder="Search for a symbol...">
         </label>
         <p id="error-text"></p>
     </body>

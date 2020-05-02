@@ -200,7 +200,7 @@ pk = {
             event.preventDefault();
 
             var thisdiv = $(this).attr("data-target");
-            var height = $(thisdiv).children('.panel-body').height();
+            var height = $(thisdiv).children('.vss-panel-body').height();
 
             if($(this).hasClass('state-open')){
                 $(thisdiv).css({

@@ -25,10 +25,9 @@ h1{
     z-index: -1;
 }
 
-.header{
+.heading{
     color:white;
     padding-bottom: 50px;
-    padding-top: 100px;
 }
 
 .subhead{

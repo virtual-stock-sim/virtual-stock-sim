@@ -5,10 +5,6 @@ body {
     color:black;
 }
 
-#about{
-    margin-top: 5%;
-}
-
 .vss-container {
     content:"";
     display:table;

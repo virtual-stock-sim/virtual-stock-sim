@@ -6,8 +6,6 @@
 
 <html>
 <head>
-    <link rel="stylesheet" href="../cssfiles/aboutPageStyle.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -19,21 +17,21 @@
 
 
     <script src="/js_files/redirect.js"></script>
-    <script src="/js_files/general.js"></script>
-
-
 
     <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+
+    <link rel="stylesheet" href="../cssfiles/aboutPageStyle.css">
+
     <title>About - VSS: Virtual Stock Sim</title>
 </head>
 <body>
 
 <t:navbar account="${account}"/>
 
-<div class = vss-container style="padding:10px 16px" id ="about">
+<div class = vss-container style="padding:10px 16px">
     <h3 class = "vss-center">ABOUT VSS</h3>
     <p class ="vss-center">What we bring to the table</p>
-    <div class = "vss-row vss-center" style="margin-top: 64px">
+    <div class = "vss-row vss-center" >
         <div class = "vss-quarter">
         <i class="fa fa-crosshairs vss-center vss-jumbo"></i>
             <p class="vss-large">Deadly Accurate</p>

@@ -3,7 +3,7 @@ body{
     border: 2px white;
 }
 
-.panel {
+.vss-panel {
     margin-top: 50px;
     margin-left: 3%;
     width:50%;
@@ -12,28 +12,28 @@ body{
 }
 
 
-.panel-heading{
+.vss-panel-heading{
     width: 100%;
     border-bottom: 0;
     padding: 0;
     position: relative;
 }
 
-.panel-heading + .panel-collapse > .panel-body {
+.vss-panel-heading + .vss-panel-collapse > .vss-panel-body {
     border-top: 1px solid #000000;
 }
 
 
-.panel-collapse .panel-body {
+.vss-panel-collapse .vss-panel-body {
     border-bottom: 1px solid #000000;
 }
 
-.panel {
+.vss-panel {
     box-shadow: none !important;
     border: 0;
 }
 
-.panel-title > a {
+.vss-panel-title > a {
     padding: 10px 15px;
     display: block;
     font-size: 13px;
@@ -43,20 +43,20 @@ body{
     color: white;
 }
 
-.panel-heading span{
+.vss-panel-heading span{
     color: white;
     padding: 0px 100px 0px 100px;
 }
 
 
-.panel-collapse .panel-heading .panel-title > a {
+.vss-panel-collapse .vss-panel-heading .vss-panel-title > a {
     padding: 8px 5px 16px 30px;
     color: rgb(94, 94, 94);
     position: relative;
 }
 
-.panel-collapse .panel-heading .panel-title > a:after,
-.panel-collapse .panel-heading .panel-title > a:before {
+.vss-panel-collapse .vss-panel-heading .vss-panel-title > a:after,
+.vss-panel-collapse .vss-panel-heading .vss-panel-title > a:before {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -73,7 +73,7 @@ body{
     backface-visibility: hidden;
 }
 
-.panel-collapse .panel-heading .panel-title > a:after {
+.vss-panel-collapse .vss-panel-heading .vss-panel-title > a:after {
     background: #ffffff;
     -webkit-transform: scale(0);
     -ms-transform: scale(0);
@@ -81,12 +81,12 @@ body{
     transform: scale(0);
 }
 
-.panel-collapse .panel-heading:not(.active) .panel-title > a:before {
+.vss-panel-collapse .vss-panel-heading:not(.active) .vss-panel-title > a:before {
     background: #000000;
 }
 
-.panel-collapse .panel-heading:before,
-.panel-collapse .panel-heading:after {
+.vss-panel-collapse .vss-panel-heading:before,
+.vss-panel-collapse .vss-panel-heading:after {
     font-size: 27px;
     position: absolute;
     -webkit-transition: all;
@@ -98,7 +98,7 @@ body{
     left: 50px;
 }
 
-.panel-collapse .panel-heading:before {
+.vss-panel-collapse .vss-panel-heading:before {
     content: "\002B";
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
@@ -106,36 +106,36 @@ body{
     transform: scale(1);
 }
 
-.panel-collapse .panel-heading:after {
-    content: "\002D";
+.vss-panel-collapse .vss-panel-heading:after {
+    content: "\002D" !important;
     -webkit-transform: scale(0);
     -ms-transform: scale(0);
     -o-transform: scale(0);
     transform: scale(0);
 }
 
-.panel-collapse .panel-heading.active .panel-title > a:after {
+.vss-panel-collapse .vss-panel-heading.active .vss-panel-title > a:after {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transform: scale(1);
 }
 
-.panel-collapse .panel-heading.active:before {
+.vss-panel-collapse .vss-panel-heading.active:before {
     -webkit-transform: scale(0);
     -ms-transform: scale(0);
     -o-transform: scale(0);
     transform: scale(0);
 }
 
-.panel-collapse .panel-heading.active:after {
+.vss-panel-collapse .vss-panel-heading.active:after {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transform: scale(1);
 }
 
-.panel-collapse .panel-body {
+.vss-panel-collapse .vss-panel-body {
     border-top: 0 !important;
     padding-left: 10px;
     padding-right: 10px;
@@ -143,25 +143,25 @@ body{
 
 
 
-.panel-body {
+.vss-panel-body {
     width: 75%;
 }
 
-.panel-heading > .dropdown .dropdown-toggle {
+.vss-panel-heading > .vss-dropdown .vss-dropdown-toggle {
     color: inherit;
 }
 
-.panel-title {
+.vss-panel-title {
     margin-top: 0;
     margin-bottom: 0;
     font-size: 15px;
     color: inherit;
 }
 
-.panel-title > a,
-.panel-title > small,
-.panel-title > .small,
-.panel-title > small > a,
-.panel-title > .small > a {
+.vss-panel-title > a,
+.vss-panel-title > small,
+.vss-panel-title > .small,
+.vss-panel-title > small > a,
+.vss-panel-title > .small > a {
     color: inherit;
 }
