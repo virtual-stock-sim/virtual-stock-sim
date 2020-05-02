@@ -293,7 +293,6 @@ public class Account extends DatabaseItem {
                 );
     }
 
-
     /**
      * Search for one or more accounts with a custom SQL command
      * @param sql SQL command
