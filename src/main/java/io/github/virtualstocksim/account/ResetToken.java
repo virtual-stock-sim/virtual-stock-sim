@@ -17,10 +17,16 @@ public class ResetToken extends DatabaseItem
     private static final Logger logger = LoggerFactory.getLogger(ResetToken.class);
 
     private int accountId;
-    private byte[] token;
+    private String token;
     private Timestamp expiration;
 
     protected ResetToken(int id, int accountId, byte[] token, Timestamp expiration)
+    {
+        this(id, accountId, Base64.getUrlEncoder().withoutPadding().encodeToString(token), expiration);
+
+    }
+
+    protected ResetToken(int id, int accountId, String token, Timestamp expiration)
     {
         super(id);
         this.accountId = accountId;
@@ -28,27 +34,19 @@ public class ResetToken extends DatabaseItem
         this.expiration = expiration;
     }
 
-    protected ResetToken(int id, int account_id, String token, Timestamp expiration)
-    {
-        this(id, account_id, Base64.getUrlDecoder().decode(token), expiration);
-    }
-
     public int getAccountId() { return accountId; }
     public void setAccountId(int accountId) { this.accountId = accountId; }
 
-    public byte[] getToken() { return token; }
-
-    /**
-     * @return Reset token as a Base64 encoded url-safe string
-     */
-    public String getTokenAsString() { return Base64.getUrlEncoder().withoutPadding().encodeToString(token); }
-
-    public void setToken(byte[] token) { this.token = token; }
+    public String getToken() { return token; }
 
     /**
      * @param token Reset token as a Base64 url-safe encoded string
      */
-    public void setToken(String token) { setToken(Base64.getUrlDecoder().decode(token)); }
+    public void setToken(String token) { this.token = token; }
+    public void setToken(byte[] token)
+    {
+        setToken(Base64.getUrlEncoder().withoutPadding().encodeToString(token));
+    }
 
     public Timestamp getExpiration() { return expiration; }
     public void setExpiration(Timestamp expiration) { this.expiration = expiration; }
@@ -116,7 +114,7 @@ public class ResetToken extends DatabaseItem
                         new ResetToken(
                                 crs.getInt("id"),
                                 columns.containsKey("account_id")   ? crs.getInt("account_id")         : -1,
-                                columns.containsKey("token")        ? crs.getBytes("token")            : null,
+                                columns.containsKey("token")        ? crs.getString("token")           : null,
                                 columns.containsKey("expiration")   ? crs.getTimestamp("expiration")   : null
                         )
                 );
@@ -141,6 +139,18 @@ public class ResetToken extends DatabaseItem
      */
     public static Optional<ResetToken> Create(int accountId, byte[] token, Timestamp expiration)
     {
+        return Create(accountId, Base64.getUrlEncoder().withoutPadding().encodeToString(token), expiration);
+    }
+
+    /**
+     * Create a new reset token
+     * @param accountId ID of the account this reset token is for
+     * @param token Reset token as a Base64 url-safe encoded string
+     * @param expiration When this reset token should expire
+     * @return ResetToken instance of the newly created reset token
+     */
+    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration)
+    {
         try(Connection conn = AccountDatabase.getConnection())
         {
             logger.info("Creating new reset token...");
@@ -154,18 +164,6 @@ public class ResetToken extends DatabaseItem
             logger.error("ResetToken creation failed\n", e);
             return Optional.empty();
         }
-    }
-
-    /**
-     * Create a new reset token
-     * @param accountId ID of the account this reset token is for
-     * @param token Reset token as a Base64 url-safe encoded string
-     * @param expiration When this reset token should expire
-     * @return ResetToken instance of the newly created reset token
-     */
-    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration)
-    {
-        return Create(accountId, Base64.getUrlDecoder().decode(token), expiration);
     }
 
     @Override
@@ -192,9 +190,9 @@ public class ResetToken extends DatabaseItem
 
         // Map of column names and values
         Map<String, Object> columns = new HashMap<>();
-        if(accountId != -1)     columns.put("account_id", accountId);
-        if(token != null)       columns.put("token", token);
-        if(expiration != null)  columns.put("expiration", expiration);
+        if(accountId != -1)                                 columns.put("account_id", accountId);
+        if(token != null && !token.trim().isEmpty())        columns.put("token", token);
+        if(expiration != null)                              columns.put("expiration", expiration);
 
         for(Map.Entry<String, Object> c : columns.entrySet())
         {

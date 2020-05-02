@@ -72,7 +72,7 @@ public class AccountDatabase
             {
                 SQL.executeUpdate(conn, "create table reset_token (id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
                                           "account_id INT NOT NULL REFERENCES account(id)," +
-                                          "token VARCHAR(16) FOR BIT DATA NOT NULL," +
+                                          "token VARCHAR(255) NOT NULL UNIQUE" +
                                           "expiration TIMESTAMP NOT NULL)"
                                  );
             }
