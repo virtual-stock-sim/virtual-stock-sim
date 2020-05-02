@@ -82,7 +82,7 @@ public class StocksFollowedServlet extends HttpServlet
             //This is probably very bad, especially if the forms persist & you change between buy and sell
             if (sellShares != null) {
                 try {
-                    localController.trade(TransactionType.SELL, "GOOGL", Integer.valueOf(sellShares));
+                    localController.trade(TransactionType.SELL, "GOOGL", Integer.valueOf(sellShares.trim()));
                     sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of Google stock.";
                     req.setAttribute("sellSuccessMsg", sellSuccessMsg);
                 } catch (SQLException e) {
@@ -91,7 +91,7 @@ public class StocksFollowedServlet extends HttpServlet
             }
             if (buyShares != null) {
                 try {
-                    localController.trade(TransactionType.BUY, "GOOGL", Integer.valueOf(buyShares));
+                    localController.trade(TransactionType.BUY, "GOOGL", Integer.valueOf(buyShares.trim()));
                     buySuccessMsg="You have successfully purchased "+Integer.valueOf(buyShares)+" shares of Google stock.";
                     req.setAttribute("buySuccessMsg", buySuccessMsg);
                 } catch (SQLException e) {

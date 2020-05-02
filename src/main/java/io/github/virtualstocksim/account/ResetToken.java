@@ -8,13 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class ResetToken extends DatabaseItem<ResetToken>
+public class ResetToken extends DatabaseItem
 {
     private static final Logger logger = LoggerFactory.getLogger(ResetToken.class);
 
@@ -161,9 +163,9 @@ public class ResetToken extends DatabaseItem<ResetToken>
      * @param expiration When this reset token should expire
      * @return ResetToken instance of the newly created reset token
      */
-    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration)
-    {
-        return Create(accountId, Base64.getUrlDecoder().decode(token), expiration);
+    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration) throws UnsupportedEncodingException {
+        System.out.println("token I am trying to decode "+ token);
+        return Create(accountId, URLDecoder.decode(token,StandardCharsets.UTF_8.toString()).getBytes(), expiration);
     }
 
     @Override

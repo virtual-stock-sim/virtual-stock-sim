@@ -39,6 +39,7 @@ public class Account extends DatabaseItem {
     private final Timestamp creationDate;
 
 
+
     /**
      *
      * @param id account ID for referencing in database
