@@ -39,7 +39,7 @@
                             style="color:red!important;"
                         </c:otherwise>
                     </c:choose>>
-                                ${stock.percentChange} %</span>
+                                ${stock.percentChange}%</span>
                 </a>
             </h2>
         </div>
