@@ -2,15 +2,11 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.stock.StockDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,7 +28,10 @@ public class ResetToken extends DatabaseItem
         this.expiration = expiration;
     }
 
-    protected ResetToken(int id, int account_id, String token, Timestamp expiration) { this(id, account_id, Base64.getUrlDecoder().decode(token), expiration); }
+    protected ResetToken(int id, int account_id, String token, Timestamp expiration)
+    {
+        this(id, account_id, Base64.getUrlDecoder().decode(token), expiration);
+    }
 
     public int getAccountId() { return accountId; }
     public void setAccountId(int accountId) { this.accountId = accountId; }
@@ -42,7 +41,7 @@ public class ResetToken extends DatabaseItem
     /**
      * @return Reset token as a Base64 encoded url-safe string
      */
-    public String getTokenAsString() { return Base64.getUrlEncoder().encodeToString(token); }
+    public String getTokenAsString() { return Base64.getUrlEncoder().withoutPadding().encodeToString(token); }
 
     public void setToken(byte[] token) { this.token = token; }
 
@@ -163,9 +162,9 @@ public class ResetToken extends DatabaseItem
      * @param expiration When this reset token should expire
      * @return ResetToken instance of the newly created reset token
      */
-    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration) throws UnsupportedEncodingException {
-        System.out.println("token I am trying to decode "+ token);
-        return Create(accountId, URLDecoder.decode(token,StandardCharsets.UTF_8.toString()).getBytes(), expiration);
+    public static Optional<ResetToken> Create(int accountId, String token, Timestamp expiration)
+    {
+        return Create(accountId, Base64.getUrlDecoder().decode(token), expiration);
     }
 
     @Override
