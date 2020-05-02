@@ -49,6 +49,10 @@
         <servlet-class>io.github.virtualstocksim.servlet.TransactionHistoryServlet</servlet-class>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>resetServlet</servlet-name>
+        <url-pattern>/reset</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>stocksFollowedServlet</servlet-name>
@@ -121,6 +125,12 @@
     <servlet>
         <servlet-name>DataStreamServlet</servlet-name>
         <servlet-class>io.github.virtualstocksim.servlet.DataStreamServlet</servlet-class>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>resetServlet</servlet-name>
+        <servlet-class>io.github.virtualstocksim.servlet.ResetServlet</servlet-class>
         <async-supported>true</async-supported>
     </servlet>
 

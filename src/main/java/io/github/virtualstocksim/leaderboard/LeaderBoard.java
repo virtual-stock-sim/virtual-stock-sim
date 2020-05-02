@@ -50,13 +50,6 @@ public class LeaderBoard {
         }
     }
 
-    //runner for debugging
-    public static void main(String[] args) throws SQLException {
-        LeaderBoard lb = new LeaderBoard();
-        for(String s : lb.getCurrentRanks()){
-            System.out.println(s);
-        }
-    }
 
 
     //look into negating * in the future after boilerplate is written...
@@ -103,7 +96,7 @@ public class LeaderBoard {
     public List <String> getCurrentRanks(){
         List<String> toReturn = new LinkedList<>();
         List<Account> tempAccounts;
-        tempAccounts=Account.FindCustom("SELECT id, username FROM account WHERE leaderboard_rank >-1 ORDER BY leaderboard_rank");
+        tempAccounts=Account.FindCustom("SELECT id, username FROM account WHERE leaderboard_rank > -1 ORDER BY leaderboard_rank asc FETCH FIRST 5 ROWS ONLY ");
         for(Account a: tempAccounts ){
             toReturn.add(a.getUsername());
         }
