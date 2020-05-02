@@ -6,6 +6,9 @@
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
 <script src="../../js_files/general.js"></script>
 
+<link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
+
+
 
 <div class="stock-template" style="margin-left: 5%;">
     <div hidden class="stockSymbol">${stock.symbol}</div>

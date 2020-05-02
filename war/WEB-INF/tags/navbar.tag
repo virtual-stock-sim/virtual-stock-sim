@@ -3,6 +3,7 @@
 <%@attribute name="account" required="true" type="io.github.virtualstocksim.account.Account" %>
 
 <link href='https://fonts.googleapis.com/css?family=Bebas Neue' rel='stylesheet'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
@@ -77,7 +78,7 @@
                             <li class="dropdown-header large"> Hi, ${account.username}</li>
                             <li class="dropdown-item"><a onclick="redirectProfile()">My Account<i class="fa fa-user" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
                             <li class="dropdown-item"><a>Wallet Balance: $${account.walletBalance}<i class="material-icons" style="font-size: 15px;border-style: hidden;padding: 4px;
-                                                                                        position:relative;top:2px;"></i></a></li>
+                                                                                        position:relative;top:2px;">account_balance_wallet</i></a></li>
 
                             <li class="dropdown-item"><a onclick="logout()">Sign out<i class="fa fa-sign-out" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
                         </u1>
