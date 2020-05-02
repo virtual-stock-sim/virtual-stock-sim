@@ -49,7 +49,7 @@ public class TransactionHistory
         for(Transaction t : this.transactions){
             JsonObject jo = new JsonObject();
             jo.addProperty("timestamp",t.getTimestamp().toString());
-            jo.addProperty("stock",t.getStock().getId());
+            jo.addProperty("stock",t.getStock().getSymbol());
             jo.addProperty("type",t.getType().toString());
             jo.addProperty("shares",t.getNumShares());
             jo.addProperty("total",t.getVolumePrice());;
@@ -73,7 +73,7 @@ public class TransactionHistory
         for(JsonElement x : j){
             JsonObject obj = x.getAsJsonObject();
 
-            Stock stock = Stock.Find(obj.get("stock").getAsInt()).orElse(null);
+            Stock stock = Stock.Find(obj.get("stock").getAsString()).orElse(null);
 
             if(stock != null)
             {
