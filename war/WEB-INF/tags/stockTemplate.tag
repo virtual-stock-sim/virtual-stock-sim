@@ -4,6 +4,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
+<script src="../../js_files/general.js"></script>
 
 
 <div class="stock-template" style="margin-left: 5%;">
@@ -13,11 +14,11 @@
     top:95px;right:60px;">
             INVEST<i class="material-icons" style="border-style:hidden;display:inline-block;position:relative;top:4px;">
             import_export</i>
-            <span class="caret" style="display: inline-block;"></span></button>
-        <u1 class="dropdown-menu" style="margin-top:5%;margin-left: -5%;">
-            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer;">BUY</a></li>
+            </button>
+        <u1 class="dropdown-menu">
+            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer;">BUY</a></li>
             <li class="divider"></li>
-            <li class="link"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
+            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
         </u1>
     </div>
     <div class="panel panel-collapse">
@@ -86,7 +87,7 @@
     <!-- Modal Content-->
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <button type="button" class= "close" data-dismiss="modal" aria-label="Close">&times;</button>
             <h2 class="modal-title">Buy ${stock.symbol} Stock</h2>
         </div>
 
@@ -104,7 +105,7 @@
         <!-- Modal Content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class= "close" data-dismiss="modal" aria-label="Close">&times;</button>
                 <h2 class="modal-title">Sell ${stock.symbol} Stock</h2>
             </div>
 

@@ -11,7 +11,7 @@ body {
     left: 0;
     top: 0;
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
     /*Image retrieved from https://roundtablewealth.com/resources/portfolio-theory-diversification/*/
     background-image: url("../_view/resources/images/following/followingBG.jpg");
@@ -30,6 +30,7 @@ body {
 
 .followed-heading {
     text-align: center;
+    padding-top: 50px;
     padding-bottom: 50px;
     color:white!important;
 }
