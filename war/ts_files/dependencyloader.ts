@@ -1,9 +1,15 @@
+export enum DependencyType
+{
+    SCRIPT = "script",
+    STYLESHEET = "stylesheet"
+}
+
 export interface Dependency
 {
     /* Location of dependency */
     uri: string;
     /* Type of dependency. One of "script", "stylesheet" */
-    type: string;
+    type: DependencyType;
     /* If applicable (i.e. a script) should this dependency be loaded asynchronously. Defaults to true */
     async?: boolean;
 }
@@ -16,7 +22,7 @@ export async function loadDependencies(dependencies: Dependency[])
 
     for(let dependency of dependencies)
     {
-        if(dependency.type === "script")
+        if(dependency.type == DependencyType.SCRIPT)
         {
             // If the dependency isn't already in the page, add it
             if(!currentScripts.some(url => dependency.uri === url))
@@ -31,7 +37,7 @@ export async function loadDependencies(dependencies: Dependency[])
                 document.head.appendChild(script);
             }
         }
-        else if(dependency.type === "stylesheet")
+        else if(dependency.type == DependencyType.STYLESHEET)
         {
             // If the dependency isn't already in the page, add it
             if(!currentCSS.some(url => dependency.uri === url))

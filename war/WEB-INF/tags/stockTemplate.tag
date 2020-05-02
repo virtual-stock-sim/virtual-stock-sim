@@ -4,7 +4,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <script type="module" src="../../js_files/generated/stocktemplate.js"></script>
-<script src="../../js_files/general.js"></script>
+<script src=""></script>
 
 <link rel="stylesheet" href="../../cssfiles/stockTemplateStyle.css">
 
@@ -85,7 +85,7 @@
 
 
 <!--Buy Modal-->
-<div id="${stock.symbol}-buy-modal" class="modal fade" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+<div id="${stock.symbol}-buy-modal" class="modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
 
     <!-- Modal Content-->
     <div class="modal-content">
@@ -104,7 +104,7 @@
 </div>
 
 <!--Sell Modal-->
-<div class="modal fade" id="${stock.symbol}-sell-modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
+<div class="modal" id="${stock.symbol}-sell-modal" role="form" style="width:50%;margin-top: 10%; margin-left: 25%;color:black">
         <!-- Modal Content-->
         <div class="modal-content">
             <div class="modal-header">

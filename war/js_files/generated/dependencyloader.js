@@ -7,13 +7,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+export var DependencyType;
+(function (DependencyType) {
+    DependencyType["SCRIPT"] = "script";
+    DependencyType["STYLESHEET"] = "stylesheet";
+})(DependencyType || (DependencyType = {}));
 export function loadDependencies(dependencies) {
     return __awaiter(this, void 0, void 0, function* () {
         // Get current script and css tags in page
         let currentScripts = Array.from(document.getElementsByTagName("script")).map(elem => { return elem.src; });
         let currentCSS = Array.from(document.getElementsByTagName("link")).map(elem => { return elem.href; });
         for (let dependency of dependencies) {
-            if (dependency.type === "script") {
+            if (dependency.type == DependencyType.SCRIPT) {
                 // If the dependency isn't already in the page, add it
                 if (!currentScripts.some(url => dependency.uri === url)) {
                     let script = document.createElement("script");
@@ -25,7 +30,7 @@ export function loadDependencies(dependencies) {
                     document.head.appendChild(script);
                 }
             }
-            else if (dependency.type === "stylesheet") {
+            else if (dependency.type == DependencyType.STYLESHEET) {
                 // If the dependency isn't already in the page, add it
                 if (!currentCSS.some(url => dependency.uri === url)) {
                     let css = document.createElement("link");
