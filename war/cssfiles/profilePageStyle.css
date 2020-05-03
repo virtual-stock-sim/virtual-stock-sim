@@ -51,6 +51,16 @@ input[type=password]{
     color: black;
 }
 
+#page-settings.page label {
+    color:white;
+    font-weight: bold;
+    text-align: left;
+}
+
+#settings-form{
+    padding-top: 50px;
+}
+
 label.page {
     font-weight: bold;
 }
@@ -59,6 +69,8 @@ label.page {
     background-color: gray;
     color:white;
 }
+
+
 
 #page-creds{
     margin-left: 33%;

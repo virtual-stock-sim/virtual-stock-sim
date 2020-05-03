@@ -16,9 +16,9 @@
             import_export</i>
             </button>
         <u1 class="dropdown-menu">
-            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer;">BUY</a></li>
+            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer; font-weight: bold;">BUY</a></li>
             <li class="divider"></li>
-            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;">SELL</a></li>
+            <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;font-weight: bold;">SELL</a></li>
         </u1>
     </div>
     <div class="vss-panel vss-panel-collapse">
@@ -42,7 +42,7 @@
         </div>
         <div id="${stock.symbol}-dropdown" class="collapse" role="tabpanel" >
             <div class="vss-panel-body">
-                <p id="${stock.symbol}-desc"></p><br>
+                <p id="${stock.symbol}-desc" style="padding-top:20px;"></p><br>
                 <table class="table table-condensed" style="width: 100%;">
                     <tr>
                         <th>Current Price:</th>

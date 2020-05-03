@@ -57,6 +57,28 @@
         </div>
     </c:if>
 
+    <c:if test="${credentialUpdateSuccess==true}">
+        <div class="alert alert-success alert-dismissible" id ="credential-success" style="width:50%; margin-left:25%;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Your login credentials were successfully updated.
+        </div>
+    </c:if>
+
+    <c:if test="${resetTransHistSuccess==true}">
+        <div class="alert alert-success alert-dismissible" id ="reset-transaction-history-success" style="width:50%; margin-left:25%;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Your Transaction History was successfully cleared.
+        </div>
+    </c:if>
+
+    <c:if test="${resetFollowedSuccess==true}">
+        <div class="alert alert-success alert-dismissible" id ="reset-followed-success" style="width:50%; margin-left:25%;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Your Stocks Followed were successfully reset.
+        </div>
+    </c:if>
+
+
     <div id="tab-cont">
         <div id="menu-fixed">
             <a href="#tab-cont">
@@ -107,13 +129,22 @@
                     <input type="text" id="username" name ="username" class="form-control" placeholder="${account.username}"><br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm password"><br>
                     <input type="submit" value="Save">
             </form>
-
         </div>
 
+        <!--Clear transaction history or followed stocks-->
         <div id="page-settings" class="page">
             <h2>Update your Settings</h2>
+            <form action="${pageContext.servletContext.contextPath}/profile" class="form-group" method="post" id="settings-form">
+                <input type="checkbox" id="reset-followed" name="reset-followed" value="followed">
+                <label for="reset-followed">Reset Followed Stocks</label><br>
+                <input type="checkbox" id="reset-transaction-history" name="reset-transaction-history" value="transaction-history">
+                <label for="reset-transaction-history">Reset Transaction History</label><br>
+                <input type="submit" value="Submit">
+            </form>
         </div>
     </div>
 

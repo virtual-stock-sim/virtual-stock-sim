@@ -321,5 +321,30 @@ public class AccountController {
         }
     }
 
+    /**
+     * Reset user's followed stocks
+     */
+    public void resetFollowed() {
+        acc.setFollowedStocks("");
+        // push to DB
+        try {
+            acc.update();
+        } catch (SQLException e) {
+            logger.error("Error updating followed stocks in database.");
+        }
+    }
+
+    /**
+     * Reset User's transaction history
+     */
+    public void resetTransactionHistory(){
+        acc.setTransactionHistory("");
+        // push to DB
+        try {
+            acc.update();
+        } catch (SQLException e) {
+            logger.error("Error updating transaction history in database.");
+        }
+    }
 
 }

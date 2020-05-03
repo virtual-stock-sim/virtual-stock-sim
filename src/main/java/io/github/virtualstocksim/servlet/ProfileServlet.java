@@ -90,6 +90,7 @@ public class ProfileServlet extends HttpServlet {
         boolean bioUpdateSuccess;
         boolean pictureUpdateSuccess;
         boolean credentialUpdateSuccess;
+        boolean resetTransHistSuccess, resetFollowedSuccess;
 
 
         // Make sure user is logged in
@@ -124,7 +125,6 @@ public class ProfileServlet extends HttpServlet {
 
             }
             /* TODO: Look into a better way to check for the picture field being null**/
-            /* TODO: Success message */
             // User is updating profile picture
             logger.error(req.getContentType());
             if (req.getContentType().contains("multipart/form-data"))
@@ -186,7 +186,8 @@ public class ProfileServlet extends HttpServlet {
             }
 
             String password = req.getParameter("password");
-            if(password != null)
+            String confirmPassword = req.getParameter("confirmPassword");
+            if(password != null && confirmPassword!=null)
             {
                 if (password.length() > 255)
                 {
@@ -194,17 +195,49 @@ public class ProfileServlet extends HttpServlet {
                     logger.warn("Password cannot exceed 255 characters. Abandoning update...");
                 }
                 else
-                    {
+                {
                     logger.info("User requested password change");
 
-                    if (password.length() < 8) {
+                    if (password.length() < 8 ) {
                         lastError = "Password must be at least 8 characters long";
                         logger.warn(lastError);
                         errorMsgs.add(lastError);
-                    } else {
+                    }
+                    // check for matching passwords
+                    else if (!confirmPassword.equals(password))
+                    {
+                        errorMsgs.add("Password do not match");
+                    }
+                    else
+                        // else data is good, do update
+                    {
                         controller.updatePassword(password);
+                        credentialUpdateSuccess = true;
+                        req.setAttribute("credentialUpdateSuccess", credentialUpdateSuccess);
                     }
                 }
+            }
+            else
+                // if password or confirm password is null, notify user
+            {
+                errorMsgs.add("Required field empty. Be sure to confirm your password!");
+            }
+
+            String resetTransHist = req.getParameter("reset-transaction-history");
+            String resetFollowed = req.getParameter("reset-followed");
+            if(resetTransHist!=null)
+            {
+                controller.resetTransactionHistory();
+                resetTransHistSuccess=true;
+                req.setAttribute("resetTransHistSuccess", resetTransHistSuccess);
+                logger.info("Transaction History successfully cleared");
+            }
+            if (resetFollowed!=null)
+            {
+                controller.resetFollowed();
+                resetFollowedSuccess=true;
+                req.setAttribute("resetFollowedSuccess", resetFollowedSuccess);
+                logger.info("Followed Stocks successfully cleared");
             }
 
         }

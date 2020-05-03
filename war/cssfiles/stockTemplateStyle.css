@@ -94,24 +94,25 @@ body{
     transition: all;
     -webkit-transition-duration: 500ms;
     transition-duration: 500ms;
-    top: -4px;
-    left: 50px;
+    top: 8px;
+    left: 40px;
 }
 
 .vss-panel-collapse .vss-panel-heading:before {
-    content: "\002B";
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\f054";
+    transform: rotate(90deg) ;
+    transition: all linear 0.25s;
 }
 
+
 .vss-panel-collapse .vss-panel-heading:after {
-    content: "\002D" !important;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    -o-transform: scale(0);
-    transform: scale(0);
+    transform: rotate(270deg);
 }
 
 .vss-panel-collapse .vss-panel-heading.active .vss-panel-title > a:after {
@@ -164,4 +165,8 @@ body{
 .vss-panel-title > small > a,
 .vss-panel-title > .small > a {
     color: inherit;
+}
+
+.modal-body textarea{
+    font-weight: bold;
 }

@@ -464,9 +464,9 @@ public class Account extends DatabaseItem {
         if(username!=null && !username.trim().isEmpty())                        columns.put("username", username);
         if(passwordHash!=null)                                                  columns.put("password_hash", passwordHash);
         if(passwordSalt!=null)                                                  columns.put("password_salt", passwordSalt);
-        if(followedStocks!=null && !followedStocks.trim().isEmpty())            columns.put("followed_stocks", followedStocks);
+        if(followedStocks!=null)                                                columns.put("followed_stocks", followedStocks);
         if(investedStocks!=null && !investedStocks.trim().isEmpty())            columns.put("invested_stocks", investedStocks);
-        if(transactionHistory!=null && !transactionHistory.trim().isEmpty())    columns.put("transaction_history", transactionHistory);
+        if(transactionHistory!=null)                                            columns.put("transaction_history", transactionHistory);
         if(walletBalance!=null)                                                 columns.put("wallet_balance", walletBalance);
         if(leaderboardRank > 0)                                                 columns.put("leaderboard_rank", leaderboardRank);
         if(bio!=null && !bio.trim().isEmpty())                                  columns.put("bio", bio);

@@ -276,6 +276,19 @@ public class AccountControllerTest
         assertTrue(tempFollow.containsStock("BDX"));
     }
 
+    @Test
+    public void testResetTransactionHistory() {
+        conn.resetTransactionHistory();
+        assertTrue(conn.getModel().getTransactionHistory().trim().isEmpty());
+    }
+
+    @Test
+    public void testResetFollowing() {
+        conn.resetFollowed();
+        assertTrue(conn.getModel().getFollowedStocks().trim().isEmpty());
+    }
+
+
 
 
 

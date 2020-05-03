@@ -21,6 +21,7 @@ if(!document.getElementById("stockInit"))
                 {uri: "https://www.gstatic.com/charts/loader.js", type: DependencyType.SCRIPT},
                 {uri: "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css", type: DependencyType.STYLESHEET},
                 {uri: "https://fonts.googleapis.com/icon?family=Material+Icons", type: DependencyType.STYLESHEET},
+                {uri: "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", type: DependencyType.STYLESHEET},
                 {uri: "../../cssfiles/stockTemplateStyle.css", type: DependencyType.STYLESHEET}
             ];
 
