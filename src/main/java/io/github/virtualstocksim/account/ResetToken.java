@@ -75,7 +75,7 @@ public class ResetToken extends DatabaseItem
      */
     public static Optional<ResetToken> Find(String key, Object value)
     {
-        List<ResetToken> resetTokens = FindCustom("SELECT id, account_id, token, expiration FROM reset_token WHERE " + key + " = ?", value);
+        List<ResetToken> resetTokens = FindCustom("SELECT id, account_id, token, expiration FROM RESET_TOKEN WHERE " + key + " = ?", value);
         return resetTokens.isEmpty() ? Optional.empty() : Optional.of(resetTokens.get(0));
     }
 

@@ -289,7 +289,6 @@ public class AccountController {
                     throw new TradeException("You do not own enough shares to complete that trade.", TradeExceptionType.NOT_ENOUGH_SHARES);
                 }
 
-                //TransactionHistory th = new TransactionHistory(Account.FindCustom("SELECT transaction_history,id FROM account WHERE UUID = ?", acc.getUUID()).get(0).getTransactionHistory());
                 TransactionHistory th = new TransactionHistory(localAccount.getTransactionHistory());
                 Stock stock = Stock.Find(symbol).orElse(null);
                 if (stock != null) {
