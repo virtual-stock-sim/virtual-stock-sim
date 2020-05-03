@@ -2,7 +2,6 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.stock.StockDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,6 @@ public class ResetToken extends DatabaseItem
     protected ResetToken(int id, int accountId, byte[] token, Timestamp expiration)
     {
         this(id, accountId, Base64.getUrlEncoder().withoutPadding().encodeToString(token), expiration);
-
     }
 
     protected ResetToken(int id, int accountId, String token, Timestamp expiration)
@@ -92,7 +90,7 @@ public class ResetToken extends DatabaseItem
     public static List<ResetToken> FindCustom(String sql, Object... params)
     {
         logger.info("Searching for reset token(s)...");
-        try(Connection conn = StockDatabase.getConnection();
+        try(Connection conn = AccountDatabase.getConnection();
             CachedRowSet crs = SQL.executeQuery(conn, sql, params)
         )
         {
@@ -168,7 +166,7 @@ public class ResetToken extends DatabaseItem
     @Override
     public void update() throws SQLException
     {
-        try(Connection conn = StockDatabase.getConnection())
+        try(Connection conn = AccountDatabase.getConnection())
         {
             update(conn);
         }
