@@ -1,4 +1,4 @@
-import {HttpRequest, MessageParams} from "./httprequest.js";
+import {HttpRequest, HttpRequestType, MessageParams} from "./httprequest.js";
 import * as json from "./jsonformats.js";
 
 /**
@@ -13,7 +13,7 @@ export class StockRequest extends HttpRequest
         let params: MessageParams =
                 {
                     message: "stockRequest=" + json.Jsonable.serialize(stockRequest),
-                    protocol: "POST",
+                    protocol: HttpRequestType.POST,
                     uri: "/dataStream",
                     headers: [{name: "Listener-name", value: "stockRequest"}],
                     onReceived: response =>

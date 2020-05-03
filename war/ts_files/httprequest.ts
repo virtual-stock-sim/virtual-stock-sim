@@ -43,10 +43,16 @@ export class HttpRequest
     }
 }
 
+export enum HttpRequestType
+{
+    GET = "GET",
+    POST = "POST"
+}
+
 export interface MessageParams
 {
     message: string;
-    protocol: string;       //GET,POST
+    protocol: HttpRequestType;       //GET,POST
     uri: string;    //where to send
     onReceived?: (response: string) => void; //when don't care about response dont set
     headers?: {name: string, value: string}[];  //Array of headers that you want to send
