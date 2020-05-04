@@ -3,6 +3,7 @@ package io.github.virtualstocksim.update;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.database.SQL;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,11 +27,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
-
-/**
- * TODO: The update methods shouldn't abort the entire update process if
- *  an error occurs for one stock
- */
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Pulls current stock data from iexcloud api and updates the database
@@ -56,7 +55,7 @@ public class StockUpdater
             if(it.hasNext()) sb.append(',');
         }
 
-        JsonObject apiData = null;
+        final JsonObject apiData;
 
         try
         {
@@ -68,14 +67,22 @@ public class StockUpdater
 
             if(!request.getContentType().contains("application/json"))
             {
-                throw new IOException("Invalid api response");
+                throw new IOException("API response was not JSON");
             }
 
             // Read the data from the request
             try(InputStreamReader reader = new InputStreamReader((InputStream) request.getContent()))
             {
                 JsonElement element = JsonParser.parseReader(reader);
-                apiData = element.getAsJsonObject();
+                logger.info("API Response: \n" + element);
+                if(element.isJsonObject())
+                {
+                    apiData = element.getAsJsonObject();
+                }
+                else
+                {
+                    throw new UpdateException("Bad stock API response");
+                }
             }
 
         }
@@ -88,48 +95,45 @@ public class StockUpdater
             throw new UpdateException("Exception while acquiring/parsing data from api", e);
         }
 
-        Timestamp lastUpdated = SQL.GetTimeStamp();
-        logger.info(String.valueOf(apiData));
-        for(Stock stock : stocks)
-        {
-            if(apiData.has(stock.getSymbol()))
-            {
-                JsonObject data = apiData.getAsJsonObject(stock.getSymbol()).getAsJsonObject("quote");
-
-                JsonElement latestPrice = data.get("latestPrice");
-                if(!latestPrice.isJsonNull())
-                {
-                    stock.setCurrPrice(latestPrice.getAsBigDecimal());
-                }
-
-                JsonElement previousClose = data.get("previousClose");
-                if(!previousClose.isJsonNull())
-                {
-                    stock.setPrevClose(previousClose.getAsBigDecimal());
-                }
-
-                JsonElement volume = data.get("latestVolume");
-                if(!volume.isJsonNull())
-                {
-                    stock.setCurrVolume(volume.getAsInt());
-                }
-
-                JsonElement previousVolume = data.get("previousVolume");
-                if(!previousClose.isJsonNull())
-                {
-                    stock.setPrevVolume(previousVolume.getAsInt());
-                }
-
-                stock.setLastUpdated(SQL.GetTimeStamp());
-            }
-        }
-
         try(Connection conn = StockDatabase.getConnection())
         {
             conn.setAutoCommit(false);
-            for(Stock s : stocks)
+
+            for (Stock stock : stocks)
             {
-                s.update(conn);
+                logger.info("Processing API data for Stock '" + stock.getSymbol() + "'");
+                final JsonObject quote = getJsonMember(apiData, stock.getSymbol(), (s) -> getJsonMember(s, "quote", JsonElement::getAsJsonObject)).orElse(Optional.empty()).orElse(null);
+
+                if(quote != null)
+                {
+                    logger.info(String.valueOf(quote));
+                    Optional<BigDecimal> latestPrice = getJsonMember(quote, "latestPrice", JsonElement::getAsBigDecimal);
+                    latestPrice.ifPresent(stock::setCurrPrice);
+
+                    Optional<BigDecimal> previousClose = getJsonMember(quote, "previousClose", JsonElement::getAsBigDecimal);
+                    previousClose.ifPresent(stock::setPrevClose);
+
+                    Optional<Integer> latestVolume = getJsonMember(quote, "latestVolume", JsonElement::getAsInt);
+                    latestVolume.ifPresent(stock::setCurrVolume);
+
+                    Optional<Integer> previousVolume = getJsonMember(quote, "previousVolume", JsonElement::getAsInt);
+                    previousVolume.ifPresent(stock::setPrevVolume);
+
+                    stock.setLastUpdated(SQL.GetTimeStamp());
+
+                    try
+                    {
+                        stock.update();
+                    }
+                    catch (SQLException e)
+                    {
+                        logger.error("Failed to commit stock information for Stock '" + stock.getSymbol() + "'", e);
+                    }
+                }
+                else
+                {
+                    logger.warn("API response did not contain a quote for '" + stock.getSymbol() + "'");
+                }
             }
 
             conn.commit();
@@ -138,7 +142,6 @@ public class StockUpdater
         {
             throw new UpdateException("Failed to commit some or all updated stock information", e);
         }
-
     }
 
     /**
@@ -148,11 +151,12 @@ public class StockUpdater
      */
     public static void updateStockDatas(List<Stock> stocks, TimeInterval interval) throws UpdateException
     {
-        for(Stock stock : stocks)
+        for (Stock stock : stocks)
         {
             // Get the stock data for the stock
-            List<StockData> stockDatas = StockData.FindCustom("SELECT id FROM stock_data WHERE id = ?", stock.getStockDataId());
-            if(!stockDatas.isEmpty())
+            List<StockData> stockDatas = StockData.FindCustom(
+                    "SELECT id FROM stock_data WHERE id = ?", stock.getStockDataId());
+            if (!stockDatas.isEmpty())
             {
                 StockData data = stockDatas.get(0);
 
@@ -184,5 +188,54 @@ public class StockUpdater
                 }
             }
         }
+    }
+
+    /**
+     * Wraps the retrieval of a json element as a type within a try/catch to avoid code bloat
+     * @param parent Parent element to retrieve member from
+     * @param memberName Name of member that was attempting to be retrieved
+     * @param getFunc Anonymous function to retrieve element from parent element
+     * @param <T> Type of returned element
+     * @return Result of getFunc
+     */
+    public static <T> Optional<T> getJsonMember(JsonElement parent, String memberName, Function<? super JsonElement, T> getFunc)
+    {
+        try
+        {
+            if(parent.isJsonObject())
+            {
+                JsonObject parentObj = parent.getAsJsonObject();
+                if(parentObj.has(memberName))
+                {
+                    JsonElement element = parentObj.get(memberName);
+                    if(!element.isJsonNull())
+                    {
+                        return Optional.of(getFunc.apply(element));
+                    }
+                    else
+                    {
+                        logger.warn(memberName + " is JsonNull");
+                    }
+                }
+                else
+                {
+                    logger.warn("Parent does not contain " + memberName);
+                }
+            }
+            else
+            {
+                logger.warn("Parent must be a valid JsonObject");
+            }
+        }
+        catch (IllegalStateException | ClassCastException | NumberFormatException e)
+        {
+            logger.error("'" + memberName + "' is an incorrect type");
+        }
+        catch (JsonParseException e)
+        {
+            logger.error("'" + memberName + "' is not valid JSON");
+        }
+
+        return Optional.empty();
     }
 }
