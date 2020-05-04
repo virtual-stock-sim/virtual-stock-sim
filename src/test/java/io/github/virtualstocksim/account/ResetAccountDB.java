@@ -24,6 +24,7 @@ public class ResetAccountDB
         try
         {
             List<String> cmdFiles = new LinkedList<>();
+            cmdFiles.add("/accountSqlCmds/create_account_table.txt");
             cmdFiles.add("/accountSqlCmds/fill_account_table.txt");
 
             for(String file : cmdFiles)
@@ -44,7 +45,10 @@ public class ResetAccountDB
         {
             conn.setAutoCommit(false);
 
-            SQL.executeUpdate(conn, "DELETE FROM account");
+            if(tableExists(conn, "account"))
+            {
+                SQL.executeUpdate(conn, "DROP TABLE account");
+            }
 
             for(String cmd : resetCmds)
             {
