@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.main;
 
+import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.scraper.Scraper;
 import io.github.virtualstocksim.update.ClientUpdater;
 import org.apache.commons.cli.*;
@@ -29,7 +30,10 @@ public class Main
         options.addOption("p", "port", true, "Port number to run server on");
         options.addOption("ssl", true, "Tells server to use SSL encryption with provided cert");
         options.addOption("sp", "securePort", true, "SSL/Secure port to run server on");
-        options.addOption("kspass", "keyStorePass", true, "Key store password");
+        options.addOption("kp", "keyStorePass", true, "Key store password");
+
+        options.addRequiredOption("ea", "email-addr", true, "Email address for password reset");
+        options.addRequiredOption("ep", "email-pass", true, "Email password for password reset");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -44,6 +48,9 @@ public class Main
             printHelp();
             System.exit(-1);
         }
+
+        Config.addConfig("email-addr", options.getOption("email-addr").getValue());
+        Config.addConfig("email-pass", options.getOption("email-pass").getValue());
 
         // Attempt to get port
         int port = DEFAULT_PORT;

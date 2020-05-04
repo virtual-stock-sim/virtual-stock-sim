@@ -46,4 +46,14 @@ public class Config
     {
         return getInstance().config.getProperty(key);
     }
+
+    /**
+     * Add a configuration property
+     * @param key Configuration key
+     * @param value Configuration value
+     */
+    public static void addConfig(String key, String value)
+    {
+        getInstance().config.setProperty(key, value);
+    }
 }
