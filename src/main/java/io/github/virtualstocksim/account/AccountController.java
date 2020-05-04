@@ -240,7 +240,7 @@ public class AccountController {
 
                     //add the stock to investments   Exactly like transactionhistory minus the enum
                     InvestmentCollection investments = new InvestmentCollection(localAccount.getInvestedStocks());
-                    Investment tempInvestment = new Investment(numShares, symbol, SQL.GetTimeStamp());
+                    Investment tempInvestment = new Investment(numShares, localStock, SQL.GetTimeStamp());
                     investments.addInvestment(tempInvestment);
                     acc.setWalletBalance(acc.getWalletBalance().subtract(new BigDecimal(numShares).multiply(localStock.getCurrPrice())));
                     //update and push to DB

@@ -1,6 +1,8 @@
 package io.github.virtualstocksim.investment;
 
 import io.github.virtualstocksim.database.SQL;
+import io.github.virtualstocksim.stock.ResetStockDB;
+import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Investment;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
 import org.junit.Before;
@@ -18,10 +20,11 @@ public class InvestmentCollectionTest {
     InvestmentCollection experimental;
     @Before
     public void setUp() {
-        investmentList.add(new Investment(1, "AMZN", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(100, "TSLA", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(3, "GOOGL", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(7, "F", SQL.GetTimeStamp()));
+        ResetStockDB.reset();
+        investmentList.add(new Investment(1, Stock.Find("AMZN").orElse(null), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(100, Stock.Find("TSLA").orElse(null), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(3, Stock.Find("GOOGL").orElse(null), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(7, Stock.Find("F").orElse(null), SQL.GetTimeStamp()));
 
         control = new InvestmentCollection(investmentList);
         experimental = new InvestmentCollection(control.buildJSON());
@@ -31,11 +34,11 @@ public class InvestmentCollectionTest {
     @Test
     public void testConstructors(){
 
-        assertTrue(control.getInvestments().get(0).getSymbol().equals("AMZN"));
-        assertTrue(control.getInvestments().get(0).getNumShares() == 1);
+        assertEquals("AMZN", control.getInvestments().get(0).getSymbol());
+        assertEquals(1, control.getInvestments().get(0).getNumShares());
 
-        assertTrue(control.getInvestments().get(1).getSymbol().equals("TSLA"));
-        assertTrue(control.getInvestments().get(1).getNumShares() == 100);
+        assertEquals("TSLA", control.getInvestments().get(1).getSymbol());
+        assertEquals(100, control.getInvestments().get(1).getNumShares());
 
         assertTrue(control.getInvestments().get(2).getSymbol().equals("GOOGL"));
         assertTrue(control.getInvestments().get(2).getNumShares() == 3);
@@ -65,20 +68,20 @@ public class InvestmentCollectionTest {
         //New investments in stocks that already exist in the list should result in an update in the number of shares
         //NO new investments appended to the list! except in the case of a brand new symbol being added to the investment list
         //all of the checking for this is done in the add method. no need to do it here. Or more importantly, later in the AccounController :)
-        control.addInvestment(new Investment(5, "AMZN", SQL.GetTimeStamp()));
+        control.addInvestment(new Investment(5, Stock.Find("AMZN").get(), SQL.GetTimeStamp()));
         assertEquals(control.getInvestments().get(0).getNumShares(),6);
 
-        control.addInvestment(new Investment(501, "TSLA", SQL.GetTimeStamp()));
+        control.addInvestment(new Investment(501, Stock.Find("TSLA").orElse(null), SQL.GetTimeStamp()));
         assertEquals(control.getInvestments().get(1).getNumShares(),601);
 
-        control.addInvestment(new Investment(20, "GOOGL", SQL.GetTimeStamp()));
+        control.addInvestment(new Investment(20, Stock.Find("GOOGL").orElse(null), SQL.GetTimeStamp()));
         assertEquals(control.getInvestments().get(2).getNumShares(),23);
         assertFalse(control.isInvested("BDX"));
 
         assertEquals(4, control.getInvestments().size());
 
         //this investment is new and therefore should be appended to the list!~
-        control.addInvestment(new Investment(10, "BDX", SQL.GetTimeStamp()));
+        control.addInvestment(new Investment(10, Stock.Find("BDX").get(), SQL.GetTimeStamp()));
         assertEquals(5,control.getInvestments().size());
         assertTrue(control.isInvested("BDX"));
 

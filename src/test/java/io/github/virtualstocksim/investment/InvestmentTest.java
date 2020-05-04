@@ -1,6 +1,7 @@
 package io.github.virtualstocksim.investment;
 
 import io.github.virtualstocksim.database.SQL;
+import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Investment;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +17,11 @@ public class InvestmentTest {
     List<Investment> investmentList = new LinkedList<>();
     @Before
     public void setUp() {
-        investmentList.add(new Investment(1, "AMZN", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(100, "TSLA", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(3, "GOOGL", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(7, "F", SQL.GetTimeStamp()));
-        investmentList.add(new Investment(9, "BDX", SQL.GetTimeStamp()));
+        investmentList.add(new Investment(1, Stock.Find("AMZN").get(), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(100, Stock.Find("TSLA").get(), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(3, Stock.Find("GOOGL").get(), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(7, Stock.Find("F").get(), SQL.GetTimeStamp()));
+        investmentList.add(new Investment(9, Stock.Find("BDX").get(), SQL.GetTimeStamp()));
     }
 
 

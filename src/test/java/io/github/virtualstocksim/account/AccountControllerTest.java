@@ -68,8 +68,8 @@ public class AccountControllerTest
         conn.getModel().setFollowedStocks(stocksFollowed.followObjectsToSting());
 
         List investmentList = new LinkedList<>();
-        investmentList.add(new Investment(12,"AMZN",SQL.GetTimeStamp()));
-        investmentList.add(new Investment(5, "TSLA",SQL.GetTimeStamp()));
+        investmentList.add(new Investment(12,Stock.Find("AMZN").orElse(null),SQL.GetTimeStamp()));
+        investmentList.add(new Investment(5, Stock.Find("TSLA").orElse(null),SQL.GetTimeStamp()));
         //will add google and ford to investments in later test
         investmentCollection = new InvestmentCollection(investmentList);
         conn.getModel().setInvestedStocks(investmentCollection.buildJSON());
