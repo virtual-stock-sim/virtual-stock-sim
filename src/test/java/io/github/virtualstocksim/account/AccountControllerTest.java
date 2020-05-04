@@ -4,6 +4,7 @@ import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import io.github.virtualstocksim.following.Follow;
 import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.stock.ResetStockDB;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.*;
 import org.junit.Before;
@@ -36,6 +37,13 @@ public class AccountControllerTest
     String uuid;
 
     private static final String TEST_PASSWORD = "virtualstocksim";
+
+    @Before
+    public void resetDB()
+    {
+        ResetStockDB.reset();
+        ResetAccountDB.reset();
+    }
 
     @Before
     public void setup() throws SQLException {

@@ -25,7 +25,8 @@ public class ResetAccountDB
         {
             List<String> cmdFiles = new LinkedList<>();
             cmdFiles.add("/accountSqlCmds/create_account_table.txt");
-            cmdFiles.add("/accountSqlCmds/fill_account_table.txt");
+            cmdFiles.add("/accountSqlCmds/create_reset_token_table.txt");
+            //cmdFiles.add("/accountSqlCmds/fill_account_table.txt");
 
             for(String file : cmdFiles)
             {
@@ -44,6 +45,11 @@ public class ResetAccountDB
         try(Connection conn = AccountDatabase.getConnection())
         {
             conn.setAutoCommit(false);
+
+            if(tableExists(conn, "reset_token"))
+            {
+                SQL.executeUpdate(conn, "DROP TABLE reset_token");
+            }
 
             if(tableExists(conn, "account"))
             {
