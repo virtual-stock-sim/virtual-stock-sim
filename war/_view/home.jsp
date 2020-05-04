@@ -40,16 +40,16 @@
 
 <div class="leaderboard">
     <h1>Leading Investors</h1>
-    <c:forEach var="userName" items="${model.currentRanks}">
+    <c:forEach var="userName" items="${leaderboardModel.currentRanks}">
         <p>${userName}</p>
     </c:forEach>
 </div>
 
 <div class="top-stocks">
     <h1>Top Stocks</h1>
-    <p>1) TSLA - $620.91 - UP 11%</p>
-    <p>2) Google - $1214.27 - UP 9%</p>
-    <p>3) Amazon - $1785.00 - UP 7%</p>
+   <c:forEach var="symbol" items="${topStocksModel.topFiveStocks}">
+       <p>${symbol.key} up ${symbol.value}% today</p>
+   </c:forEach>
 </div>
 
 </body>

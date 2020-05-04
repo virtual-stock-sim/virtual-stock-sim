@@ -34,7 +34,7 @@ public class Investment {
        return this.stock.getCurrPrice().multiply(new BigDecimal(this.getNumShares()));
     }
     public int numShares(){
-        return this.numShares();
+        return this.numShares;
     }
     public BigDecimal getPricePerShare(){
         return this.getPricePerShare();
@@ -45,9 +45,11 @@ public class Investment {
     public String getSymbol(){
         return this.stock.getSymbol();
     }
+    public Stock getStock(){ return this.stock; }
     public int getNumShares(){
         return this.numShares;
     }
+
     public Timestamp getTimestamp(){
         return this.timeStamp;
     }

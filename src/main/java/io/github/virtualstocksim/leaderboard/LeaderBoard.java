@@ -108,7 +108,6 @@ public class LeaderBoard {
     public void updateRanks() throws SQLException {
         this.calculateRanks();
         //this loop might be dangerous ... ask team lead
-
         for(int i=0; i<usernameValuePair.size();i++){
 
             Account temp =Account.Find(usernameValuePair.get(i).getKey()).orElseGet(null);

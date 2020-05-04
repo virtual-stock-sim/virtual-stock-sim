@@ -48,7 +48,6 @@ public class InvestmentCollectionTest {
 
 
 
-
         assertTrue(experimental.getInvestments().get(0).getSymbol().equals("AMZN"));
         assertTrue(experimental.getInvestments().get(0).getNumShares() == 1);
 
