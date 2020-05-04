@@ -24,9 +24,7 @@ public class ResetStockDB
         try
         {
             List<String> cmdFiles = new LinkedList<>();
-            cmdFiles.add("/stockSqlCmds/create_stock_data_table.txt");
             cmdFiles.add("/stockSqlCmds/fill_stock_data_table.txt");
-            cmdFiles.add("/stockSqlCmds/create_stock_table.txt");
             cmdFiles.add("/stockSqlCmds/fill_stock_table.txt");
 
             for(String file : cmdFiles)
@@ -47,14 +45,8 @@ public class ResetStockDB
         {
             conn.setAutoCommit(false);
 
-            if(tableExists(conn, "stock"))
-            {
-                SQL.executeUpdate(conn, "DROP TABLE stock");
-            }
-            if(tableExists(conn, "stock_data"))
-            {
-                SQL.executeUpdate(conn, "DROP TABLE stock_data");
-            }
+            SQL.executeUpdate(conn, "DELETE FROM stock");
+            SQL.executeUpdate(conn, "DELETE FROM stock_data");
 
             for(String cmd : resetCmds)
             {

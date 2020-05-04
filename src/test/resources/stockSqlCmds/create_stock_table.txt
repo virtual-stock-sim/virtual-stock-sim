@@ -1,9 +1,0 @@
-create table STOCK(id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-					symbol VARCHAR(10) NOT NULL UNIQUE,
-					curr_price DECIMAL(12, 2),
-					prev_close DECIMAL(12, 2),
-					curr_volume INT,
-					prev_volume INT,
-					data_id INT NOT NULL REFERENCES stock_data(id),
-					last_updated TIMESTAMP)
-
