@@ -76,6 +76,7 @@ public class StocksFollowedServlet extends HttpServlet
 
             String sellShares = req.getParameter("shares-to-sell");
             String buyShares = req.getParameter("shares-to-buy");
+            String stockName = req.getParameter("stock-name");
 
 
 
@@ -83,8 +84,8 @@ public class StocksFollowedServlet extends HttpServlet
             //This is probably very bad, especially if the forms persist & you change between buy and sell
             if (sellShares != null) {
                 try {
-                    localController.trade(TransactionType.SELL, "GOOGL", Integer.valueOf(sellShares.trim()));
-                    sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of Google stock.";
+                    localController.trade(TransactionType.SELL, stockName, Integer.valueOf(sellShares.trim()));
+                    sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of "+stockName+" stock.";
                     req.setAttribute("sellSuccessMsg", sellSuccessMsg);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -92,8 +93,8 @@ public class StocksFollowedServlet extends HttpServlet
             }
             if (buyShares != null) {
                 try {
-                    localController.trade(TransactionType.BUY, "GOOGL", Integer.valueOf(buyShares.trim()));
-                    buySuccessMsg="You have successfully purchased "+Integer.valueOf(buyShares)+" shares of Google stock.";
+                    localController.trade(TransactionType.BUY, stockName, Integer.valueOf(buyShares.trim()));
+                    buySuccessMsg="You have successfully purchased "+Integer.valueOf(buyShares)+" shares of "+stockName+" stock.";
                     req.setAttribute("buySuccessMsg", buySuccessMsg);
                 } catch (SQLException e) {
                     e.printStackTrace();
