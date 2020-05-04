@@ -37,11 +37,9 @@ public class Investment {
         return this.numShares;
     }
     public BigDecimal getPricePerShare(){
-        return this.getPricePerShare();
+        return this.pricePerShare;
     }
-    public Timestamp timestamp(){
-        return this.timestamp();
-    }
+
     public String getSymbol(){
         return this.stock.getSymbol();
     }

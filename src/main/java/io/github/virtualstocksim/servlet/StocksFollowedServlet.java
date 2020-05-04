@@ -3,6 +3,7 @@ package io.github.virtualstocksim.servlet;
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.transaction.InvestmentCollection;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,8 +70,10 @@ public class StocksFollowedServlet extends HttpServlet
         {
             AccountController localController = new AccountController();
             localController.setModel(localAcct);
-            StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
-            req.setAttribute("model", model);
+            StocksFollowed followedModel = new StocksFollowed(localAcct.getFollowedStocks());
+            InvestmentCollection investModel = new InvestmentCollection(localAcct.getInvestedStocks());
+            req.setAttribute("followedModel", followedModel);
+            req.setAttribute("investModel", investModel);
             req.setAttribute("account", localAcct);
 
 

@@ -49,9 +49,18 @@
 
 
 <div class="parent">
-    <c:forEach var="followItem" items="${model.stocksFollowed}">
+    <c:forEach var="followItem" items="${followedModel.stocksFollowed}">
         <t:stockTemplate stock="${followItem.stock}"/>
     </c:forEach>
 </div>
+
+<div class="parent">
+    <c:forEach var="investItem" items="${investModel.investments}">
+        <t:stockTemplate stock="${investItem.stock}"/>
+    </c:forEach>
+</div>
+
+
+
 </body>
 </html>
