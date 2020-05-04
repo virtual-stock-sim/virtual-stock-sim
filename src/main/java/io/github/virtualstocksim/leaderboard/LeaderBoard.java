@@ -79,13 +79,9 @@ public class LeaderBoard {
     public void calculateRanks(){
         //first pull all of the accounts
         this.pullAccountsFromDB();
-        System.out.println("Account values: ");
+       // System.out.println("Account values: ");
           for(Account acct : this.accounts) {
               usernameValuePair.add(acct.getNameAndValue());
-          }
-          System.out.println("unsorted:");
-          for(Map.Entry<String, BigDecimal> p : usernameValuePair){
-              System.out.println(p.getKey() + " , " +p.getValue() );
           }
           Collections.sort(usernameValuePair, (a,b) -> b.getValue().compareTo(a.getValue()));
     }
@@ -107,6 +103,7 @@ public class LeaderBoard {
     //should be called by a task scheduler
     //probably only want to run once a day, just because
     //this is probably going to be expensive, and ranks won't change much day-to-day
+
     //complimentary to the calculateRanks method, just pushes result of calculation to DB
     public void updateRanks() throws SQLException {
         this.calculateRanks();
@@ -119,7 +116,6 @@ public class LeaderBoard {
                 //this would have to be a really weird case to trigger this
                 throw new TradeException("Account not found in database", TradeExceptionType.USER_NOT_FOUND);
             }
-            System.out.println("rank: " +i);
             temp.setLeaderboardRank(i+1);
             temp.update();
         }

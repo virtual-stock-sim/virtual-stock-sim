@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.virtualstocksim.stock.Stock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,9 @@ public class InvestmentCollection {
         {
             JsonArray j = elem.getAsJsonArray();
             for(JsonElement x : j ){
-                temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),x.getAsJsonObject().get("symbol").getAsString(), Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
+                //this might be dangerous if a stock is somehow removed from the DB while iterating processing
+                Stock tempStock = Stock.Find(x.getAsJsonObject().get("symbol").getAsString()).orElseGet(null);
+                temp.add(new Investment(x.getAsJsonObject().get("shares").getAsInt(),tempStock, Timestamp.valueOf(x.getAsJsonObject().get("timestamp").getAsString())));
             }
 
         }

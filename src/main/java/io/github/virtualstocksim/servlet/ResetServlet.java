@@ -73,15 +73,22 @@ public class ResetServlet extends HttpServlet {
                PasswordResetManager.deleteTokenFromDB(local.getToken());
                //updating (pushing new info to DB) handled by account controller
            }else{
-               logger.error("Please ensure that the passwords match! Try again");
-           }
+               boolean passmatchError=true;
+               //send the user back to the same exact page with the link poarameters
+               req.setAttribute("match",passmatchError);
 
-       }else{
-           //give an error to the JSP that the users selected passwords do not match
-            logger.error("Please make sure to fill out both fields~!");
+
+               logger.error("Please ensure that the passwords match! Try again");
+
+                req.setAttribute("salt",token);
+               //req.getRequestDispatcher("/_view/reset.jsp").forward(req, resp);
+           }
+           req.setAttribute("salt",null);
+           req.getRequestDispatcher("/_view/reset.jsp").forward(req, resp);
+
        }
        logger.info(errorMessage);
-        req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
+
     }
 
 

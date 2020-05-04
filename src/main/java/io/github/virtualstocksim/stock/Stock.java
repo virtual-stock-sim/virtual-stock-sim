@@ -70,6 +70,10 @@ public class Stock extends DatabaseItem
     public Timestamp getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
 
+    public AbstractMap.SimpleEntry<String, Double> getSymbolAndPercentChange(){
+        return new AbstractMap.SimpleEntry<>(this.symbol,this.getPercentChange());
+    }
+
     // Search database for stock entry based on param
     public static Optional<Stock> Find(int id)
     {

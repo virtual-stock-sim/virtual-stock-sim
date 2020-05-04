@@ -138,7 +138,7 @@ public class PasswordResetManager {
     //CHANGE THIS ON COMMIT UNTIL COMMAND LINE ARGS CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //DO NOT FORGET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private final String from = "virtualstocksim@gmail.com";
-    private final String password = "G44G62j9hShhBQ$42";
+    private final String password = "vR#8Ov_Elnrn$EZJWZIqX@lCg";
     //DO NOT FORGET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //CHANGE THIS ON COMMIT UNTIL COMMAND LINE ARGS CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //**********************************************************************************************

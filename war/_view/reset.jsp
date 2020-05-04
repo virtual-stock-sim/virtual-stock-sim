@@ -40,6 +40,9 @@
     <p>Debug: The password is not editable</p>
     <input type="text" name="userInput" required="true" size="12" />
     <input type="Submit" name="submit" value="send reset email">
+    <c:if test="${match}">
+        <p>THE PASSWORDS DO NOT MATCH</p>
+    </c:if>
 
 </c:if>
 
