@@ -49,8 +49,8 @@ public class Main
             System.exit(-1);
         }
 
-        Config.addConfig("email-addr", options.getOption("email-addr").getValue());
-        Config.addConfig("email-pass", options.getOption("email-pass").getValue());
+        Config.addConfig("email.addr", options.getOption("email-addr").getValue());
+        Config.addConfig("email.pass", options.getOption("email-pass").getValue());
 
         // Attempt to get port
         int port = DEFAULT_PORT;
