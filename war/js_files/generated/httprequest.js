@@ -30,3 +30,8 @@ export class HttpRequest {
         req.send(encodeURI(this._params.message));
     }
 }
+export var HttpRequestType;
+(function (HttpRequestType) {
+    HttpRequestType["GET"] = "GET";
+    HttpRequestType["POST"] = "POST";
+})(HttpRequestType || (HttpRequestType = {}));

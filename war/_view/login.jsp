@@ -24,8 +24,9 @@
         <h2>Simulated Investing, Reimagined</h2>
     </div>
 
-    <h5>Experience Wall Street, from your computer</h5>
-
+    <div class="subheading">
+         <h5>Experience Wall Street, from your computer</h5>
+    </div>
     <c:if test="${! empty errorMessage}">
         <div class="error">${errorMessage}</div>
     </c:if>

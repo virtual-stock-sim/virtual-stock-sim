@@ -13,8 +13,8 @@ h1, h2, h3 {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    /*Image retrieved from https://wallpaperaccess.com/stock-market*/
-    background-image: url("../_view/resources/images/compare/compareBackground.jpg");
+    /*Image retrieved from https://secureservercdn.net/198.71.233.129/s2o.4fb.myftpupload.com/wp-content/uploads/2018/08/AdobeStock_182282527-copy.jpg?time=1574548721*/
+    background-image: url("../_view/resources/images/compare/compareBG.jpg");
     width: 100%;
     height: 100%;
     z-index: -1;
@@ -24,4 +24,9 @@ h1, h2, h3 {
 .heading {
     text-align: center;
     color:white!important;
+}
+
+#search-input{
+    font-weight: bold;
+    margin-left: 50px;
 }

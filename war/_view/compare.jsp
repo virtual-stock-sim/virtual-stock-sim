@@ -14,6 +14,11 @@
         <!-- Google Chart API -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="module" src="../js_files/generated/compare.js"></script>
+
+        <!--     Fonts and icons     -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
         <link href="../cssfiles/compareStyle.css" rel="stylesheet">
     </head>
 

@@ -1,4 +1,4 @@
-import { HttpRequest } from "./httprequest.js";
+import { HttpRequest, HttpRequestType } from "./httprequest.js";
 export class DataStream {
     /**
      *
@@ -77,7 +77,7 @@ export class DataStream {
         // Disable async to make sure the message is sent before page unload
         // Also bypass message queue to ensure that the id of the stream being closed is sent with the message,
         // not the id of a new stream that may be in the process of opening during a reconnection attempt
-        let request = new HttpRequest({ message: "op=close", protocol: "POST", uri: this._uri, useAsync: false });
+        let request = new HttpRequest({ message: "op=close", protocol: HttpRequestType.POST, uri: this._uri, useAsync: false });
         this.prepareRequest(request);
         request.send();
         this._closed = true;
