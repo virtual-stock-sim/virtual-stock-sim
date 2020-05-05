@@ -59,7 +59,7 @@
     <div id="invested-stocks">
         <div class ="heading">
             <h1>INVESTED STOCKS</h1>
-            <h3>WHAT YOU ARE INVESTED IN</h3>
+            <h3>WHAT'S MAKING YOU MONEY</h3>
         </div>
         <c:forEach var="investedItem" items="${investModel.investments}">
             <t:stockTemplate stock="${investedItem.stock}"/>

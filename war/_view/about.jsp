@@ -67,7 +67,7 @@
 
 
 <div class = "vss-container" style="padding:50px 16px" id ="team">
-    <h3 class ="vss-center">THE TEAM</h3>
+    <h3 class ="vss-center">MEET THE TEAM</h3>
     <p class ="vss-center vss-large">The Creators of Virtual Stock Sim</p>
     <div class = "vss-row vss-grayscale" style="margin-top: 34px">
         <div class="vss-col vss-margin-bottom">
@@ -92,7 +92,7 @@
                     <img src="../_view/resources/images/about/dan.jpg" alt="Earl" style="width:100%">
                     <div class="vss-container">
                         <h3>Dan Palmieri</h3>
-                        <p class="vss-opacity">Full Stack Developer</p>
+                        <p class="vss-opacity">Frontend Lead & Full Stack Developer</p>
                         <p>Dan's interest in web development led him to taking on the bulk of designing and building the
                             frontend user interface. He also was responsible for developing the Stock, Account and Encryption backend.
                         </p>

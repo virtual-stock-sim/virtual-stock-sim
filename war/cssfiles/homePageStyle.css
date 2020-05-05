@@ -6,36 +6,14 @@ body {
     height: 100%;
 }
 
+
 li.link{
     cursor: pointer;
 
 }
-
-
-
-.leaderboard {
-    float: left;
-    width: 33.3%;
-    padding-top: 30px;
-    padding-bottom: 120px;
-    margin-top: 12%;
-    margin-bottom: 5%;
-}
-
-.top-stocks {
-    margin-top: 12%;
-    float: left;
-    padding-top: 30px;
-    padding-bottom: 120px;
-    width: 33.3%;
-}
-
-.top-stocks h1{
-    padding-bottom: 20px;
-}
-
-.leaderboard h1{
-    padding-bottom: 20px;
+.leaderboard-content, .top-stocks-content{
+    color:white!important;
+    font-weight: bold;
 }
 
 button {
@@ -54,4 +32,17 @@ button {
 button:hover{
     background-color: gray;
     color:white;
+}
+
+#top-stocks-title{
+    position: fixed;
+    right: 100px;
+    top: 80px;
+}
+
+#leaderboard-title{
+    position: fixed;
+    left: 50px;
+    top:80px;
+
 }
