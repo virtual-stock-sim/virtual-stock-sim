@@ -347,4 +347,24 @@ public class AccountController {
         }
     }
 
+    public void optInToLeaderboard(){
+        acc.setLeaderboardRank(0);
+
+        try {
+            acc.update();
+        } catch (SQLException e) {
+            logger.error("Error updating leaderboard rank in database.");
+        }
+    }
+
+    public void optOutOfLeaderboard(){
+        acc.setLeaderboardRank(-1);
+
+        try {
+            acc.update();
+        } catch (SQLException e) {
+            logger.error("Error updating leaderboard rank in database.");
+        }
+    }
+
 }

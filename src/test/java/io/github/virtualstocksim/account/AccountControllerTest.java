@@ -296,6 +296,17 @@ public class AccountControllerTest
         assertTrue(conn.getModel().getFollowedStocks().trim().isEmpty());
     }
 
+    @Test
+    public void testOptIn(){
+        conn.optInToLeaderboard();
+        assertNotEquals(conn.getModel().getLeaderboardRank(), -1);
+    }
+
+    @Test
+    public void testOptOut(){
+        conn.optOutOfLeaderboard();
+        assertEquals(conn.getModel().getLeaderboardRank(), -1);
+    }
 
 
 

@@ -91,6 +91,7 @@ public class ProfileServlet extends HttpServlet {
         boolean pictureUpdateSuccess;
         boolean credentialUpdateSuccess;
         boolean resetTransHistSuccess, resetFollowedSuccess;
+        boolean optOutSuccess, optInSuccess;
 
 
         // Make sure user is logged in
@@ -223,6 +224,7 @@ public class ProfileServlet extends HttpServlet {
                 errorMsgs.add("Required field empty. Be sure to confirm your password!");
             }
 
+            // check for user resetting either transaction history or followed stocks
             String resetTransHist = req.getParameter("reset-transaction-history");
             String resetFollowed = req.getParameter("reset-followed");
             if(resetTransHist!=null)
@@ -239,6 +241,25 @@ public class ProfileServlet extends HttpServlet {
                 req.setAttribute("resetFollowedSuccess", resetFollowedSuccess);
                 logger.info("Followed Stocks successfully cleared");
             }
+
+            String optIn = req.getParameter("opt-in");
+            String optOut = req.getParameter("opt-out");
+            if(optIn!=null)
+            {
+                controller.optInToLeaderboard();
+                optInSuccess = true;
+                req.setAttribute("optInSuccess", optInSuccess);
+                logger.info("User successfully opted into leaderboard");
+
+            }
+            if(optOut!=null)
+            {
+                controller.optOutOfLeaderboard();
+                optOutSuccess = true;
+                req.setAttribute("optOutSuccess", optOutSuccess);
+                logger.info("User successfully opted out of leaderboard");
+            }
+
 
         }
         else
