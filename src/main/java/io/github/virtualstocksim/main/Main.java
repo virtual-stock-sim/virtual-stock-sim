@@ -27,6 +27,8 @@ public class Main
 
     public static void main(String[] args) throws Exception
     {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> logger.error("Uncaught exception!\n", e));
+
         options.addOption("p", "port", true, "Port number to run server on");
         options.addOption("ssl", true, "Tells server to use SSL encryption with provided cert");
         options.addOption("sp", "securePort", true, "SSL/Secure port to run server on");

@@ -24,13 +24,14 @@ public class ResetAccountDB
         try
         {
             List<String> cmdFiles = new LinkedList<>();
-            cmdFiles.add("/accountSqlCmds/create_account_table.txt");
-            cmdFiles.add("/accountSqlCmds/create_reset_token_table.txt");
-            //cmdFiles.add("/accountSqlCmds/fill_account_table.txt");
+//            cmdFiles.add("/accountSqlCmds/create_account_table.txt");
+//            cmdFiles.add("/accountSqlCmds/create_reset_token_table.txt");
+            cmdFiles.add("/accountSqlCmds/fill_account_table.txt");
 
             for(String file : cmdFiles)
             {
-                resetCmds.add(IOUtils.toString(ResetAccountDB.class.getResourceAsStream(file), StandardCharsets.UTF_8));
+                String contents = IOUtils.toString(ResetAccountDB.class.getResourceAsStream(file), StandardCharsets.UTF_8);
+                if(!contents.trim().isEmpty()) resetCmds.add(contents);
             }
         }
         catch (IOException e)
@@ -46,14 +47,12 @@ public class ResetAccountDB
         {
             conn.setAutoCommit(false);
 
-            if(tableExists(conn, "reset_token"))
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet rs = dmd.getTables(null, "APP", "%", null);
+            while(rs.next())
             {
-                SQL.executeUpdate(conn, "DROP TABLE reset_token");
-            }
-
-            if(tableExists(conn, "account"))
-            {
-                SQL.executeUpdate(conn, "DROP TABLE account");
+                SQL.executeUpdate(conn, "DELETE FROM " + rs.getString(3));
+                SQL.executeUpdate(conn, "ALTER TABLE " + rs.getString(3) + " ALTER COLUMN id RESTART WITH 1");
             }
 
             for(String cmd : resetCmds)
