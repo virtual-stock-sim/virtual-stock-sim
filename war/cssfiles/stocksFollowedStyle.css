@@ -21,7 +21,8 @@ body {
 
 }
 
-.followed-heading {
+.heading {
+
     font-size: 0.7em;
     text-align: center;
     color:white!important;
@@ -56,17 +57,9 @@ h4{
 
 }
 a { color: inherit;}
-.sub{
-     text-decoration: none;
-     flex: 0 0 200px;
- }
 
-.percentSub {
-    text-decoration: none;
-    flex: 0 0 200px;
+
+#invested-stocks, #followed-stocks{
+    width: 49%;
+    float: left;
 }
-
-.wrapper{
-    padding-bottom: 15px;
-}
-

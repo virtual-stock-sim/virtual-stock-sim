@@ -37,9 +37,11 @@ public class StocksFollowedServlet extends HttpServlet
         Account localAcct = Account.Find(session.getAttribute("username").toString()).orElse(null);
         if(localAcct != null)
         {
-            StocksFollowed model = new StocksFollowed(localAcct.getFollowedStocks());
-            req.setAttribute("model", model);
             req.setAttribute("account", localAcct);
+            StocksFollowed followedModel = new StocksFollowed(localAcct.getFollowedStocks());
+            InvestmentCollection investModel = new InvestmentCollection(localAcct.getInvestedStocks());
+            req.setAttribute("followedModel", followedModel);
+            req.setAttribute("investModel", investModel);
             req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
         }
         else

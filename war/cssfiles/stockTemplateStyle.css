@@ -6,9 +6,13 @@ body{
 .vss-panel {
     margin-top: 50px;
     margin-left: 3%;
-    width:50%;
+    width:100%;
     color:white;
     background: none;
+
+
+
+
 }
 
 
@@ -45,7 +49,8 @@ body{
 
 .vss-panel-heading span{
     color: white;
-    padding: 0px 100px 0px 100px;
+    justify-content: space-between;
+    padding: 0px 80px 0px 80px;
 }
 
 
@@ -169,4 +174,9 @@ body{
 
 .modal-body textarea{
     font-weight: bold;
+}
+
+
+#stock-invest-dropdown.dropdown{
+    width:45%!important;
 }

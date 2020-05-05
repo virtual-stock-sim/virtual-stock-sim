@@ -1,7 +1,6 @@
 package io.github.virtualstocksim.leaderboard;
 
 import io.github.virtualstocksim.stock.Stock;
-import sun.awt.Symbol;
 
 import java.math.BigDecimal;
 import java.util.Collections;

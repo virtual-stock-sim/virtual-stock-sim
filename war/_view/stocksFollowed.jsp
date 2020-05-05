@@ -32,10 +32,7 @@
 
 <div class = "bg-img"></div>
 
-<div class ="followed-heading">
-    <h1>FOLLOWED STOCKS</h1>
-    <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
-</div>
+
 <c:if test="${! empty buySuccessMsg}">
     <div class="alert alert-success alert-dismissible" id="buy-success" style="width:50%; margin-left: 25%;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -48,18 +45,26 @@
 </c:if>
 
 
-<div class="parent">
-    <c:forEach var="followItem" items="${followedModel.stocksFollowed}">
-        <t:stockTemplate stock="${followItem.stock}"/>
-    </c:forEach>
-</div>
 
-<div class="parent">
-    <c:forEach var="investItem" items="${investModel.investments}">
-        <t:stockTemplate stock="${investItem.stock}"/>
-    </c:forEach>
-</div>
+    <div id="followed-stocks">
+        <div class ="heading">
+            <h1>FOLLOWED STOCKS</h1>
+            <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
+        </div>
+        <c:forEach var="followItem" items="${followedModel.stocksFollowed}">
+            <t:stockTemplate stock="${followItem.stock}"/>
+        </c:forEach>
+    </div>
 
+    <div id="invested-stocks">
+        <div class ="heading">
+            <h1>INVESTED STOCKS</h1>
+            <h3>WHAT YOU ARE INVESTED IN</h3>
+        </div>
+        <c:forEach var="investedItem" items="${investModel.investments}">
+            <t:stockTemplate stock="${investedItem.stock}"/>
+        </c:forEach>
+    </div>
 
 
 </body>

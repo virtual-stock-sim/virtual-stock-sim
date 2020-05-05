@@ -1,32 +1,10 @@
 body {
     background-color: #404040;
-    color:white;
+    color: white;
     text-align: center;
     font-family: "Lato", sans-serif;
     height: 100%;
 }
-
-/* Placing Button in upper left */
-.createAccountBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.profile-menu i {
-    border-style:hidden;
-    display: inline-block;
-
-}
-
-.profile-menu{
-    color:black;
-    position: absolute;
-    top:30px;
-    right:150px;
-}
-
-
 
 li.link{
     cursor: pointer;
@@ -52,11 +30,13 @@ li.link{
     width: 33.3%;
 }
 
-
-.header {
-
+.top-stocks h1{
+    padding-bottom: 20px;
 }
 
+.leaderboard h1{
+    padding-bottom: 20px;
+}
 
 button {
     background-color: #e7e7e7;
