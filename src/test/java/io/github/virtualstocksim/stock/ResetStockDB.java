@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import io.github.virtualstocksim.account.ResetAccountDB;
 import io.github.virtualstocksim.database.SQL;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -24,15 +25,15 @@ public class ResetStockDB
         try
         {
             List<String> cmdFiles = new LinkedList<>();
-            cmdFiles.add("/stockSqlCmds/create_stock_data_table.txt");
+//            cmdFiles.add("/stockSqlCmds/create_stock_data_table.txt");
             cmdFiles.add("/stockSqlCmds/fill_stock_data_table.txt");
-            cmdFiles.add("/stockSqlCmds/create_stock_table.txt");
+//            cmdFiles.add("/stockSqlCmds/create_stock_table.txt");
             cmdFiles.add("/stockSqlCmds/fill_stock_table.txt");
 
             for(String file : cmdFiles)
             {
-                resetCmds.add(IOUtils.toString(ResetStockDB.class.getResourceAsStream(file), StandardCharsets.UTF_8));
-            }
+                String contents = IOUtils.toString(ResetStockDB.class.getResourceAsStream(file), StandardCharsets.UTF_8);
+                if(!contents.trim().isEmpty()) resetCmds.add(contents);            }
         }
         catch (IOException e)
         {
@@ -47,13 +48,12 @@ public class ResetStockDB
         {
             conn.setAutoCommit(false);
 
-            if(tableExists(conn, "stock"))
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet rs = dmd.getTables(null, "APP", "%", null);
+            while(rs.next())
             {
-                SQL.executeUpdate(conn, "DROP TABLE stock");
-            }
-            if(tableExists(conn, "stock_data"))
-            {
-                SQL.executeUpdate(conn, "DROP TABLE stock_data");
+                SQL.executeUpdate(conn, "DELETE FROM " + rs.getString(3));
+                SQL.executeUpdate(conn, "ALTER TABLE " + rs.getString(3) + " ALTER COLUMN id RESTART WITH 1");
             }
 
             for(String cmd : resetCmds)
