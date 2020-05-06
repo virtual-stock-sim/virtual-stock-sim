@@ -1,4 +1,4 @@
-package io.github.virtualstocksim.util;
+package io.github.virtualstocksim.util.priority;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RunnableFuture;

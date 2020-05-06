@@ -1,6 +1,13 @@
 package io.github.virtualstocksim.scraper;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import io.github.virtualstocksim.stock.stockrequest.StockResponseCode;
+import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.priority.Priority;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +18,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import static org.junit.Assert.fail;
 
 public class ScraperTest {
     private static final Logger logger = LoggerFactory.getLogger(ScraperTest.class);
@@ -22,34 +33,77 @@ public class ScraperTest {
             "PYPL", "PEP", "PPL", "RL", "LUV", "AAL", "WU", "WHR", "GE", "GM"));      //fourty example Stocks to search for
 
 
-    private static List<String> symbols = new LinkedList<String>(Arrays.asList("MMM", "ABT", "ABBV", "GOOGL", "LUV"));
-    private static List<String> descriptions = new LinkedList<String>();
-    private static List<JsonArray> JsonArrays = new LinkedList<JsonArray>();
-    private static List<JsonArray> stressJsonArrays = new LinkedList<JsonArray>();
-    private static List<BigDecimal> openingPrices = new LinkedList<BigDecimal>();
-    private static Scraper scraper = new Scraper();
-    /**
-     * Pause program execution
-     * @param baseTime Base time for pause
-     * @param variationUpperBound Upper bound of variation added to baseTime
-     * @throws InterruptedException
-     */
-    private static void pause(int baseTime, int variationUpperBound) throws InterruptedException
-    {
-        Random r = new Random();
-        int variation = r.nextInt(variationUpperBound);
-        logger.info("Pausing execution for " + (baseTime+variation) + " seconds");
 
-        TimeUnit.SECONDS.sleep(baseTime + variation);
-    }
-
-    private static void pause() throws InterruptedException
-    {
-        pause(10, 6);
-    }
     @Test
-    public void debug() throws IOException {
-        System.out.println(scraper.getDescriptionAndHistory("GOOGL",TimeInterval.ONEWEEK));
+    public void testExists() throws InterruptedException, ExecutionException
+    {
+        runTestFunction(p -> Scraper.checkStockExists(p.getLeft(), p.getRight()));
+    }
+
+    @Test
+    public void testGetDescription() throws InterruptedException, ExecutionException
+    {
+        runTestFunction(p -> Scraper.getDescription(p.getLeft(), p.getRight()));
+    }
+
+    @Test
+    public void testGetDescAndHist() throws InterruptedException, ExecutionException
+    {
+        runTestFunction(p -> Scraper.getDescriptionAndHistory(p.getLeft(), TimeInterval.ONEMONTH, p.getRight()));
+    }
+
+    private static final List<Pair<String, Priority>> symbols = new LinkedList<>();
+    static
+    {
+        symbols.add(new ImmutablePair<>("GOOGL", Priority.MEDIUM));
+        symbols.add(new ImmutablePair<>("BDX", Priority.MEDIUM));
+        symbols.add(new ImmutablePair<>("RCL", Priority.LOW));
+        symbols.add(new ImmutablePair<>("DISCK", Priority.URGENT));
+        symbols.add(new ImmutablePair<>("aaaaasdlksdf", Priority.LOW));
+        symbols.add(new ImmutablePair<>("^NASDAQ", Priority.HIGH));
+        symbols.add(new ImmutablePair<>("AAPL", Priority.URGENT));
+    }
+
+    private static <T> void runTestFunction(Function<Pair<String, Priority>, Errorable<T, StockResponseCode>> func) throws InterruptedException, ExecutionException
+    {
+        final ExecutorService executor = Executors.newCachedThreadPool();
+        List<Callable<Boolean>> tasks = new LinkedList<>();
+
+        for(Pair<String, Priority> p : symbols)
+        {
+            tasks.add(() ->
+                      {
+                          Errorable<T, StockResponseCode> r = func.apply(p);
+                          logger.info(p.getLeft());
+                          if(r.isError())
+                          {
+                              if(p.getLeft().equals("aaaaasdlksdf") || p.getLeft().contains("^NASDAQ"))
+                              {
+                                  logger.info(r.getError().toString());
+                                  return true;
+                              }
+                              else
+                              {
+                                  logger.error(r.getError().toString());
+                                  return false;
+                              }
+                          }
+                          else
+                          {
+                              logger.info(r.getValue() + "");
+                              return true;
+                          }
+                      });
+        }
+
+        List<Future<Boolean>> futures = executor.invokeAll(tasks);
+        for(Future<Boolean> future : futures)
+        {
+            if(!future.get())
+            {
+                fail();
+            }
+        }
     }
 
     /*
