@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet
           {
             // If user input is invalid, return error message with same page
             errorMessage = "Login Failed. Please enter a valid username and password.";
-            req.setAttribute("errorMessage", errorMessage);
+
             req.setAttribute("CreateAccountModel",accountModel);
             req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
             return;
