@@ -41,7 +41,7 @@ public class PasswordResetManager {
     public String getUsername(){
         return this.username;
     }
-    public String getMessageone(){return this.errorMessage;}
+    public String getMessage(){return this.errorMessage;}
 
     public void setErrorMessage(String s){
         this.errorMessage=s;

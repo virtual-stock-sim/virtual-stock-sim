@@ -22,6 +22,7 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/reset"})
 
 public class ResetServlet extends HttpServlet {
+    private String errorMessage=null;
     public boolean passwordMatch=true;
     private static final long serialVersionUID = 1L;
     //private List<String> resetSalts = ResetToken.FindByAccountId() ;
@@ -39,7 +40,7 @@ public class ResetServlet extends HttpServlet {
         //changing the view based upon the existence of a token still works because
         //any invalid tokens will have already been deleted
         boolean isExpired = prm.isExpired(salt);
-
+        req.setAttribute("errorMessage", errorMessage);
         logger.info("Token expiration: isExpired: " + isExpired);
         if(salt!=null && !salt.trim().isEmpty()) {
                 if(ResetToken.Find(salt).orElse(null)!=null) {
@@ -72,6 +73,7 @@ public class ResetServlet extends HttpServlet {
             resp.sendRedirect("/login");
         }
 
+
        if(pass1!=null && pass2!=null && !token.trim().isEmpty()){//change password AND delete the token from the database
            if(pass1.equals(pass2) && pass1.length()>=8) {
                ResetToken localToken = ResetToken.Find(req.getParameter("token")).get();
@@ -87,14 +89,16 @@ public class ResetServlet extends HttpServlet {
 
                resp.sendRedirect("/login");
            }else if(pass1.equals(pass2)&& pass1.length()<8){
-                prm.setErrorMessage("Error: Your password must be at least 8 characters lonm");
+                errorMessage="Error: Your password must be at least 8 characters long";
                //send the user back to the same exact page with the link parameters
                logger.error("Please ensure that the passwords match! Try again");
+               req.setAttribute("errorMessage", errorMessage);
                resp.sendRedirect("/reset?token="+token);
            }else{
-               prm.setErrorMessage("Error: Passwords do not match");
+                errorMessage="Error: Passwords do not match";
                //send the user back to the same exact page with the link parameters
                logger.error("Please ensure that the passwords match! Try again");
+               req.setAttribute("errorMessage", errorMessage);
                 resp.sendRedirect("/reset?token="+token);
            }
           // req.getRequestDispatcher("/_view/reset.jsp").forward(req, resp);
