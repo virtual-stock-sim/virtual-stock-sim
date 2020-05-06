@@ -2,6 +2,7 @@ package io.github.virtualstocksim.account;
 import java.io.File;
 
 
+import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import org.slf4j.Logger;
@@ -26,20 +27,29 @@ public class PasswordResetManager {
     private String UUID;
     private String resetLink;
     private String resetSalt;
+    private String errorMessage="Hi there!";
 
-    //this will be used to generate the actual page. i.e:
+    //this class gets a random salt, sends the user a link to virtualstocksim.com/reset?token=<Salt_Generated>
     //virtualstocksim.com/reset/returned_from_this_message
     public String getResetSalt(){
         return this.resetSalt;
     }
     private static final Logger logger = LoggerFactory.getLogger(PasswordResetManager.class);
-
     public String getResetLink(){
         return this.resetLink;
     }
     public String getUsername(){
         return this.username;
     }
+    public String getMessageone(){return this.errorMessage;}
+
+    public void setErrorMessage(String s){
+        this.errorMessage=s;
+    }
+
+
+    //uses two other methods to either set the email an email to the user's input in the case they put in an email address
+    //or look up the email address from an account name
     public void setEmail(String input){
 
        if(this.checkIfEmail(input)) {
@@ -48,7 +58,7 @@ public class PasswordResetManager {
        }else if(this.checkIfUsername(input)){
             //shouldn't need the null check here since it is
             //already handled in the checkifusername function
-            this.email=Account.Find(input).get().getEmail();
+            this.email=Account.Find(input).orElse(null).getEmail();
         }
         else{
             //for security reasons, we should not let the user know that
@@ -134,14 +144,9 @@ public class PasswordResetManager {
         return resetLink;
     }
 
-    //**********************************************************************************************
-    //CHANGE THIS ON COMMIT UNTIL COMMAND LINE ARGS CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //DO NOT FORGET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private final String from = "virtualstocksim@gmail.com";
-    private final String password = "q@TK8$17wG#VI2G";
-    //DO NOT FORGET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //CHANGE THIS ON COMMIT UNTIL COMMAND LINE ARGS CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //**********************************************************************************************
+    //get email address and password from command line arguments
+    private final String from = Config.getConfig("email.addr");
+    private final String password = Config.getConfig("email.pass");
 
 
     public void sendMailWithLink(){
@@ -178,7 +183,6 @@ public class PasswordResetManager {
     }
     }
 
-    //after the mail is sent, we would want to auto generate a page with a time to live
 
 
 
