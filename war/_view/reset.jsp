@@ -44,7 +44,6 @@
     <p>If an account exists under that username or email, we will send an automated message to the email account associated with that username with instructions on how to reset your password</p>
 
 
-
     <input type="text" name="userInput" required="true" size="12" />
     <input type="Submit" name="submit" value="send reset email">
 
