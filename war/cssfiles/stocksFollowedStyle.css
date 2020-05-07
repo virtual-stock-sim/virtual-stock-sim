@@ -22,10 +22,10 @@ body {
 }
 
 .heading {
-
-    font-size: 0.7em;
+    font-size: 0.8em;
     text-align: center;
     color:white!important;
+    font-weight: bold;
 }
 
 
@@ -33,29 +33,6 @@ body {
     flex: 0 0 200px;
 }
 
-h4{
-    color:white;
-    display: flex;
-    justify-content:space-between;
-    font-family: "Lato", sans-serif;
-    padding-left: 340px;
-    padding-right: 300px;
-    text-shadow: 4px 5px 4px #000000;
-
-}
-
-.followed-item{
-    border-color:#333;
-    border-style: solid;
-    border-radius: 6px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color:white;
-    display: flex;
-    justify-content:space-between;
-
-}
 a { color: inherit;}
 
 
