@@ -18,6 +18,11 @@
 
     <root level="TRACE">
         <appender-ref ref="FILE"/>
+<!--        <appender-ref ref="STDOUT"/>-->
+    </root>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
 

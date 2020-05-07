@@ -22,10 +22,9 @@
     <p>Thank you for clicking on the reset link!</p>
     <p>Please input the new password </p>
 
-    <p><div class="error">the error message is: ${model.message}</div></p>
 
-    <c:if test="${! empty model.message}">
-        <div class="error">${model.message1}</div>
+    <c:if test="${! empty errorMessage}">
+        <div class="error">${errorMessage}</div>
     </c:if>
 
     <p>New password: </p>
@@ -44,9 +43,6 @@
     <p>Please provide the username or email for the account who's password you would like to reset</p>
     <p>If an account exists under that username or email, we will send an automated message to the email account associated with that username with instructions on how to reset your password</p>
 
-    <c:if test="${! empty model.message}">
-        <div class="error">${model.message}</div>
-    </c:if>
 
     <input type="text" name="userInput" required="true" size="12" />
     <input type="Submit" name="submit" value="send reset email">

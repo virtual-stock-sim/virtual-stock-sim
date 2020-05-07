@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
@@ -23,9 +24,9 @@ public class Stock extends DatabaseItem
     private String symbol;
     private BigDecimal currPrice;
     private BigDecimal prevClose;
-    private int currVolume;
-    private int prevVolume;
-    private int stockDataId;
+    private Integer currVolume;
+    private Integer prevVolume;
+    private Integer stockDataId;
     private Timestamp lastUpdated;
 
     protected Stock(
@@ -33,9 +34,9 @@ public class Stock extends DatabaseItem
             String symbol,
             BigDecimal currPrice,
             BigDecimal prevClose,
-            int currVolume,
-            int prevVolume,
-            int stockDataId,
+            Integer currVolume,
+            Integer prevVolume,
+            Integer stockDataId,
             Timestamp lastUpdated
     )
     {
@@ -49,6 +50,20 @@ public class Stock extends DatabaseItem
         this.lastUpdated = lastUpdated;
     }
 
+    /**
+     * Creates a new stock object to act as a data container. This does not represent database data
+     * and will fail to commit to the database as it has an id of -1
+     * @param symbol Stock symbol
+     * @param currPrice Current price
+     * @param prevClose Previous closing price
+     * @param currVolume Current market volume
+     * @param prevVolume Previous market volume
+     */
+    public Stock(String symbol, BigDecimal currPrice, BigDecimal prevClose, Integer currVolume, Integer prevVolume)
+    {
+        this(-1, symbol, currPrice, prevClose, currVolume, prevVolume, null, null);
+    }
+
     public String getSymbol() { return symbol; }
     public void setSymbol(String symbol) { this.symbol = symbol; }
 
@@ -58,14 +73,14 @@ public class Stock extends DatabaseItem
     public BigDecimal getPrevClose() { return prevClose; }
     public void setPrevClose(BigDecimal prevClose) { this.prevClose = prevClose; }
 
-    public int getCurrVolume() { return currVolume; }
-    public void setCurrVolume(int currVolume) { this.currVolume = currVolume; }
+    public Integer getCurrVolume() { return currVolume; }
+    public void setCurrVolume(Integer currVolume) { this.currVolume = currVolume; }
 
-    public int getPrevVolume() { return prevVolume; }
-    public void setPrevVolume(int prevVolume) { this.prevVolume = prevVolume; }
+    public Integer getPrevVolume() { return prevVolume; }
+    public void setPrevVolume(Integer prevVolume) { this.prevVolume = prevVolume; }
 
-    public int getStockDataId() { return this.stockDataId; }
-    public void setStockDataId(int stockDataId) { this.stockDataId = stockDataId; }
+    public Integer getStockDataId() { return this.stockDataId; }
+    public void setStockDataId(Integer stockDataId) { this.stockDataId = stockDataId; }
 
     public Timestamp getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(Timestamp lastUpdated) { this.lastUpdated = lastUpdated; }
@@ -75,7 +90,7 @@ public class Stock extends DatabaseItem
     }
 
     // Search database for stock entry based on param
-    public static Optional<Stock> Find(int id)
+    public static Optional<Stock> Find(Integer id)
     {
         return Find("id", id);
     }
@@ -142,9 +157,9 @@ public class Stock extends DatabaseItem
                                 columns.containsKey("symbol")           ? crs.getString("symbol")           : null,
                                 columns.containsKey("curr_price")       ? crs.getBigDecimal("curr_price")   : null,
                                 columns.containsKey("prev_close")       ? crs.getBigDecimal("prev_close")   : null,
-                                columns.containsKey("curr_volume")      ? crs.getInt("curr_volume")         : -1,
-                                columns.containsKey("prev_volume")      ? crs.getInt("prev_volume")         : -1,
-                                columns.containsKey("data_id")          ? crs.getInt("data_id")             : -1,
+                                columns.containsKey("curr_volume")      ? crs.getInt("curr_volume")         : null,
+                                columns.containsKey("prev_volume")      ? crs.getInt("prev_volume")         : null,
+                                columns.containsKey("data_id")          ? crs.getInt("data_id")             : null,
                                 columns.containsKey("last_updated")     ? crs.getTimestamp("last_updated")  : null
                         )
                 );
@@ -174,9 +189,9 @@ public class Stock extends DatabaseItem
             String symbol,
             BigDecimal currPrice,
             BigDecimal prevClose,
-            int currVolume,
-            int prevVolume,
-            int stockDataId,
+            Integer currVolume,
+            Integer prevVolume,
+            Integer stockDataId,
             Timestamp lastUpdated
     )
     {
@@ -217,6 +232,11 @@ public class Stock extends DatabaseItem
     @Override
     public void update(Connection conn) throws SQLException
     {
+        if(id < 1)
+        {
+            throw new SQLException("Data container stocks cannot be committed to the database");
+        }
+
         logger.info(String.format("Committing stock changes to database for Stock with ID %d and Symbol %s", id, symbol));
 
         List<String> updated = new LinkedList<>();
@@ -227,9 +247,9 @@ public class Stock extends DatabaseItem
         if(symbol != null && !symbol.trim().isEmpty())  columns.put("symbol",       symbol);
         if(currPrice != null)                           columns.put("curr_price",   currPrice);
         if(prevClose != null)                           columns.put("prev_close",   prevClose);
-        if(currVolume > -1)                             columns.put("curr_volume",  currVolume);
-        if(prevVolume > -1)                             columns.put("prev_volume",  prevVolume);
-        if(stockDataId > 0)                             columns.put("data_id",      stockDataId);
+        if(currVolume != null)                          columns.put("curr_volume",  currVolume);
+        if(prevVolume != null)                          columns.put("prev_volume",  prevVolume);
+        if(stockDataId != null)                         columns.put("data_id",      stockDataId);
         if(lastUpdated != null)                         columns.put("last_updated", lastUpdated);
 
         // Check each column name and add it to the update list if its been updated
@@ -287,13 +307,27 @@ public class Stock extends DatabaseItem
     public JsonObject asJson()
     {
         JsonObject obj = new JsonObject();
-        if(symbol != null) obj.addProperty("symbol", symbol);
-        if(currPrice != null) obj.addProperty("currPrice", currPrice);
-        if(prevClose != null) obj.addProperty("prevClose", prevClose);
-        if(currPrice != null && prevClose != null) obj.addProperty("percentChange", getPercentChange());
-        if(currVolume != -1) obj.addProperty("currVolume", currVolume);
-        if(prevVolume != -1) obj.addProperty("prevVolume", prevVolume);
-        if(lastUpdated != null) obj.addProperty("lastUpdated", lastUpdated.toString());
+        obj.addProperty("symbol", symbol);
+        obj.addProperty("currPrice", currPrice);
+        obj.addProperty("prevClose", prevClose);
+        if(currPrice != null && prevClose != null)
+        {
+            obj.addProperty("percentChange", getPercentChange());
+        }
+        else
+        {
+            obj.add("percentChange", JsonNull.INSTANCE);
+        }
+        obj.addProperty("currVolume", currVolume);
+        obj.addProperty("prevVolume", prevVolume);
+        if(lastUpdated != null)
+        {
+            obj.addProperty("lastUpdated", lastUpdated.toString());
+        }
+        else
+        {
+            obj.add("lastUpdated", JsonNull.INSTANCE);
+        }
 
         return obj;
     }

@@ -27,7 +27,6 @@ public class PasswordResetManager {
     private String UUID;
     private String resetLink;
     private String resetSalt;
-    private String errorMessage="Hi there!";
 
     //this class gets a random salt, sends the user a link to virtualstocksim.com/reset?token=<Salt_Generated>
     //virtualstocksim.com/reset/returned_from_this_message
@@ -41,11 +40,7 @@ public class PasswordResetManager {
     public String getUsername(){
         return this.username;
     }
-    public String getMessageone(){return this.errorMessage;}
 
-    public void setErrorMessage(String s){
-        this.errorMessage=s;
-    }
 
 
     //uses two other methods to either set the email an email to the user's input in the case they put in an email address

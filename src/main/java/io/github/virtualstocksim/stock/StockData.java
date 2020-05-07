@@ -1,13 +1,16 @@
 package io.github.virtualstocksim.stock;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
+import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.json.JsonError;
+import io.github.virtualstocksim.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.CachedRowSet;
+import java.io.IOException;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,6 +29,16 @@ public class StockData extends DatabaseItem
         super(id);
         this.data = data;
         this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * Creates a new stock data object to act as a data container. This does not represent database data
+     * and will fail to commit to the database as it has an id of -1
+     * @param data Stock data
+     */
+    public StockData(String data)
+    {
+        this(-1, data, null);
     }
 
     public String getData() { return data; }
@@ -157,6 +170,11 @@ public class StockData extends DatabaseItem
     @Override
     public void update(Connection conn) throws SQLException
     {
+        if(id < 1)
+        {
+            throw new SQLException("Data container stocks cannot be committed to the database");
+        }
+
         logger.info(String.format("Committing stock data changes to database for Stock data ID %d", id));
 
         List<String> updated = new LinkedList<>();
@@ -203,8 +221,14 @@ public class StockData extends DatabaseItem
 
     public JsonObject asJson()
     {
-        JsonObject json = JsonParser.parseString(data).getAsJsonObject();
-        json.addProperty("lastUpdated", lastUpdated.toString());
-        return json;
+        Errorable<JsonObject, JsonError> objErrorable = JsonUtil.getAs(JsonParser.parseString(data), JsonElement::getAsJsonObject);
+        if(objErrorable.isError())
+        {
+            logger.error("Stock data is corrupted: \n" + data);
+            throw new JsonParseException("Corrupted Stock data");
+        }
+        JsonObject obj = objErrorable.getValue();
+        obj.addProperty("lastUpdated", lastUpdated.toString());
+        return obj;
     }
 }

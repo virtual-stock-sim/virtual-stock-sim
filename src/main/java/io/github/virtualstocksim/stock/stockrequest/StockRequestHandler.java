@@ -9,6 +9,8 @@ import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.stock.StockData;
 import io.github.virtualstocksim.stock.StockDatabase;
 import io.github.virtualstocksim.update.ClientUpdater;
+import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.priority.Priority;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -181,38 +183,29 @@ public class StockRequestHandler implements HttpRequestListener
     private static final BigDecimal BIGD_NEG_ONE = new BigDecimal("-1.0");
     private Pair<Optional<Stock>, Optional<StockData>> findNewStock(String symbol) throws StockRequestException
     {
-        try
-        {
-            // Retrieve and add new stock data to database
-            JsonObject descAndHist = Scraper.getDescriptionAndHistory(symbol, TimeInterval.ONEMONTH);
-            Optional<StockData> data = StockData.Create(String.valueOf(descAndHist), SQL.GetTimeStamp());
+        // Retrieve and add new stock data to database
+        Errorable<JsonObject, StockResponseCode> descAndHist = Scraper.getDescriptionAndHistory(symbol, TimeInterval.ONEMONTH, Priority.HIGH);
+        if(descAndHist.isError())
+            throw new StockRequestException("Scraper was unable to get description and history for stock symbol: " + symbol, descAndHist.getError());
 
-            if(data.isPresent())
+        Optional<StockData> data = StockData.Create(String.valueOf(descAndHist.getValue()), SQL.GetTimeStamp());
+
+        if(data.isPresent())
+        {
+            // Create a placeholder stock to be updated in the next update cycle
+            Optional<Stock> stock = Stock.Create(symbol, BIGD_NEG_ONE, BIGD_NEG_ONE, -1, -1, data.get().getId(), null);
+            if(stock.isPresent())
             {
-                // Create a placeholder stock to be updated in the next update cycle
-                Optional<Stock> stock = Stock.Create(symbol, BIGD_NEG_ONE, BIGD_NEG_ONE, -1, -1, data.get().getId(), null);
-                if(stock.isPresent())
-                {
-                    return new ImmutablePair<>(stock, data);
-                }
-                else
-                {
-                    throw new StockRequestException("New Stock was unable to be created in the database", StockResponseCode.SERVER_ERROR);
-                }
+                return new ImmutablePair<>(stock, data);
             }
             else
             {
-                throw new StockRequestException("New StockData was unable to be created in the database", StockResponseCode.SERVER_ERROR);
+                throw new StockRequestException("New Stock was unable to be created in the database", StockResponseCode.SERVER_ERROR);
             }
-
         }
-        catch (IOException e)
+        else
         {
-            throw new StockRequestException("Exception finding stock with scraper", StockResponseCode.SERVER_ERROR, e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw new StockRequestException("Stock '" + symbol + "' was unable to be found", StockResponseCode.INVALID_SYMBOL);
+            throw new StockRequestException("New StockData was unable to be created in the database", StockResponseCode.SERVER_ERROR);
         }
     }
 
@@ -220,11 +213,11 @@ public class StockRequestHandler implements HttpRequestListener
      * Wraps the retrieval of a json element as a type within a try/catch to avoid code bloat
      * @param getFunc Anonymous function to retrieve element
      * @param onError Error code to add to StockRequestException if retrieval fails
-     * @param memberName Name of member tha was attempting to be retrieved
+     * @param memberName Name of member that was attempting to be retrieved
      * @param <T> Type of returned element
      * @return Result of getFunc
      */
-    public static  <T> T getOrError(Supplier<T> getFunc, StockResponseCode onError, String memberName) throws StockRequestException
+    public static <T> T getOrError(Supplier<T> getFunc, StockResponseCode onError, String memberName) throws StockRequestException
     {
         try
         {
@@ -232,7 +225,7 @@ public class StockRequestHandler implements HttpRequestListener
         }
         catch (NullPointerException e)
         {
-            throw new StockRequestException("'" + memberName + "' does not exist\n", onError, e);
+            throw new StockRequestException("'" + memberName + "' does not exist", onError, e);
         }
         catch (IllegalStateException | ClassCastException | NumberFormatException e)
         {
