@@ -8,15 +8,15 @@ import java.util.concurrent.TimeoutException;
 public class PriorityFuture<T> implements RunnableFuture<T>, Comparable<PriorityFuture<T>>
 {
     private final RunnableFuture<T> child;
-    private final int priority;
+    private final Priority priority;
 
-    public PriorityFuture(RunnableFuture<T> child, int priority)
+    public PriorityFuture(RunnableFuture<T> child, Priority priority)
     {
         this.child = child;
         this.priority = priority;
     }
 
-    public int getPriority() { return priority; }
+    public Priority getPriority() { return priority; }
 
     @Override
     public void run()
@@ -57,6 +57,6 @@ public class PriorityFuture<T> implements RunnableFuture<T>, Comparable<Priority
     @Override
     public int compareTo(PriorityFuture<T> o)
     {
-        return Integer.compare(priority, o.getPriority());
+        return Integer.compare(priority.asInt(), o.getPriority().asInt());
     }
 }

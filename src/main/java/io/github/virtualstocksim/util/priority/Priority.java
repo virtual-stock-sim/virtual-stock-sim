@@ -11,5 +11,5 @@ public enum Priority
     // This can wait as long as necessary
     LOW;
 
-    public int getPriority() { return ordinal(); }
+    public int asInt() { return ordinal(); }
 }

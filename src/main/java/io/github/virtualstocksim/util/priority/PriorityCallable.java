@@ -4,16 +4,16 @@ import java.util.concurrent.Callable;
 
 public abstract class PriorityCallable<T> implements Callable<T>, Comparable<PriorityCallable<T>>
 {
-    private final int priority;
-    protected PriorityCallable(int priority)
+    private final Priority priority;
+    protected PriorityCallable(Priority priority)
     {
         this.priority = priority;
     }
-    public int getPriority() { return priority; }
+    public Priority getPriority() { return priority; }
 
     @Override
     public int compareTo(PriorityCallable<T> o)
     {
-        return Integer.compare(priority, o.getPriority());
+        return Integer.compare(priority.asInt(), o.getPriority().asInt());
     }
 }
