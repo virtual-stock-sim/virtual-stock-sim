@@ -32,4 +32,4 @@ update.stockdata.start=00:00:00
 
 # Scraper Delay
     # Maximum delay between scraper tasks in seconds
-scraper.delay = 13
+scraper.delay = 10

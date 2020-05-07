@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.stock;
 
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
@@ -315,11 +316,18 @@ public class Stock extends DatabaseItem
         }
         else
         {
-            obj.add("percentChange", null);
+            obj.add("percentChange", JsonNull.INSTANCE);
         }
         obj.addProperty("currVolume", currVolume);
         obj.addProperty("prevVolume", prevVolume);
-        obj.addProperty("lastUpdated", lastUpdated.toString());
+        if(lastUpdated != null)
+        {
+            obj.addProperty("lastUpdated", lastUpdated.toString());
+        }
+        else
+        {
+            obj.add("lastUpdated", JsonNull.INSTANCE);
+        }
 
         return obj;
     }

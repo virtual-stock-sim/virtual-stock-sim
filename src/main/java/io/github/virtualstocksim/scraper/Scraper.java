@@ -297,7 +297,7 @@ public class Scraper {
         return Errorable.WithValue(result);
     }
 
-    public static Collection<Errorable<Stock, StockResponseCode>> getCurrentData(List<String> symbols, Priority priority) throws IOException
+    public static Collection<Errorable<Stock, StockResponseCode>> getCurrentData(Set<String> symbols, Priority priority) throws IOException
     {
         if(symbols.isEmpty())
             throw new IllegalArgumentException("Symbol list can't be empty");
@@ -431,7 +431,7 @@ public class Scraper {
         {
             throw new IOException("Exception while parsing current data response\n", e);
         }
-        
+
         return resultMap.values();
     }
 

@@ -188,7 +188,7 @@ public class StockRequestHandler implements HttpRequestListener
         if(descAndHist.isError())
             throw new StockRequestException("Scraper was unable to get description and history for stock symbol: " + symbol, descAndHist.getError());
 
-        Optional<StockData> data = StockData.Create(String.valueOf(descAndHist.getError()), SQL.GetTimeStamp());
+        Optional<StockData> data = StockData.Create(String.valueOf(descAndHist.getValue()), SQL.GetTimeStamp());
 
         if(data.isPresent())
         {

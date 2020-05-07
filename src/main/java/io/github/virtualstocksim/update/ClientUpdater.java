@@ -118,7 +118,7 @@ public class ClientUpdater
             }
             catch (UpdateException e)
             {
-                logger.info("Exception while updating stocks\n", e);
+                logger.error("Exception while updating stocks\n", e);
             }
         });
 
@@ -136,7 +136,7 @@ public class ClientUpdater
             }
             catch (UpdateException e)
             {
-                logger.error("Exception while updating stocks\n", e);
+                logger.error("Exception while updating stock data\n", e);
             }
         });
     }
