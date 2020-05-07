@@ -5,9 +5,6 @@ stockdb.maxSymbolLen=10
 # Account database
 accountdb.uri=jdbc:derby:vss_test_accountdatabase.db;create=true
 
-# API Url
-stockapi.url=https://sandbox.iexapis.com/stable/stock/market/batch?types=quote&token=Tpk_2375b638cd794fc8b05ed84f5f45036f&symbols=
-
 # Stock API update time interval - hh:mm:ss
 update.stock.interval=00:01:00
 
@@ -32,4 +29,4 @@ update.stockdata.start=00:00:00
 
 # Scraper Delay
     # Maximum delay between scraper tasks in seconds
-scraper.delay = 13
+scraper.delay = 10

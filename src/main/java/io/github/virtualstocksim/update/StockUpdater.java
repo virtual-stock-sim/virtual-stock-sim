@@ -30,7 +30,6 @@ import java.util.Map;
 public class StockUpdater
 {
     private static final Logger logger = LoggerFactory.getLogger(StockUpdater.class);
-    private static final String apiUrl = Config.getConfig("stockapi.url");
 
     /**
      * Update the frequently changing data for stocks
