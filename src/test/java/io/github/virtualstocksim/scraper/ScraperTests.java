@@ -60,23 +60,23 @@ public class ScraperTests
             tasks.add(() ->
                       {
                           Errorable<T, StockResponseCode> r = func.apply(p);
-                          logger.info(p.getLeft());
+                          logger.info("Stock symbol: " + p.getLeft());
                           if(r.isError())
                           {
                               if(p.getLeft().equals("aaaaasdlksdf") || p.getLeft().contains("^NASDAQ"))
                               {
-                                  logger.info(r.getError().toString());
+                                  logger.info("Error correctly returned" + r.getError().toString());
                                   return true;
                               }
                               else
                               {
-                                  logger.error(r.getError().toString());
+                                  logger.error("Bad error: " + r.getError().toString());
                                   return false;
                               }
                           }
                           else
                           {
-                              logger.info(r.getValue() + "");
+                              logger.info("Result: " + r.getValue());
                               return true;
                           }
                       });
