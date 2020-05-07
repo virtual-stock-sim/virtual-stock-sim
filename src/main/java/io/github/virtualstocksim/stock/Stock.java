@@ -49,6 +49,20 @@ public class Stock extends DatabaseItem
         this.lastUpdated = lastUpdated;
     }
 
+    /**
+     * Creates a new stock object to act as a data container. This does not represent database data
+     * and will fail to commit to the database as it has an id of -1
+     * @param symbol Stock symbol
+     * @param currPrice Current price
+     * @param prevClose Previous closing price
+     * @param currVolume Current market volume
+     * @param prevVolume Previous market volume
+     */
+    public Stock(String symbol, BigDecimal currPrice, BigDecimal prevClose, Integer currVolume, Integer prevVolume)
+    {
+        this(-1, symbol, currPrice, prevClose, currVolume, prevVolume, null, null);
+    }
+
     public String getSymbol() { return symbol; }
     public void setSymbol(String symbol) { this.symbol = symbol; }
 
@@ -217,6 +231,11 @@ public class Stock extends DatabaseItem
     @Override
     public void update(Connection conn) throws SQLException
     {
+        if(id < 1)
+        {
+            throw new SQLException("Data container stocks cannot be committed to the database");
+        }
+
         logger.info(String.format("Committing stock changes to database for Stock with ID %d and Symbol %s", id, symbol));
 
         List<String> updated = new LinkedList<>();
@@ -287,13 +306,20 @@ public class Stock extends DatabaseItem
     public JsonObject asJson()
     {
         JsonObject obj = new JsonObject();
-        if(symbol != null) obj.addProperty("symbol", symbol);
-        if(currPrice != null) obj.addProperty("currPrice", currPrice);
-        if(prevClose != null) obj.addProperty("prevClose", prevClose);
-        if(currPrice != null && prevClose != null) obj.addProperty("percentChange", getPercentChange());
-        if(currVolume != -1) obj.addProperty("currVolume", currVolume);
-        if(prevVolume != -1) obj.addProperty("prevVolume", prevVolume);
-        if(lastUpdated != null) obj.addProperty("lastUpdated", lastUpdated.toString());
+        obj.addProperty("symbol", symbol);
+        obj.addProperty("currPrice", currPrice);
+        obj.addProperty("prevClose", prevClose);
+        if(currPrice != null && prevClose != null)
+        {
+            obj.addProperty("percentChange", getPercentChange());
+        }
+        else
+        {
+            obj.add("percentChange", null);
+        }
+        obj.addProperty("currVolume", currVolume);
+        obj.addProperty("prevVolume", prevVolume);
+        obj.addProperty("lastUpdated", lastUpdated.toString());
 
         return obj;
     }
