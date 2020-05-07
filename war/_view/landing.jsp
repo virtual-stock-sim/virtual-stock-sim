@@ -30,7 +30,7 @@
                 <span class="navbar-toggler-bar"></span>
                 <span class="navbar-toggler-bar"></span>
             </button>
-            <a class="navbar-brand" onclick="redirectHome()">V S S</a>
+            <a class="navbar-brand" style="cursor:pointer;" rel="tooltip" title="Home" onclick="redirectHome()">V S S</a>
         </div>
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav ml-auto">

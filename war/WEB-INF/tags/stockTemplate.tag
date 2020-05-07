@@ -7,11 +7,11 @@
 
 
 
-<div class="stock-template" style="margin-left: 5%;">
+<div class="stock-template" style="margin-left: 10%;">
     <div hidden class="stockSymbol">${stock.symbol}</div>
     <div class="dropdown" id="stock-invest-dropdown">
         <button class="btn btn-default dropdown-toggle dropdown-title" id="invest-btn" data-toggle="dropdown" style="position:relative;
-    top:95px;right:60px;">
+    top:95px;right:80px;z-index: 1000;">
             INVEST<i class="material-icons" style="border-style:hidden;display:inline-block;position:relative;top:4px;">
             import_export</i>
             </button>

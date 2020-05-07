@@ -8,7 +8,7 @@
 
 
 
-<nav class="navbar navbar-toggleable-md static-top ">
+<nav class="navbar navbar-toggleable-md static-top " style="border-radius: 0px!important;">
     <div class="container">
         <div class="navbar-translate">
             <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,7 @@
                 <span class="navbar-toggler-bar"></span>
                 <span class="navbar-toggler-bar"></span>
             </button>
-            <a class="navbar-brand" data-placement="bottom" onclick="redirectHome()" rel="tooltip" title="Home">V S S</a>
+            <a class="navbar-brand" data-placement="bottom" onclick="redirectHome()" rel="tooltip" style="cursor:pointer;"title="Home">V S S</a>
         </div>
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav ml-auto">
@@ -69,12 +69,12 @@
 
                             <span class="caret" style="color:white;"></span></button>
                         <u1 class="dropdown-menu">
-                            <li class="dropdown-header large"> Hi, ${account.username}</li>
-                            <li class="dropdown-item"><a onclick="redirectProfile()">My Account<i class="fa fa-user" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
-                            <li class="dropdown-item"><a>Wallet Balance: $${account.walletBalance}<i class="material-icons" style="font-size: 15px;border-style: hidden;padding: 4px;
+                            <li class="dropdown-header large" style="cursor: pointer;"> Hi, ${account.username}</li>
+                            <li class="dropdown-item" style="cursor: pointer;"><a onclick="redirectProfile()">My Account<i class="fa fa-user" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
+                            <li class="dropdown-item" style="cursor: pointer;"><a>Wallet Balance: $${account.walletBalance}<i class="material-icons" style="font-size: 15px;border-style: hidden;padding: 4px;
                                                                                         position:relative;top:2px;">account_balance_wallet</i></a></li>
 
-                            <li class="dropdown-item"><a onclick="logout()">Sign out<i class="fa fa-sign-out" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
+                            <li class="dropdown-item" style="cursor:pointer;"><a onclick="logout()">Sign out<i class="fa fa-sign-out" style="border-style: hidden;display: inline-block;padding: 4px;"></i></a></li>
                         </u1>
                     </div>
                 </c:otherwise>
