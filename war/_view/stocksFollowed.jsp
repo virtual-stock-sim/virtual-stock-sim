@@ -46,6 +46,11 @@
         <strong>Success! </strong>${sellSuccessMsg}</div>
 </c:if>
 
+<c:if test="${! empty stockUnfollowSuccess}">
+    <div class="alert alert-success alert-dismissible" id="unfollow-success" style="width:50%;margin-left: 25%;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Success! </strong>${stockUnfollowSuccess}</div>
+</c:if>
 
 
     <div id="followed-stocks">
@@ -54,7 +59,7 @@
             <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
         </div>
         <c:forEach var="followItem" items="${followedModel.stocksFollowed}">
-            <t:stockTemplate stock="${followItem.stock}"/>
+            <t:stockTemplate stock="${followItem.stock}" followItem="${followItem}"/>
         </c:forEach>
     </div>
 
@@ -64,7 +69,7 @@
             <h3>WHAT'S MAKING YOU MONEY</h3>
         </div>
         <c:forEach var="investedItem" items="${investModel.investments}">
-            <t:stockTemplate stock="${investedItem.stock}"/>
+            <t:stockTemplate stock="${investedItem.stock}" investItem="${investedItem}"/>
         </c:forEach>
     </div>
 

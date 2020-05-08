@@ -163,7 +163,11 @@ public class AccountController {
         return resized;
     }
 
-    //to be used in MS4 view implementation
+    /**
+     *
+     * @param symbol symbol of stock to follow
+     * @throws SQLException if an error occurs updating in DB
+     */
     public void followStock(String symbol) throws SQLException {
         Stock localStock = Stock.Find(symbol).orElse(null);
         if (localStock == null) {
@@ -178,29 +182,71 @@ public class AccountController {
         if (queryResult.get(0) == null) {
             throw new TradeException("stock not found", TradeExceptionType.STOCK_NOT_FOUND);
         }
-        StocksFollowed temp = new StocksFollowed(localAccount.getFollowedStocks());
-        temp.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
-        acc.setFollowedStocks(temp.followObjectsToSting());
+        StocksFollowed followed = new StocksFollowed(localAccount.getFollowedStocks());
+        followed.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
+        acc.setFollowedStocks(followed.followObjectsToSting());
         acc.update();
     }
 
-    //to be used in MS4 view implementation
+    /**
+     *
+     * @param symbol - Symbol of stock to unfollow
+     * @throws SQLException if an error occurs updating in DB
+     */
     public void unFollowStock(String symbol) throws SQLException {
-        //StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
         List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
-        if (accounts.isEmpty() || accounts.get(0) == null) {
+        
+        if (accounts.isEmpty() || accounts.get(0) == null)
+        {
             throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
         }
-        StocksFollowed temp = new StocksFollowed(accounts.get(0).getFollowedStocks());
-        if (temp.containsStock(symbol)) {
-            temp.removeFollow(symbol);
-            acc.setFollowedStocks(temp.followObjectsToSting());
+
+        StocksFollowed followed = new StocksFollowed(accounts.get(0).getFollowedStocks());
+        if (followed.containsStock(symbol))
+        {
+            followed.removeFollow(symbol);
+            acc.setFollowedStocks(followed.followObjectsToSting());
             acc.update();
-        } else {
-            logger.error("Error: Control flow broke somewhere, user cannot unfollow a stock that they aren't following!~");
+        }
+        else
+        {
+            logger.error("Error: Control flow broke somewhere, user cannot unfollow a stock that they aren't following!");
         }
     }
 
+    /**
+     * Called when a user is unfollowing a stock and (may) still owns shares in it
+     * @param symbol Symbol of stock to uninvest
+     * @throws SQLException
+     */
+    public void unInvest(String symbol) throws SQLException {
+        List<Account> accounts = Account.FindCustom("SELECT id, invested_stocks FROM account WHERE UUID = ?", acc.getUUID());
+
+        // check if user exists
+        if (accounts.isEmpty() || accounts.get(0) == null)
+        {
+            throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
+        }
+
+        // get investments to retrieve shares
+        InvestmentCollection investmentCollection = new InvestmentCollection(accounts.get(0).getInvestedStocks());
+        int sharesToSell = investmentCollection.getInvestment(symbol).getNumShares();
+
+        if(sharesToSell > 0)
+        {
+            // sell all current shares of given stock, if any
+            trade(TransactionType.SELL, symbol, sharesToSell);
+        }
+
+    }
+
+    /**
+     *
+     * @param type Buy or Sell
+     * @param symbol Symbol of stock
+     * @param numShares Shares that user is buying or selling
+     * @throws SQLException If an error occurs updating in DB
+     */
     public void trade(TransactionType type, String symbol, int numShares) throws SQLException {
         if (numShares == -1) {
             throw new TradeException("Please specify at least one stock to trade with", TradeExceptionType.NOT_ENOUGH_SHARES);
@@ -347,6 +393,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Opt into investor leaderboard
+     */
     public void optInToLeaderboard(){
         acc.setLeaderboardRank(0);
 
@@ -357,6 +406,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Opt out of investor leaderboard
+     */
     public void optOutOfLeaderboard(){
         acc.setLeaderboardRank(-1);
 
@@ -367,6 +419,10 @@ public class AccountController {
         }
     }
 
+    /**
+     *
+     * @param newEmail Updated email from user
+     */
     public void resetEmail(String newEmail){
         acc.setEmail(newEmail);
 

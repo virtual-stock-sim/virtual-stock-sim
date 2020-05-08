@@ -59,6 +59,7 @@ public class StocksFollowedServlet extends HttpServlet
         String errorMsg = null;
         String buySuccessMsg = null;
         String sellSuccessMsg = null;
+        String stockUnfollowSuccess = null;
         // check if session exists, if not the user is not logged in or timedout.
         HttpSession session = req.getSession(false);
         if (session == null) {
@@ -82,6 +83,7 @@ public class StocksFollowedServlet extends HttpServlet
             String sellShares = req.getParameter("shares-to-sell");
             String buyShares = req.getParameter("shares-to-buy");
             String stockName = req.getParameter("stock-name");
+            String stockToUnfollow = req.getParameter("stock-to-unfollow");
 
 
 
@@ -104,6 +106,18 @@ public class StocksFollowedServlet extends HttpServlet
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
+
+            if(stockToUnfollow!=null){
+                try {
+                    localController.unFollowStock(stockToUnfollow);
+                    localController.unInvest(stockToUnfollow);
+                    stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
+                    req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);
+                } catch (SQLException e){
+                    logger.info("Error unfollowing "+stockToUnfollow+ ":"+e);
+                }
+
             }
         }else{
             logger.error("Account not found");
