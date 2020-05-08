@@ -15,9 +15,8 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
-    <script src="/js_files/redirect.js"></script>
-    <script src="/js_files/general.js"></script>
 
+    <script src="/js_files/redirect.js"></script>
 
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
