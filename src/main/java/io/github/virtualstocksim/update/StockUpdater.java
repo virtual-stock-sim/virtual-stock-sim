@@ -111,14 +111,17 @@ public class StockUpdater
                     {
                         logger.error("Periodic update failed for StockData Id: " + data.getId() + " in scraper phase. Error code: " + scraperData.getError());
                     }
-                    JsonObject dataJson = scraperData.getValue();
-                    Timestamp now = SQL.GetTimeStamp();
-                    dataJson.addProperty("lastUpdated", now.toString());
-                    data.setData(String.valueOf(dataJson));
-                    data.setLastUpdated(now);
+                    else
+                    {
+                        JsonObject dataJson = scraperData.getValue();
+                        Timestamp now = SQL.GetTimeStamp();
+                        dataJson.addProperty("lastUpdated", now.toString());
+                        data.setData(String.valueOf(dataJson));
+                        data.setLastUpdated(now);
 
-                    // Not using dedicated connection without auto commit since there's such a delay in-between update calls
-                    data.update();
+                        // Not using dedicated connection without auto commit since there's such a delay in-between update calls
+                        data.update();
+                    }
                 }
                 catch (SQLException e)
                 {

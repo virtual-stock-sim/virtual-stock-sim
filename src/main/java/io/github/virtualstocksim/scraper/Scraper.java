@@ -531,11 +531,11 @@ public class Scraper {
                         // Log the response
                         StatusLine sl = response.getStatusLine();
                         int statusCode = sl.getStatusCode();
-                        logger.trace("Response to: " + url + "\n" +
+                        logger.trace("Response to: " + url + "\n\n" +
                                              "Status Code: " + statusCode + "\n" +
                                              "Status Message: " + sl.getReasonPhrase() + "\n" +
-                                             "Content Type: " + (entity == null ? "Unkown" : entity.getContentType()) + "\n" +
-                                             "Body: " + (body == null ? "null" : body)
+                                             "Content Type: " + (entity == null ? "Unknown" : entity.getContentType()) + "\n" +
+                                             "Body: " + (body == null ? "null" : body) + "\n"
                                     );
 
                         // Return body if okay, otherwise return error code

@@ -128,7 +128,7 @@ public class ClientUpdater
             {
                 StockUpdater.updateStockDatas(Stock.FindAll(), TimeInterval.ONEMONTH);
                 JsonObject updateMessage = new JsonObject();
-                updateMessage.addProperty("type", StockType.STOCK.asString());
+                updateMessage.addProperty("type", StockType.STOCK_DATA.asString());
                 for(AsyncContext ac : DataStreamServlet.getConnectedClients().values())
                 {
                     DataStreamServlet.sendSimpleMessage(ac, String.valueOf(updateMessage));

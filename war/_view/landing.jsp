@@ -80,7 +80,7 @@
                 <h2 class="presentation-subtitle text-center">Simulated Investing, Reimagined</h2>
             </div>
         </div>
-        <div class="moving-clouds" style="background-image: url('http://demos.creative-tim.com/paper-kit-2/assets/img/clouds.png'); ">
+        <div class="moving-clouds" style="background-image: url('https://demos.creative-tim.com/paper-kit-2/assets/img/clouds.png'); ">
 
         </div>
     </div>
