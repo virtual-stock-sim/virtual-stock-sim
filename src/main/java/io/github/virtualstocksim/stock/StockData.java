@@ -159,11 +159,9 @@ public class StockData extends DatabaseItem
     @Override
     public void update() throws SQLException
     {
-        logger.info("Committing stock data changes to database");
-
         try(Connection conn = StockDatabase.getConnection())
         {
-            update(StockDatabase.getConnection());
+            update(conn);
         }
     }
 
