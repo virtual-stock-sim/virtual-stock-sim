@@ -1,3 +1,32 @@
 body {
+    text-align: center;
+    background-color: #404040;
+    font-family: "Lato", sans-serif;
+    color:white;
+}
 
+/* It would be no problem for me to finish styling, but I'm not sure what I'd change
+   Put items in the JSP in the hope that it would make things easier for Dan should he want to take the styling in a new direction
+   -Brett
+*/
+
+/*
+generalInformation describes the div with information like "Please submit the email of the account for the password you would like to reset"
+ */
+.generalInformation{
+    text-align: center;
+    font-size: 18px;
+    color:white;
+}
+
+
+.errorMessage{
+    color: orangered;
+}
+
+h1 {
+    text-align: center;
+
+    color: white;
+    font-size: 55px;
 }

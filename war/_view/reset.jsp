@@ -5,26 +5,24 @@
 <%@ page session = "false" %>
 
 <html>
-
-<style>
-    h1 {text-align: center}
-    p {text-align: center}
-    form {text-align: center}
-</style>
-
-
+<head>
+    <style><%@include file="../cssfiles/resetPageStyle.css"%></style>
+</head>
 <title>VSS-Password Reset</title>
-<h1>Forgot your password?</h1>
+<h1 >Forgot your password?</h1>
+
 <form action="${pageContext.servletContext.contextPath}/reset?token=${salt}"  method="post">
 
     <%-- In this case the link parameter is NOT empty(there is an argument AND it is valid in the DB according to checks in ResetToken and ResetManager after the question mark ...../reset?token=XXX --%>
 <c:if test="${not empty salt}">
-    <p>Thank you for clicking on the reset link!</p>
-    <p>Please input the new password </p>
+    <div class =generalInformation>
+        <p>Please input the new password & confirm it in the fields below </p>
+    </div>
+
 
 
     <c:if test="${! empty errorMessage}">
-        <div class="error">${errorMessage}</div>
+        <div class="errorMessage">${errorMessage}</div>
     </c:if>
 
     <p>New password: </p>
@@ -40,13 +38,14 @@
 
 <%-- In this case the link parameter is empty(there is nothing after the question mark ...../reset?token=XXX --%>
 <c:if test = "${empty salt}">
+
+    <div class = generalInformation>
     <p>Please provide the username or email for the account who's password you would like to reset</p>
     <p>If an account exists under that username or email, we will send an automated message to the email account associated with that username with instructions on how to reset your password</p>
-
+    </div>
 
     <input type="text" name="userInput" required="true" size="12" />
     <input type="Submit" name="submit" value="send reset email">
-
 
 </c:if>
 

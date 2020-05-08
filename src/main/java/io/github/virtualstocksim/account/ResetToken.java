@@ -40,7 +40,7 @@ public class ResetToken extends DatabaseItem
     /**
      * @param token Reset token as a Base64 url-safe encoded string
      */
-    public void setToken(String token) { this.token = token; }
+    public void setToken(String token) { this.token = token;  }
     public void setToken(byte[] token)
     {
         setToken(Base64.getUrlEncoder().withoutPadding().encodeToString(token));
@@ -206,6 +206,18 @@ public class ResetToken extends DatabaseItem
             params.add(id);
             SQL.executeUpdate(conn, "UPDATE reset_token SET " + String.join(", ", updated + " WHERE id = ?"), params.toArray());
         }
+    }
+
+    //probably not going to be used for anything practical, but I added for testing purposes
+    //-Brett
+    public static List <ResetToken> FindAll(){
+        return FindCustom("SELECT " +
+                "ID, " +
+                "ACCOUNT_ID, " +
+                "TOKEN, "+
+                "EXPIRATION " +
+                "FROM " +
+                "RESET_TOKEN");
     }
 
     @Override
