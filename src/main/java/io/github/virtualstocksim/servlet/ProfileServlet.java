@@ -224,6 +224,15 @@ public class ProfileServlet extends HttpServlet {
                 errorMsgs.add("Required field empty. Be sure to confirm your password!");
             }
 
+            // check for user changing email
+            String newEmail = req.getParameter("new-email");
+            if(newEmail!=null && !newEmail.isEmpty()){
+                controller.resetEmail(newEmail);
+                credentialUpdateSuccess = true;
+                req.setAttribute("credentialUpdateSuccess", credentialUpdateSuccess);
+                logger.info("Email successfully updated in database");
+            }
+
             // check for user resetting either transaction history or followed stocks
             String resetTransHist = req.getParameter("reset-transaction-history");
             String resetFollowed = req.getParameter("reset-followed");

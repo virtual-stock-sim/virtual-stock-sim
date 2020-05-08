@@ -308,6 +308,13 @@ public class AccountControllerTest
         assertEquals(conn.getModel().getLeaderboardRank(), -1);
     }
 
+    @Test
+    public void testResetEmail() {
+        conn.resetEmail("admin@vss.com");
+        assertEquals(conn.getModel().getEmail(), "admin@vss.com");
+        assertFalse(conn.getModel().getEmail().equals("test@vss.com"));
+    }
+
 
 
 

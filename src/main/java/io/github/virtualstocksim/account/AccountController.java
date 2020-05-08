@@ -367,4 +367,14 @@ public class AccountController {
         }
     }
 
+    public void resetEmail(String newEmail){
+        acc.setEmail(newEmail);
+
+        try {
+            acc.update();
+        } catch (SQLException e) {
+            logger.error("Error updating email in database.");
+        }
+    }
+
 }

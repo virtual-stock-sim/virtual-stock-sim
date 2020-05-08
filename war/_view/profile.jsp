@@ -139,6 +139,8 @@
 
             <!--Login Credentials form -->
             <form action= ${pageContext.servletContext.contextPath}/profile class="form-group" method="post" id = "creds-form">
+                    <label for="new-email">New Email:</label>
+                    <input type="email" id="new-email" name="new-email" class="form-control" placeholder="Enter a new email:"><br>
                     <label for="username">Username:</label>
                     <input type="text" id="username" name ="username" class="form-control" placeholder="${account.username}"><br>
                     <label for="password">Password:</label>
