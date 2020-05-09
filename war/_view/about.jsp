@@ -29,15 +29,21 @@
 <t:navbar account="${account}"/>
 
 <div class = vss-container style="padding:10px 16px">
+
+    <div class="github-link">
+        <p class="vss-center">You can view the project's GitHub repository by clicking here <a class="vss-large" href="https://github.com/virtual-stock-sim/virtual-stock-sim"><i class="fa fa-github"></i></a></p>
+    </div>
+
     <h3 class = "vss-center">ABOUT VSS</h3>
     <p class ="vss-center">What we bring to the table</p>
+
     <div class = "vss-row vss-center" >
         <div class = "vss-quarter">
         <i class="fa fa-crosshairs vss-center vss-jumbo"></i>
             <p class="vss-large">Deadly Accurate</p>
             <p>We know that making deadly accurate investments requires deadly accurate stock data. That's why we get
-            our stock data directly from real-world stock markets via a combination of the IEX API,
-            and Yahoo! Finance so you always know that your investments are as accurate as they can be.
+                our stock data directly from real-world stock markets via Yahoo! Finance so you always know that your
+                investments are as accurate as they can be.
             </p>
         </div>
         <div class = "vss-quarter">
@@ -125,7 +131,6 @@
                 </div>
             </div>
 </div>
-
 
 </body>
 </html>

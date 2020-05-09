@@ -94,3 +94,14 @@ body {
 .vss-card i{
     border-style: hidden;
 }
+
+
+.github-link{
+    padding: 10px;
+}
+
+.github-link p > a {
+    border-style: hidden;
+    text-decoration: none;
+    color:black;
+}
