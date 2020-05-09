@@ -14,7 +14,7 @@
     <!--Determine which buttons to display-->
     <c:choose>
         <c:when test="${empty followItem and empty investItem}">
-            <button class="btn btn-neutral" style="position:relative; top:95px;right:80px;z-index: 1000;">FOLLOW</button>
+            <button class="btn btn-neutral" id=${stock.symbol}-follow-btn" style="position:relative; top:95px;right:80px;z-index: 1000;">FOLLOW</button>
         </c:when>
         <c:otherwise>
             <div class="dropdown" id="stock-invest-dropdown">
