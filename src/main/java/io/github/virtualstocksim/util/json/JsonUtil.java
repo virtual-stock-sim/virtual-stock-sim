@@ -25,6 +25,7 @@ public class JsonUtil
      */
     public static <R> Result<R, JsonError> getMemberAs(JsonObject parent, String memberName, Function<? super JsonElement, R> getFunc)
     {
+        logger.trace("Extracting " + memberName + " from " + parent);
         try
         {
             if(parent.has(memberName))
@@ -44,6 +45,7 @@ public class JsonUtil
 
     public static <R> Result<R, JsonError> getAs(JsonElement element, Function<? super JsonElement, R> getFunc)
     {
+        logger.trace("Converting " + element);
         try
         {
             if(element.isJsonNull())
