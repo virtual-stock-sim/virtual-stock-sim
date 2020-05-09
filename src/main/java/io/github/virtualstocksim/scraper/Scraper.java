@@ -63,15 +63,20 @@ public class Scraper
 
         logger.info("Submitting company description request for '" + symbol + "'");
         String url = "https://finance.yahoo.com/quote/" + symbol + "/profile";
-        Optional<Connection.Response> response = getJsoupResponse(priority, url);
+        Result<Connection.Response, Integer> response = getJsoupResponse(priority, url);
 
-        if(!response.isPresent())
-            return Result.WithError(StockResponseCode.SERVER_ERROR);
+        if(response.isError())
+        {
+            if(response.getError() == HttpStatus.SC_NOT_FOUND)
+                return Result.WithError(StockResponseCode.SYMBOL_NOT_FOUND);
+            else
+                return Result.WithError(StockResponseCode.SERVER_ERROR);
+        }
 
         try
         {
             // Attempt to get company description from page
-            Document doc = response.get().parse();
+            Document doc = response.getValue().parse();
             Element elem = doc.getElementsByClass("Mt(15px) Lh(1.6)").first();
             String description;
 
@@ -80,31 +85,9 @@ public class Scraper
             {
                 return Result.WithValue(description);
             }
-            // Otherwise fallback to quote homepage for stock and try again
-                // This page contains the description as well but has much more content that has to be
-                // retrieved and parsed so the first link is ideal
             else
             {
-                url = "https://finance.yahoo.com/quote/" + symbol;
-                logger.warn("Was unable to get description for " + symbol + ". Falling back to " + url);
-                // Task has already waited for first response to occur, so try to get next response immediately unless the task isn't vital
-                response = getJsoupResponse(priority != Priority.LOW ? Priority.URGENT : priority, url);
-
-                if(!response.isPresent())
-                    return Result.WithError(StockResponseCode.SERVER_ERROR);
-
-                logger.info("Parsing response");
-                doc = response.get().parse();
-                elem = doc.getElementsByClass("businessSummary").first();
-
-                if(elem != null && !(description = elem.text()).isEmpty())
-                {
-                    return Result.WithValue(description);
-                }
-                else
-                {
-                    return Result.WithError(StockResponseCode.SERVER_ERROR);
-                }
+                return Result.WithError(StockResponseCode.SYMBOL_NOT_FOUND);
             }
         }
         catch (IOException e)
@@ -168,9 +151,17 @@ public class Scraper
                 }
             });
 
-            if(result == null || result.isError())
+
+            if(result == null)
             {
                 return Result.WithError(StockResponseCode.SERVER_ERROR);
+            }
+            else if(result.isError())
+            {
+                if(result.getError() == HttpStatus.SC_NOT_FOUND)
+                    return Result.WithValue(false);
+                else
+                    return Result.WithError(StockResponseCode.SERVER_ERROR);
             }
             else
             {
@@ -401,9 +392,9 @@ public class Scraper
      * Submit request and get response
      * @param priority Execution priority of the connection request
      * @param url Url of the target
-     * @return Response from the url
+     * @return Response from the url or an Http status code
      */
-    private static Optional<Connection.Response> getJsoupResponse(Priority priority, String url)
+    private static Result<Connection.Response, Integer> getJsoupResponse(Priority priority, String url)
     {
         try
         {
@@ -425,7 +416,7 @@ public class Scraper
                 }
             });
 
-            return response == null ? Optional.empty() : Optional.of(response);
+            return response == null ? Result.WithError(HttpStatus.SC_INTERNAL_SERVER_ERROR) : Result.WithValue(response);
         }
         catch (ExecutionException e)
         {
@@ -433,10 +424,13 @@ public class Scraper
             if(cause instanceof MalformedURLException)
             {
                 logger.error("Bad URL: " + url + "\n", e);
+                return Result.WithError(HttpStatus.SC_BAD_REQUEST);
             }
             else if(cause instanceof HttpStatusException)
             {
-                logger.error("Response for URL was '" + ((HttpStatusException) cause).getStatusCode() +"' not '200 OK'; URL: " + url + "\n", e);
+                HttpStatusException exception = (HttpStatusException) cause;
+                logger.error("Response for URL was '" + exception.getStatusCode() +"' not '200 OK'; URL: " + url + "\n", e);
+                return Result.WithError(exception.getStatusCode());
             }
             else if(cause instanceof UnsupportedMimeTypeException)
             {
@@ -454,7 +448,7 @@ public class Scraper
             {
                 logger.error("Exception executing request; Priority: " + priority.asInt() + " URL: " + url + "\n", e);
             }
-            return Optional.empty();
+            return Result.WithError(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
