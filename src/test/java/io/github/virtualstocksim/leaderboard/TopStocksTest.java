@@ -1,5 +1,6 @@
 package io.github.virtualstocksim.leaderboard;
 
+import io.github.virtualstocksim.stock.ResetStockDB;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ public class TopStocksTest {
     TopStocks topStocks;
     @Before
     public void setup(){
+        ResetStockDB.reset();
         topStocks = new TopStocks();
     }
 
@@ -19,6 +21,7 @@ public class TopStocksTest {
     @Test
     public void testSortStocks(){
         List<Map.Entry<String, Double>> topFiveStocks = topStocks.getTopFiveStocks();
+
         assertTrue(topFiveStocks.get(0).getKey().equals("AMZN"));
         assertTrue(topFiveStocks.get(1).getKey().equals("GOOGL"));
         assertTrue(topFiveStocks.get(2).getKey().equals("TSLA"));
