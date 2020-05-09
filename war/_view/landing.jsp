@@ -34,30 +34,30 @@
         </div>
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="About VSS" data-placement="bottom" onclick="redirectAbout()" target="_blank">
-                            <i class="fa fa-info-circle"></i>
-                            <p class="hidden-lg-up">About Us</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Followed Stocks" data-placement="bottom" onClick="redirectFollowing()" target="_blank">
-                            <i class="fa fa-line-chart"></i>
-                            <p class="hidden-lg-up">Following</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Compare Stocks" data-placement="bottom" onclick="redirectCompare()" target="_blank">
-                            <i class="fa fa-exchange"></i>
-                            <p class="hidden-lg-up">Compare</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" rel="tooltip" title="Transaction History" data-placement="bottom" onclick="redirectTransHist()" target="_blank">
-                            <i class="fa fa-list"></i>
-                            <p class="hidden-lg-up">Transaction History</p>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" rel="tooltip" title="About VSS" data-placement="bottom" onclick="redirectAbout()" target="_blank">
+                        <i class="fa fa-info-circle"></i>
+                        <p class="hidden-lg-up">About Us</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" rel="tooltip" title="Followed & Invested Stocks" data-placement="bottom" onClick="redirectFollowing()" target="_blank">
+                        <i class="fa fa-line-chart"></i>
+                        <p class="hidden-lg-up">Followed & Invested Stocks</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" rel="tooltip" title="Search & Compare Stocks" data-placement="bottom" onclick="redirectCompare()" target="_blank">
+                        <i class="fa fa-exchange"></i>
+                        <p class="hidden-lg-up">Search & Compare</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" rel="tooltip" title="Transaction History" data-placement="bottom" onclick="redirectTransHist()" target="_blank">
+                        <i class="fa fa-list"></i>
+                        <p class="hidden-lg-up">Transaction History</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a onclick="redirectLogin()" class="btn btn-neutral btn-round">Login</a>
                 </li>

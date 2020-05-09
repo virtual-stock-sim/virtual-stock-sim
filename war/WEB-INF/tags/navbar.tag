@@ -27,15 +27,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" rel="tooltip" title="Followed Stocks" data-placement="bottom" onClick="redirectFollowing()" target="_blank">
+                    <a class="nav-link" rel="tooltip" title="Followed & Invested Stocks" data-placement="bottom" onClick="redirectFollowing()" target="_blank">
                         <i class="fa fa-line-chart"></i>
-                        <p class="hidden-lg-up">Following</p>
+                        <p class="hidden-lg-up">Followed & Invested Stocks</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" rel="tooltip" title="Compare Stocks" data-placement="bottom" onclick="redirectCompare()" target="_blank">
+                    <a class="nav-link" rel="tooltip" title="Search & Compare Stocks" data-placement="bottom" onclick="redirectCompare()" target="_blank">
                         <i class="fa fa-exchange"></i>
-                        <p class="hidden-lg-up">Compare</p>
+                        <p class="hidden-lg-up">Search & Compare</p>
                     </a>
                 </li>
                 <li class="nav-item">

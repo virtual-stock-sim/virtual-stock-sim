@@ -29,7 +29,7 @@
     <div class = "bg-img"></div>
 
     <div class="heading">
-        <h1>COMPARE STOCKS</h1>
+        <h1>SEARCH & COMPARE STOCKS</h1>
         <h3>FRESH DATA AT YOUR FINGERTIPS</h3>
     </div>
         <label>
