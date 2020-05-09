@@ -6,6 +6,7 @@ export var StockType;
     StockType["STOCK"] = "stock";
     StockType["STOCK_DATA"] = "data";
     StockType["BOTH"] = "both";
+    StockType["FOLLOW"] = "follow";
 })(StockType || (StockType = {}));
 (function (StockType) {
     function deserialize(type) {

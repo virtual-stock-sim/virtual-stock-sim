@@ -6,7 +6,8 @@ export enum StockType
 {
     STOCK = "stock",
     STOCK_DATA = "data",
-    BOTH = "both"
+    BOTH = "both",
+    FOLLOW = "follow"
 }
 
 export namespace StockType
@@ -819,4 +820,15 @@ function parseDate(date: string): Date
     {
         return undefined;
     }
+}
+
+interface IStockFollowRequest
+{
+    symbol: string;
+}
+
+
+interface IStockFollowResponse
+{
+    code: string;
 }

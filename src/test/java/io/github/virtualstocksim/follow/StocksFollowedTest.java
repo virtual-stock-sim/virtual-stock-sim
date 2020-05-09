@@ -26,7 +26,7 @@ public class StocksFollowedTest {
         dummyFollows.add((new Follow(new BigDecimal(.12), Stock.Find("BDX").get(), SQL.GetTimeStamp())));
         control = new StocksFollowed(dummyFollows);
         //Control uses List constructor, test uses String constructor
-        test= new StocksFollowed(control.followObjectsToSting());
+        test= new StocksFollowed(control.followObjectsToString());
     }
 
     //check that the List constructor works so that we know the later serialization test results are more accurate (negate errors from other possible sources like this)

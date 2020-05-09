@@ -34,18 +34,14 @@ public class DatabaseFactory
     public static DataSource getDatabase(String databaseURI)
     {
         // Return existing data source for database if exists
-        if(getInstance().dataSources.containsKey(databaseURI))
-        {
-            return getInstance().dataSources.get(databaseURI);
-        }
-        // Else create and return a new data source
-        else
+        if (!getInstance().dataSources.containsKey(databaseURI))
         {
             BasicDataSource ds = new BasicDataSource();
             ds.setDriver(new EmbeddedDriver());
             ds.setUrl(databaseURI);
             getInstance().dataSources.put(databaseURI, ds);
-            return getInstance().dataSources.get(databaseURI);
         }
+
+        return getInstance().dataSources.get(databaseURI);
     }
 }

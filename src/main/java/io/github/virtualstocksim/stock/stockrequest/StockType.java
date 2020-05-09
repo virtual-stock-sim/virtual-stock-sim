@@ -7,7 +7,8 @@ public enum StockType
 {
     STOCK("stock"),
     STOCK_DATA("data"),
-    BOTH("both");
+    BOTH("both"),
+    FOLLOW("follow");
 
     private static final Logger logger = LoggerFactory.getLogger(StockType.class);
     private final String type;

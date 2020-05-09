@@ -83,12 +83,14 @@ public class DataStreamServlet extends HttpServlet
 
         // Is this a notification that the client is disconnecting
         String op = req.getParameter("op");
-        if(op != null && op.equals("close"))
+        String id;
+        if(op != null && op.equals("close") && (id = req.getHeader("id")) != null)
         {
-            AsyncContext ac = clients.remove(req.getHeader("id"));
+            AsyncContext ac = clients.remove(id);
             if(ac != null)
             {
                 ac.complete();
+                logger.info("Connection close request completed successfully - ID: " + id);
             }
         }
         else

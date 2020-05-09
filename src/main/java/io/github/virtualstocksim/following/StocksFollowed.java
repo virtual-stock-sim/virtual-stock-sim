@@ -51,7 +51,7 @@ public class StocksFollowed {
 
 
     //to change following objects into String for DB storage
-    public String followObjectsToSting(){
+    public String followObjectsToString(){
         String s = "";
         for (Follow f : this.getStocksFollowed()){
             s+=f.getInitialPrice()+"," + f.getStock().getSymbol()+ "," +f.getPercentChange()+"," + f.getTimeStamp() +  ";";
@@ -69,7 +69,7 @@ public class StocksFollowed {
     }
 
     public boolean containsStock(String symbol){
-        if(followObjectsToSting().contains(symbol)){
+        if(followObjectsToString().contains(symbol)){
             return true;
         }else {
             return false;

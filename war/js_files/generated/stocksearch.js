@@ -1,7 +1,7 @@
 import * as json from "./jsonformats.js";
 import { storeStockData } from "./stockstorage.js";
 import { StockRequest } from "./stockrequest.js";
-export function stockSearch(stockSymbol, onStockFound, onStockNotFound) {
+export function stockSearch(stockSymbol, searchType, onStockFound, onStockNotFound) {
     let onSearchResult = (responseItems) => {
         if (responseItems) {
             let data = responseItems[0].data;
@@ -13,8 +13,7 @@ export function stockSearch(stockSymbol, onStockFound, onStockNotFound) {
             onStockNotFound(json.StockResponseCode.SERVER_ERROR);
         }
     };
-    // TODO: Allow different type types. Maybe embed an attribute in the input element for ezStockSearch to read
-    let requestItem = new json.StockRequestItem(json.StockType.BOTH, stockSymbol);
+    let requestItem = new json.StockRequestItem(searchType, stockSymbol);
     let request = new StockRequest([requestItem], onSearchResult);
     request.send();
 }
@@ -23,7 +22,13 @@ export function ezStockSearch(inputElement, onStockFound, onStockNotFound) {
         if (e.key === 'Enter') {
             // @ts-ignore
             let stockSymbol = inputElement.value;
-            stockSearch(stockSymbol, onStockFound, onStockNotFound);
+            let type = json.StockType.deserialize(inputElement.dataset.type);
+            if (type !== undefined) {
+                stockSearch(stockSymbol, type, onStockFound, onStockNotFound);
+            }
+            else {
+                console.error("Undefined search type: " + inputElement.dataset.type);
+            }
         }
     });
 }

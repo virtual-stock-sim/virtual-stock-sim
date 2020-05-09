@@ -188,7 +188,7 @@ public class AccountController {
         }
         StocksFollowed followed = new StocksFollowed(localAccount.getFollowedStocks());
         followed.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
-        account.setFollowedStocks(followed.followObjectsToSting());
+        account.setFollowedStocks(followed.followObjectsToString());
         account.update();
     }
 
@@ -210,7 +210,7 @@ public class AccountController {
         if (followed.containsStock(symbol))
         {
             followed.removeFollow(symbol);
-            account.setFollowedStocks(followed.followObjectsToSting());
+            account.setFollowedStocks(followed.followObjectsToString());
             account.update();
         }
         else
@@ -305,7 +305,7 @@ public class AccountController {
                         System.out.println(f.getStock().getSymbol());
                     }
                     //update and push to DB
-                    account.setFollowedStocks(tempStocksFollowed.followObjectsToSting());
+                    account.setFollowedStocks(tempStocksFollowed.followObjectsToString());
                     account.update();
                     System.out.println("debug for string");
                     System.out.println(account.getFollowedStocks());
@@ -333,7 +333,7 @@ public class AccountController {
                     //if all of the shares are sold, then remove from invested and back to follow send out to DB
                     investmentCollection.removeInvestment(symbol);
                     stocksFollowed.setFollow( new Follow(localStock.getCurrPrice(),localStock,SQL.GetTimeStamp()));
-                    account.setFollowedStocks(stocksFollowed.followObjectsToSting());
+                    account.setFollowedStocks(stocksFollowed.followObjectsToString());
                 } else if (numShares < investmentCollection.getInvestment(symbol).getNumShares()) {
                     //already invested, just update the number of shares
                     investmentCollection.getInvestment(symbol).setNumShares(investmentCollection.getInvestment(symbol).getNumShares() - numShares);

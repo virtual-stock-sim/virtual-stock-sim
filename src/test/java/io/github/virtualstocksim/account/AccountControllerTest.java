@@ -73,7 +73,7 @@ public class AccountControllerTest
         followList.add(new Follow(new BigDecimal(12), Stock.Find("F").get(),SQL.GetTimeStamp()));
        // followList.add(new Follow(new BigDecimal(100), Stock.Find("BDX").get(),SQL.GetTimeStamp())); //add later to test addInvestment
         stocksFollowed = new StocksFollowed(followList);
-        conn.getModel().setFollowedStocks(stocksFollowed.followObjectsToSting());
+        conn.getModel().setFollowedStocks(stocksFollowed.followObjectsToString());
 
         List investmentList = new LinkedList<>();
         investmentList.add(new Investment(12,Stock.Find("AMZN").orElse(null),SQL.GetTimeStamp()));

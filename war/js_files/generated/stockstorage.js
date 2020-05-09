@@ -38,7 +38,6 @@ export function getStockData(symbolArr, onDataRetrieved) {
         onDataRetrieved(validStocks);
     }
     else {
-        console.log("??");
         // Assemble a list of StockRequestItems from the invalid stocks
         let requestItems = invalidStocks.map(stock => new StockRequestItem(json.StockType.STOCK_DATA, stock));
         let responseReceived = (response) => {

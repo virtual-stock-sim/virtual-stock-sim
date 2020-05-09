@@ -1,7 +1,11 @@
 package io.github.virtualstocksim.stock.stockrequest;
 
 import com.google.gson.*;
+import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.database.SQL;
+import io.github.virtualstocksim.following.Follow;
+import io.github.virtualstocksim.following.StocksFollowed;
 import io.github.virtualstocksim.scraper.Scraper;
 import io.github.virtualstocksim.scraper.TimeInterval;
 import io.github.virtualstocksim.servlet.HttpRequestListener;
@@ -18,9 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,6 +62,7 @@ public class StockRequestHandler implements HttpRequestListener
 
             long dataTTL = ClientUpdater.getStockDataUpdateInterval().toMillis();
 
+            Account account = null;
             for(JsonElement requestItemElem : requestItems)
             {
                 JsonObject responseItem = new JsonObject();
@@ -63,10 +70,25 @@ public class StockRequestHandler implements HttpRequestListener
                 StockResponseCode responseCode = StockResponseCode.OK;
                 try
                 {
+                    // Get the request item
                     JsonObject requestItem = getOrError(requestItemElem::getAsJsonObject, StockResponseCode.BAD_REQUEST, "Request Item");
 
                     type = getOrError(() -> StockType.of(requestItem.get("type").getAsString()), StockResponseCode.INVALID_TYPE, "type");
                     responseItem.addProperty("type", type.asString());
+
+                    //TODO:
+                    if(type == StockType.FOLLOW)
+                    {
+                        HttpSession session = req.getSession(false);
+                        String uuid;
+                        if(session == null || (uuid = session.getAttribute("uuid").toString()) == null || uuid.trim().isEmpty())
+                            throw new StockRequestException("Follow request received without a user attached to the session", StockResponseCode.BAD_REQUEST);
+
+                        account = Account.Find("uuid", uuid).orElse(null);
+
+                        if(account == null)
+                            throw new StockRequestException("Invalid user attached to the session", StockResponseCode.SERVER_ERROR);
+                    }
 
                     String symbol = getOrError(() -> requestItem.get("symbol").getAsString(), StockResponseCode.INVALID_SYMBOL, "symbol");
                     symbol = symbol.trim().toUpperCase();
@@ -76,7 +98,7 @@ public class StockRequestHandler implements HttpRequestListener
 
                     responseItem.addProperty("symbol", symbol);
 
-                    Pair<Optional<Stock>, Optional<StockData>> results = processRequest(type, symbol);
+                    Pair<Optional<Stock>, Optional<StockData>> results = processRequest(type, symbol, account);
 
                     Optional<Stock> stock = results.getLeft();
                     if(stock.isPresent())
@@ -127,7 +149,7 @@ public class StockRequestHandler implements HttpRequestListener
         writer.flush();
     }
 
-    private Pair<Optional<Stock>, Optional<StockData>> processRequest(StockType type, String symbol) throws StockRequestException
+    private Pair<Optional<Stock>, Optional<StockData>> processRequest(StockType type, String symbol, Account account) throws StockRequestException
     {
         switch (type)
         {
@@ -171,6 +193,27 @@ public class StockRequestHandler implements HttpRequestListener
                     }
                 }
                 break;
+            }
+            case FOLLOW:
+            {
+                Optional<Stock> stock = Stock.Find(symbol);
+                if(stock.isPresent())
+                {
+                    Follow follow = new Follow(stock.get().getCurrPrice(), stock.get(), SQL.GetTimeStamp());
+                    StocksFollowed stocksFollowed = new StocksFollowed(account.getFollowedStocks());
+                    stocksFollowed.addFollow(follow);
+                    account.setFollowedStocks(stocksFollowed.followObjectsToString());
+                    try
+                    {
+                        account.update();
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new StockRequestException("Unable to add stock to list of followed stocks for account; Uuid: " + account.getUUID(), StockResponseCode.SERVER_ERROR, e);
+                    }
+                }
+
+
             }
             default:
                 throw new StockRequestException("Invalid Type: " + type, StockResponseCode.INVALID_TYPE);

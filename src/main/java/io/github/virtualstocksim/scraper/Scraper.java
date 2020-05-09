@@ -38,7 +38,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Scraper {
+public class Scraper
+{
 
     private static final ThreadPoolExecutor executor = new ScraperTaskExecutor();
 
