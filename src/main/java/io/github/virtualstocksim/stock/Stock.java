@@ -292,11 +292,21 @@ public class Stock extends DatabaseItem
         if(currPrice != null && prevClose != null)
         {
             BigDecimal diff = currPrice.subtract(prevClose, MathContext.DECIMAL64);
-            BigDecimal change = diff.divide(prevClose.abs(), 9, RoundingMode.HALF_EVEN);
-            BigDecimal percentChange = change.multiply(DECIMAL_100);
+            if(prevClose.compareTo(new BigDecimal(0))!=0){
+                BigDecimal change = diff.divide(prevClose.abs(), 9, RoundingMode.HALF_EVEN);
+                BigDecimal percentChange = change.multiply(DECIMAL_100);
+                DecimalFormat df = new DecimalFormat("#.##");
+                return Double.parseDouble(df.format(percentChange));
+            }else{
+                //to avoid divide by 0
+                BigDecimal percentChange = new BigDecimal(100);
+                DecimalFormat df = new DecimalFormat("#.##");
+                return Double.parseDouble(df.format(percentChange));
+            }
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            return Double.parseDouble(df.format(percentChange));
+
+
+
         }
         else
         {

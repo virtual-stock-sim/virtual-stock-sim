@@ -23,7 +23,6 @@ public class TopStocks {
     }
 
     public List<Map.Entry<String, Double>> sortStocks() {
-
         for (Stock stock : this.stocks) {
             symbolChangePair.add(stock.getSymbolAndPercentChange());
         }
@@ -32,6 +31,7 @@ public class TopStocks {
         return symbolChangePair;
     }
 
+    //intelliJ says this function is never called, but I suppose it doesn't look for JSTL calls
     public List<Map.Entry<String, Double>> getTopFiveStocks() {
         this.pullStocksFromDB();
         this.sortStocks();
@@ -39,12 +39,15 @@ public class TopStocks {
         int max;
         //this check makes sure that the program does not crash
         //if there are less than 5 stocks in the DB
+        if(this.symbolChangePair.size()==0){
+            return null;
+        }
         if (symbolChangePair.size() > 4) {
             max = 5;
         } else {
             max = symbolChangePair.size();
         }
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < max; i++) {
             topFiveStocks.add(symbolChangePair.get(i));
         }
         return topFiveStocks;

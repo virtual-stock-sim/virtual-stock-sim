@@ -298,17 +298,11 @@ public class AccountController {
                     //update and push to DB
                     account.setInvestedStocks(investments.buildJSON());
 
-
-                    System.out.println("debug for the StocksFollowed object ");
                     tempStocksFollowed.removeFollow(symbol);
-                    for (Follow f : tempStocksFollowed.getStocksFollowed()) {
-                        System.out.println(f.getStock().getSymbol());
-                    }
+
                     //update and push to DB
                     account.setFollowedStocks(tempStocksFollowed.followObjectsToString());
                     account.update();
-                    System.out.println("debug for string");
-                    System.out.println(account.getFollowedStocks());
 
                     logger.info("Transaction success!");
                 } else {

@@ -62,7 +62,7 @@ public class ResetServlet extends HttpServlet {
         //this string could be either a username or password thus generic variable name
         String userInfo=req.getParameter("userInput");
         if(userInfo!=null && !userInfo.trim().isEmpty()) {
-            prm.setEmail(req.getParameter("userInput"));
+            prm.setDestEmail(req.getParameter("userInput"));
             prm.sendMailWithLink();
         }
         String token = req.getParameter("token");
@@ -71,7 +71,7 @@ public class ResetServlet extends HttpServlet {
 
         //case when the user first submits the email field
         if(token.trim().isEmpty()){
-            System.out.println("");
+            //System.out.println("");
             resp.sendRedirect("/login");
         }
 

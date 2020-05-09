@@ -37,7 +37,7 @@ public class StocksFollowed {
     public void updateStocksFollowed(String s){
         if(s.equals("")){
             this.stocksFollowed.clear();
-            System.out.println("followed is now empty");
+            //System.out.println("followed is now empty");
         }else {
             this.stocksFollowed = stringToFollowObjects(s);
         }
@@ -85,7 +85,6 @@ public class StocksFollowed {
         for(String s : input.split(";")){
             LinkedList <String> args = new LinkedList<>();
             args.addAll(Arrays.asList(s.split(",")));
-            System.out.println("argument 0: " +args.get(0));
             temp.add(new Follow( new BigDecimal(args.get(0).toString()), Stock.Find(args.get(1)).get(), Timestamp.valueOf(args.get(3))));
         }
         return  temp;

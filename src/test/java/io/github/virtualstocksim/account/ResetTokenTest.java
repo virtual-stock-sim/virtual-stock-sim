@@ -1,9 +1,12 @@
 package io.github.virtualstocksim.account;
 
+import com.sun.org.glassfish.external.statistics.annotations.Reset;
+import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -16,40 +19,45 @@ import static org.junit.Assert.assertTrue;
 public class ResetTokenTest {
     private List<ResetToken> resetTokenList = new LinkedList<ResetToken>();
     private List<Account> accountList = new LinkedList<Account>();
-    private final String PASSWORD = "test_pw";
-    private byte [] salt;
-    private byte [] hash;
-    private String UUID;
     private List<String> tokens = new LinkedList<String>();
-    private Encryption encrypt = new Encryption();
     Calendar calendar = Calendar.getInstance();
 
-    //in case this does break someone else's stuff, I am going to use this method for now instead of @Before so it will be easier to comment out & flush the test DB
-    public void populateDB(){
-        calendar.setTime(new Date());
-        calendar.add(Calendar.HOUR, 1);
-        for(int i=0; i<7;i++) {
-            this.accountList=Account.FindAll();
-            Account.Create("TestUser"+i,"TestUser"+i+"@vss.com,", String.valueOf(i*2),AccountType.USER);
-            ResetToken.Create(accountList.get(i).getId(), Encryption.getNextSalt(), new Timestamp(calendar.getTimeInMillis())).get();
-        }
-    }
+
 
     @Before
-    public void setUp(){
-        //just drop both tables if you need to repopulate DB because Earl took care of it all :)
-        //this.populateDB();
+    public void setup(){
+           try {
+                Connection conn = AccountDatabase.getConnection();
+                SQL.executeUpdate(conn, "DELETE FROM RESET_TOKEN");
+                SQL.executeUpdate(conn, "DELETE FROM ACCOUNT");
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR, 1);
+
+        for(int i=0; i<7;i++) {
+            Account.Create("TestUser"+i,"TestUser"+i+"@vss.com,", String.valueOf(i*2),AccountType.USER);
+        }
+
         this.accountList=Account.FindAll();
+
+        for(int i=0;i<7;i++){
+            ResetToken.Create(this.accountList.get(i).getId(), Encryption.getNextSalt(), new Timestamp(calendar.getTimeInMillis()));
+            //ResetToken.Create(this.accountList.get(i))
+        }
         this.resetTokenList=ResetToken.FindAll();
         for(ResetToken resetToken : this.resetTokenList){
             tokens.add(resetToken.getToken());
         }
     }
 
+
     @Test
     public void testGetAccountID(){
         for(int i=0;i<this.resetTokenList.size();i++){
-
             assertEquals(this.resetTokenList.get(i).getAccountId() , accountList.get(i).getId());
             assertEquals(this.resetTokenList.size(),this.accountList.size());
         }
@@ -63,7 +71,7 @@ public class ResetTokenTest {
     }
 
     @Test
-    public void testSetToken(){
+    public void testSetToken() throws SQLException {
         //in real life, these strings are securely generated randoms
         resetTokenList.get(0).setToken("Open the pod bay doors HAL");
         resetTokenList.get(1).setToken("Im sorry dave Im afraid i cant let you do that");
@@ -81,25 +89,38 @@ public class ResetTokenTest {
     //need to figure out a better way to do this test
     @Test
     public void testGetExpiration(){
+        //since the expiration time is 1h
         Calendar calendarMax = Calendar.getInstance();
         calendarMax.setTime(new Date());
-        calendarMax.add(Calendar.MINUTE, 59);
+        calendarMax.add(Calendar.MINUTE, 61);
 
         Calendar calendarMin = Calendar.getInstance();
         calendarMin.setTime(new Date());
-        calendarMin.add(Calendar.MINUTE, 30);
+        calendarMin.add(Calendar.MINUTE, 58);
 
         for(int i=0;i<resetTokenList.size();i++){
             assertTrue( resetTokenList.get(i).getExpiration().getTime()<new Timestamp(calendarMax.getTimeInMillis()).getTime());
-            System.out.println("Minimum " +new Timestamp(calendarMin.getTimeInMillis()));
-            System.out.println("Minumum " +resetTokenList.get(i).getExpiration());
+
             assertTrue( resetTokenList.get(i).getExpiration().getTime()>new Timestamp(calendarMin.getTimeInMillis()).getTime());
         }
     }
 
     @Test
     public void testSetExpiration(){
+        Calendar calendarMin = Calendar.getInstance();
+        calendarMin.setTime(new Date());
+        calendarMin.add(Calendar.MILLISECOND, 1);
 
+        for(ResetToken resetToken: this.resetTokenList){
+            resetToken.setExpiration(new Timestamp(calendarMin.getTimeInMillis()));
+        }
+
+        Calendar newCal = Calendar.getInstance();
+        newCal.setTime(new Date());
+
+        for(ResetToken resetToken : this.resetTokenList){
+            assertTrue(resetToken.getExpiration().getTime() > new Timestamp(newCal.getTimeInMillis()).getTime() );
+        }
     }
 
 

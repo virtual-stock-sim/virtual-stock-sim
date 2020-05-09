@@ -21,59 +21,16 @@ public class LeaderBoard {
          return this.accounts;
     }
 
-    public void addAccount(Account a ){
-        Account local = Account.Find(a.getId()).orElseGet(null);
-        if(local==null){
-            throw new TradeException("That user is not in the database", TradeExceptionType.USER_NOT_FOUND);
-        }
-        local.setLeaderboardRank(1000);
-        try {
-            local.update();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+    public  List<Map.Entry<String, BigDecimal>> getUsernameValuePair(){
+        return this.usernameValuePair;
     }
-
-    public void addAccount(String input) {
-        Account local = Account.Find(input).orElseGet(null);
-        if(local==null){
-            throw new TradeException("That user is not in the database", TradeExceptionType.USER_NOT_FOUND);
-        }
-        //it makes sense to set the leaderboard rank to something random & low
-        //so all the calls to update the board can be in sync .... the user will just have to wait until the next scheduled call
-        //as long as the rank is no longer -1 (opt-out)
-        local.setLeaderboardRank(1000);
-        try {
-            local.update();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-
 
     //look into negating * in the future after boilerplate is written...
     public void pullAccountsFromDB(){
        this.accounts= Account.FindCustom("SELECT * FROM account WHERE leaderboard_rank > -1");
     }
 
-    //remove account by username
-    public void removeAccount(String username){
-        for(int i=0;i<this.accounts.size();i++){
-            if(accounts.get(i).getUsername().equals(username)){
-                this.accounts.remove(i);
-            }
-        }
-    }
 
-    //remove account from leader board by reference to the account
-    public void removeAccount(Account a ){
-        for(int i=0;i<this.accounts.size();i++){
-            if(accounts.get(i).getUUID().equals(a.getUUID())){
-                this.accounts.remove(i);
-            }
-        }
-    }
 
     //pulls accts from database and calculates their new ranks
     public void calculateRanks(){
@@ -110,14 +67,14 @@ public class LeaderBoard {
         this.calculateRanks();
         //this loop might be dangerous ... ask team lead
         for(int i=0; i<usernameValuePair.size();i++){
-
-            Account temp =Account.Find(usernameValuePair.get(i).getKey()).orElseGet(null);
-            if(temp==null){
+            Account tempAccount = Account.Find(usernameValuePair.get(i).getKey()).orElse(null);
+            System.out.println("Found account "+ tempAccount.getEmail());
+            if(tempAccount==null){
                 //this would have to be a really weird case to trigger this
                 throw new TradeException("Account not found in database", TradeExceptionType.USER_NOT_FOUND);
             }
-            temp.setLeaderboardRank(i+1);
-            temp.update();
+            tempAccount.setLeaderboardRank(i+1);
+            tempAccount.update();
         }
     }
 

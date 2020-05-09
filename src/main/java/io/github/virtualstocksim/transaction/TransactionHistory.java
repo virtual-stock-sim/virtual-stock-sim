@@ -67,8 +67,8 @@ public class TransactionHistory
         if(s == null || s.trim().isEmpty()){
             return tempList;
         }
-        System.out.println("String input for parsetransaction from json");
-        System.out.println(s);
+        //System.out.println("String input for parsetransaction from json");
+        //System.out.println(s);
         JsonArray j  = JsonParser.parseString(s).getAsJsonArray();
         for(JsonElement x : j){
             JsonObject obj = x.getAsJsonObject();

@@ -204,6 +204,7 @@ public class ResetToken extends DatabaseItem
         else
         {
             params.add(id);
+            logger.info("Querying for reset token with params: "+"UPDATE reset_token SET " + String.join(", ", updated + " WHERE id = ?"), params.toArray());
             SQL.executeUpdate(conn, "UPDATE reset_token SET " + String.join(", ", updated + " WHERE id = ?"), params.toArray());
         }
     }

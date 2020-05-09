@@ -165,18 +165,6 @@ public class TransactionTest
         assertEquals(transactions.get(3).getStock(),tesla);
 
     }
-    @Test
-    public void debug(){
-        this.setUp();
-        TransactionHistory th = new TransactionHistory(transactions);
-        String ex = th.buildTransactionJSON();
-        //System.out.println(ex);
-        TransactionHistory Christian = new TransactionHistory(ex);
 
-        for(Transaction t : Christian.getTransactions()){
-            System.out.println(t.getStock().getSymbol() + " Number of shares: " + t.getNumShares());
-        }
-
-    }
 
 }
