@@ -17,7 +17,7 @@ public enum StockType
         this.type = type;
     }
     public String asString() { return type; }
-    public static StockType of(String type)
+    public static StockType from(String type)
     {
         String lowerType = type.toLowerCase();
         for(StockType t : values())
