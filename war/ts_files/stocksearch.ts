@@ -1,6 +1,7 @@
 import * as json from "./jsonformats.js";
 import {storeStockData} from "./stockstorage.js";
 import {StockRequest} from "./stockrequest.js";
+import {displayLoadingWheel, removeLoadingWheel} from "./loadingwheel.js";
 
 export function stockSearch(stockSymbol: string, searchType: json.StockType, onStockFound: (data: json.StockResponseItem) => void, onStockNotFound: (errorCode: json.StockResponseCode) => void)
 {
@@ -18,7 +19,6 @@ export function stockSearch(stockSymbol: string, searchType: json.StockType, onS
         }
     }
 
-
     let requestItem = new json.StockRequestItem(searchType, stockSymbol);
     let request = new StockRequest([requestItem], onSearchResult);
     request.send();
@@ -26,22 +26,39 @@ export function stockSearch(stockSymbol: string, searchType: json.StockType, onS
 
 export function ezStockSearch(inputElement: HTMLElement, onStockFound: (stock: json.StockResponseItem) => void, onStockNotFound: (errorCode: json.StockResponseCode) => void)
 {
-    inputElement.addEventListener("keyup", (e) =>
+    try
     {
-        if(e.key === 'Enter')
-        {
-            // @ts-ignore
-            let stockSymbol = inputElement.value;
-            let type = json.StockType.deserialize(inputElement.dataset.type);
-            if(type !== undefined)
+        inputElement.addEventListener("keyup", (e) => {
+            if (e.key === 'Enter')
             {
-                stockSearch(stockSymbol, type, onStockFound, onStockNotFound);
-            }
-            else
-            {
-                console.error("Undefined search type: " + inputElement.dataset.type)
-            }
-        }
-    });
-}
+                displayLoadingWheel("Loading stock information. This may take up to a minute...");
 
+                // @ts-ignore
+                let stockSymbol = inputElement.value;
+                let type = json.StockType.deserialize(inputElement.dataset.type);
+                if (type !== undefined)
+                {
+                    stockSearch(stockSymbol, type,
+                                (stock) => {
+                                    removeLoadingWheel();
+                                    onStockFound(stock);
+                                },
+                                (err) => {
+                                    removeLoadingWheel();
+                                    onStockNotFound(err);
+                                }
+                    );
+                }
+                else
+                {
+                    console.error("Undefined search type: " + inputElement.dataset.type)
+                }
+            }
+        });
+    }
+    catch (e)
+    {
+        removeLoadingWheel();
+        console.error(e);
+    }
+}
