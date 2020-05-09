@@ -30,20 +30,18 @@ public class StockUpdaterTest
 
         StockUpdater.updateStocks(updated);
 
-        /* API is currently having vendor issues and some fields are returning null, so they aren't being updated
-         * so the program is working correctly but the tests fail */
         // Make sure the function updated the objects correctly
-/*        for(int i = 0; i < updated.size(); ++i)
-        {
-            testStockFields(original.get(i), updated.get(i));
-        }*/
-
-        // Make sure the info was commited to the db correctly
-/*        updated = Stock.FindAll();
         for(int i = 0; i < updated.size(); ++i)
         {
             testStockFields(original.get(i), updated.get(i));
-        }*/
+        }
+
+        // Make sure the info was commited to the db correctly
+        updated = Stock.FindAll();
+        for(int i = 0; i < updated.size(); ++i)
+        {
+            testStockFields(original.get(i), updated.get(i));
+        }
     }
 
     @Test
@@ -66,7 +64,10 @@ public class StockUpdaterTest
         assertNotEquals(a.getCurrPrice().compareTo(    b.getCurrPrice()), 0);
         assertNotEquals(a.getPrevClose().compareTo(    b.getPrevClose()), 0);
         assertNotEquals(a.getCurrVolume(),             b.getCurrVolume());
-        assertNotEquals(a.getPrevVolume(),             b.getPrevVolume());
+        /*
+         * Current way of getting new data doesn't have a way to get previous volume
+         */
+        //assertNotEquals(a.getPrevVolume(),             b.getPrevVolume());
         assertNotEquals(a.getLastUpdated(),            b.getLastUpdated());
     }
 
