@@ -52,8 +52,8 @@ public class Follow {
     public double getPercentChange() {
         if(stock.getCurrPrice() != null && initialPrice != null)
         {
-            BigDecimal diff = stock.getCurrPrice().subtract(initialPrice, MathContext.DECIMAL64);
-            BigDecimal change = diff.divide(initialPrice.abs(), 9, RoundingMode.HALF_EVEN);
+            BigDecimal diff = initialPrice.subtract(stock.getCurrPrice(), MathContext.DECIMAL64);
+            BigDecimal change = diff.divide(stock.getCurrPrice().abs(), 9, RoundingMode.HALF_EVEN);
             BigDecimal percentChange = change.multiply(DECIMAL_100);
 
             DecimalFormat df = new DecimalFormat("#.##");
