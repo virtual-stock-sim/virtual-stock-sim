@@ -2,7 +2,6 @@ package io.github.virtualstocksim.update;
 
 
 import com.google.gson.JsonObject;
-import io.github.virtualstocksim.config.Config;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.scraper.Scraper;
 import io.github.virtualstocksim.scraper.TimeInterval;
@@ -10,7 +9,7 @@ import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.stock.StockData;
 import io.github.virtualstocksim.stock.StockDatabase;
 import io.github.virtualstocksim.stock.stockrequest.StockResponseCode;
-import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.Result;
 import io.github.virtualstocksim.util.priority.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,26 +46,23 @@ public class StockUpdater
 
         try
         {
-            Collection<Errorable<Stock, StockResponseCode>> response = Scraper.getCurrentData(stockMap.keySet(), Priority.MEDIUM);
+            Collection<Result<Stock, StockResponseCode>> response = Scraper.getCurrentData(stockMap.keySet(), Priority.MEDIUM);
             try(Connection conn = StockDatabase.getConnection())
             {
                 conn.setAutoCommit(false);
 
-                for(Errorable<Stock, StockResponseCode> r : response)
+                for(Result<Stock, StockResponseCode> r : response)
                 {
-                    if(r.isError())
+                    Stock current = r.getOrNull(err -> logger.error("Error getting market data for stock: " + err));
+
+                    if(current != null)
                     {
-                        logger.error("Error getting market data for stock: " + r.getError());
-                    }
-                    else
-                    {
-                        Stock curr = r.getValue();
-                        Stock old = stockMap.getOrDefault(curr.getSymbol(), null);
+                        Stock old = stockMap.getOrDefault(current.getSymbol(), null);
                         if(old != null)
                         {
-                            old.setCurrPrice(curr.getCurrPrice());
-                            old.setPrevClose(curr.getPrevClose());
-                            old.setPrevVolume(curr.getPrevVolume());
+                            old.setCurrPrice(current.getCurrPrice());
+                            old.setPrevClose(current.getPrevClose());
+                            old.setPrevVolume(current.getPrevVolume());
                             old.setLastUpdated(SQL.GetTimeStamp());
 
                             old.update(conn);
@@ -106,17 +102,13 @@ public class StockUpdater
                 // Update the data in the DB
                 try
                 {
-                    Errorable<JsonObject, StockResponseCode> scraperData = Scraper.getDescriptionAndHistory(stock.getSymbol(), interval, Priority.LOW);
-                    if(scraperData.isError())
+                    JsonObject scraperData = Scraper.getDescriptionAndHistory(stock.getSymbol(), interval, Priority.LOW)
+                                                    .getOrNull(err -> logger.error("Periodic update failed for StockData Id: " + data.getId() + " in scraper phase. Error code: " + err));
+                    if(scraperData != null)
                     {
-                        logger.error("Periodic update failed for StockData Id: " + data.getId() + " in scraper phase. Error code: " + scraperData.getError());
-                    }
-                    else
-                    {
-                        JsonObject dataJson = scraperData.getValue();
                         Timestamp now = SQL.GetTimeStamp();
-                        dataJson.addProperty("lastUpdated", now.toString());
-                        data.setData(String.valueOf(dataJson));
+                        scraperData.addProperty("lastUpdated", now.toString());
+                        data.setData(String.valueOf(scraperData));
                         data.setLastUpdated(now);
 
                         // Not using dedicated connection without auto commit since there's such a delay in-between update calls

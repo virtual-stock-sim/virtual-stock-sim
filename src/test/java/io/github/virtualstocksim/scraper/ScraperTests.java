@@ -1,7 +1,7 @@
 package io.github.virtualstocksim.scraper;
 
 import io.github.virtualstocksim.stock.stockrequest.StockResponseCode;
-import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.Result;
 import io.github.virtualstocksim.util.priority.Priority;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,7 +50,7 @@ public class ScraperTests
         symbols.add(new ImmutablePair<>("AAPL", Priority.URGENT));
     }
 
-    private static <T> void runTestFunction(Function<Pair<String, Priority>, Errorable<T, StockResponseCode>> func) throws InterruptedException, ExecutionException
+    private static <T> void runTestFunction(Function<Pair<String, Priority>, Result<T, StockResponseCode>> func) throws InterruptedException, ExecutionException
     {
         final ExecutorService executor = Executors.newCachedThreadPool();
         List<Callable<Boolean>> tasks = new LinkedList<>();
@@ -59,7 +59,7 @@ public class ScraperTests
         {
             tasks.add(() ->
                       {
-                          Errorable<T, StockResponseCode> r = func.apply(p);
+                          Result<T, StockResponseCode> r = func.apply(p);
                           logger.info("Stock symbol: " + p.getLeft());
                           if(r.isError())
                           {

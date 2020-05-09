@@ -1,9 +1,11 @@
 package io.github.virtualstocksim.util.json;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.Result;
+import jdk.nashorn.internal.ir.ReturnNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,49 +23,41 @@ public class JsonUtil
      * @param getFunc Anonymous function to retrieve element from parent element
      * @return Result of getFunc
      */
-    public static <R> Errorable<R, JsonError> getMemberAs(JsonObject parent, String memberName, Function<? super JsonElement, R> getFunc)
+    public static <R> Result<R, JsonError> getMemberAs(JsonObject parent, String memberName, Function<? super JsonElement, R> getFunc)
     {
         try
         {
             if(parent.has(memberName))
             {
-                JsonElement element = parent.get(memberName);
-                if(!element.isJsonNull())
-                {
-                    return getAs(element, getFunc);
-                }
-                else
-                {
-                    return Errorable.WithError(JsonError.NULL);
-                }
+                return getAs(parent.get(memberName), getFunc);
             }
             else
             {
-                return Errorable.WithError(JsonError.NONEXISTENT);
+                return Result.WithError(JsonError.NONEXISTENT);
             }
         }
         catch (JsonParseException e)
         {
-            return Errorable.WithError(JsonError.INVALID);
+            return Result.WithError(JsonError.INVALID);
         }
     }
 
-    public static <R> Errorable<R, JsonError> getAs(JsonElement element, Function<? super JsonElement, R> getFunc)
+    public static <R> Result<R, JsonError> getAs(JsonElement element, Function<? super JsonElement, R> getFunc)
     {
         try
         {
-            if(!element.isJsonNull())
+            if(element.isJsonNull())
             {
-                return Errorable.WithValue(getFunc.apply(element));
+                return Result.WithError(JsonError.NULL);
             }
             else
             {
-                return Errorable.WithError(JsonError.NULL);
+                return Result.WithValue(getFunc.apply(element));
             }
         }
         catch (IllegalStateException | ClassCastException | NumberFormatException e)
         {
-            return Errorable.WithError(JsonError.WRONG_TYPE);
+            return Result.WithError(JsonError.WRONG_TYPE);
         }
     }
 

@@ -3,7 +3,7 @@ package io.github.virtualstocksim.stock;
 import com.google.gson.*;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.Result;
 import io.github.virtualstocksim.util.json.JsonError;
 import io.github.virtualstocksim.util.json.JsonUtil;
 import org.slf4j.Logger;
@@ -217,16 +217,17 @@ public class StockData extends DatabaseItem
     }
 
 
-    public JsonObject asJson()
+    public JsonObject asJson() throws JsonParseException
     {
-        Errorable<JsonObject, JsonError> objErrorable = JsonUtil.getAs(JsonParser.parseString(data), JsonElement::getAsJsonObject);
-        if(objErrorable.isError())
-        {
-            logger.error("Stock data is corrupted: \n" + data);
-            throw new JsonParseException("Corrupted Stock data");
-        }
-        JsonObject obj = objErrorable.getValue();
-        obj.addProperty("lastUpdated", lastUpdated.toString());
-        return obj;
+        JsonElement parsedData = JsonParser.parseString(data);
+        JsonObject dataObj = JsonUtil.getAs(parsedData, JsonElement::getAsJsonObject)
+                                     .getOrNull(err ->
+                                                {
+                                                    logger.error("Stock data is corrupted: \n" + data);
+                                                    throw new JsonParseException("Corrupted Stock data");
+                                                });
+
+        dataObj.addProperty("lastUpdated", lastUpdated.toString());
+        return dataObj;
     }
 }

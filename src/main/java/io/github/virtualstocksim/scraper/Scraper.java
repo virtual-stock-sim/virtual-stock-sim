@@ -5,7 +5,7 @@ import com.google.gson.*;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.stock.StockDatabase;
 import io.github.virtualstocksim.stock.stockrequest.StockResponseCode;
-import io.github.virtualstocksim.util.Errorable;
+import io.github.virtualstocksim.util.Result;
 import io.github.virtualstocksim.util.json.JsonError;
 import io.github.virtualstocksim.util.json.JsonUtil;
 import io.github.virtualstocksim.util.priority.PriorityCallable;
@@ -19,14 +19,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.jetty.util.IO;
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +54,11 @@ public class Scraper
      * @param priority Execution priority of the request
      * @return Description of company as string or error code
      */
-    public static Errorable<String, StockResponseCode> getDescription(String symbol, Priority priority)
+    public static Result<String, StockResponseCode> getDescription(String symbol, Priority priority)
     {
         if(symbolInvalid(symbol))
         {
-            return Errorable.WithError(StockResponseCode.INVALID_SYMBOL);
+            return Result.WithError(StockResponseCode.INVALID_SYMBOL);
         }
 
         logger.info("Submitting company description request for '" + symbol + "'");
@@ -68,7 +66,7 @@ public class Scraper
         Optional<Connection.Response> response = getJsoupResponse(priority, url);
 
         if(!response.isPresent())
-            return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+            return Result.WithError(StockResponseCode.SERVER_ERROR);
 
         try
         {
@@ -80,7 +78,7 @@ public class Scraper
             // If elements containing description where found and the description isn't empty
             if(elem != null && (description = elem.text()).trim().length() > 0)
             {
-                return Errorable.WithValue(description);
+                return Result.WithValue(description);
             }
             // Otherwise fallback to quote homepage for stock and try again
                 // This page contains the description as well but has much more content that has to be
@@ -93,7 +91,7 @@ public class Scraper
                 response = getJsoupResponse(priority != Priority.LOW ? Priority.URGENT : priority, url);
 
                 if(!response.isPresent())
-                    return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+                    return Result.WithError(StockResponseCode.SERVER_ERROR);
 
                 logger.info("Parsing response");
                 doc = response.get().parse();
@@ -101,18 +99,18 @@ public class Scraper
 
                 if(elem != null && !(description = elem.text()).isEmpty())
                 {
-                    return Errorable.WithValue(description);
+                    return Result.WithValue(description);
                 }
                 else
                 {
-                    return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+                    return Result.WithError(StockResponseCode.SERVER_ERROR);
                 }
             }
         }
         catch (IOException e)
         {
             logger.error("Unable to parse returned document; URL: " + url + "\n", e);
-            return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+            return Result.WithError(StockResponseCode.SERVER_ERROR);
         }
     }
 
@@ -122,21 +120,21 @@ public class Scraper
      * @param priority Execution priority of the request
      * @return If the stock exists or error code
      */
-    public static Errorable<Boolean, StockResponseCode> checkStockExists(String symbol, Priority priority)
+    public static Result<Boolean, StockResponseCode> checkStockExists(String symbol, Priority priority)
     {
         if(symbolInvalid(symbol))
         {
-            return Errorable.WithError(StockResponseCode.INVALID_SYMBOL);
+            return Result.WithError(StockResponseCode.INVALID_SYMBOL);
         }
 
         logger.info("Submitting existence check for '" + symbol + "'");
 
         try
         {
-            Errorable<Boolean, Integer> result = submit(new PriorityCallable<Errorable<Boolean, Integer>>(priority)
+            Result<Boolean, Integer> result = submit(new PriorityCallable<Result<Boolean, Integer>>(priority)
             {
                 @Override
-                public Errorable<Boolean, Integer> call() throws Exception
+                public Result<Boolean, Integer> call() throws Exception
                 {
                     String url = "https://finance.yahoo.com/quote/" + symbol;
                     logger.info("Checking if stock exists: " + url);
@@ -156,15 +154,15 @@ public class Scraper
 
                         if(statusCode == HttpStatus.SC_OK)
                         {
-                            return Errorable.WithValue(true);
+                            return Result.WithValue(true);
                         }
                         else if(statusCode == HttpStatus.SC_NOT_FOUND)
                         {
-                            return Errorable.WithValue(false);
+                            return Result.WithValue(false);
                         }
                         else
                         {
-                            return Errorable.WithError(statusCode);
+                            return Result.WithError(statusCode);
                         }
                     }
                 }
@@ -172,11 +170,11 @@ public class Scraper
 
             if(result == null || result.isError())
             {
-                return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+                return Result.WithError(StockResponseCode.SERVER_ERROR);
             }
             else
             {
-                return Errorable.WithValue(result.getValue());
+                return Result.WithValue(result.getValue());
             }
         }
         catch (ExecutionException e)
@@ -190,7 +188,7 @@ public class Scraper
             {
                 logger.error("\n", e);
             }
-            return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+            return Result.WithError(StockResponseCode.SERVER_ERROR);
         }
     }
 
@@ -216,17 +214,17 @@ public class Scraper
      *                          ]
      *          }
      */
-    public static Errorable<JsonObject, StockResponseCode> getDescriptionAndHistory(String symbol, TimeInterval timeInterval, Priority priority)
+    public static Result<JsonObject, StockResponseCode> getDescriptionAndHistory(String symbol, TimeInterval timeInterval, Priority priority)
     {
         if(symbolInvalid(symbol))
         {
-            return Errorable.WithError(StockResponseCode.INVALID_SYMBOL);
+            return Result.WithError(StockResponseCode.INVALID_SYMBOL);
         }
 
         // Get the description
-        Errorable<String, StockResponseCode> descriptionResp = getDescription(symbol, priority);
+        Result<String, StockResponseCode> descriptionResp = getDescription(symbol, priority);
         if(descriptionResp.isError())
-            return Errorable.WithError(descriptionResp.getError());
+            return Result.WithError(descriptionResp.getError());
 
         logger.info("Submitting price history request for '" + symbol + "'");
 
@@ -239,13 +237,13 @@ public class Scraper
         if(!response.isPresent())
         {
             logger.error("Error while getting price history for '" + symbol + "'");
-            return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+            return Result.WithError(StockResponseCode.SERVER_ERROR);
         }
 
         String csv = response.get();
         // Make sure the response is present and the body isn't empty
         if(csv.isEmpty())
-            return Errorable.WithError(StockResponseCode.SERVER_ERROR);
+            return Result.WithError(StockResponseCode.SERVER_ERROR);
 
         List<String> csvRows = new LinkedList<>(Arrays.asList(csv.split("\\n")));
         csvRows.remove(0);
@@ -295,15 +293,15 @@ public class Scraper
         result.addProperty("description", descriptionResp.getValue());
         result.add("history", priceHistory);
 
-        return Errorable.WithValue(result);
+        return Result.WithValue(result);
     }
 
-    public static Collection<Errorable<Stock, StockResponseCode>> getCurrentData(Set<String> symbols, Priority priority) throws IOException
+    public static Collection<Result<Stock, StockResponseCode>> getCurrentData(Set<String> symbols, Priority priority) throws IOException
     {
         if(symbols.isEmpty())
             throw new IllegalArgumentException("Symbol list can't be empty");
 
-        Map<String, Errorable<Stock, StockResponseCode>> resultMap = new HashMap<>();
+        Map<String, Result<Stock, StockResponseCode>> resultMap = new HashMap<>();
         final List<String> validSymbols = new LinkedList<>();
         for(String symbol : symbols)
         {
@@ -314,7 +312,7 @@ public class Scraper
             else
             {
                 // Preemptively add every other stock as a server error in-case one occurs the list can just be returned
-                resultMap.put(symbol, Errorable.WithError(StockResponseCode.SERVER_ERROR));
+                resultMap.put(symbol, Result.WithError(StockResponseCode.SERVER_ERROR));
             }
         }
 
@@ -328,102 +326,60 @@ public class Scraper
 
         try
         {
-            Errorable<JsonObject, JsonError> responseErrorable = JsonUtil.getAs(JsonParser.parseString(response.get()), JsonElement::getAsJsonObject);
-            if(responseErrorable.isError())
-                throw new IOException("Exception while getting response as JsonObject: " + responseErrorable.getError());
+            // Get the site response as a json object
+            JsonElement parsedResponse = JsonParser.parseString(response.get());
+            JsonObject responseObj = JsonUtil.getAs(parsedResponse, JsonElement::getAsJsonObject)
+                                             .getOrNull(err ->
+                                                        { throw new IOException("Exception while getting response as JsonObject: " + err); });
 
-            JsonObject responseObj = responseErrorable.getValue();
+            // Extract the quoteResponse object from the site response
+            JsonObject quoteResponse = JsonUtil.getMemberAs(responseObj, "quoteResponse", JsonElement::getAsJsonObject)
+                                               .getOrNull(err ->
+                                                          { throw new IOException("Error getting current data 'quoteResponse' parent member: " + err); });
 
-            Errorable<JsonObject, JsonError> quoteResponseErrorable = JsonUtil.getMemberAs(responseObj, "quoteResponse", JsonElement::getAsJsonObject);
-            if(quoteResponseErrorable.isError())
+            // Make sure the site didn't return an error
+            JsonUtil.getMemberAs(quoteResponse, "error", JsonElement::getAsJsonPrimitive)
+                    .getOrNull(err ->
+                               {
+                                   if(err != JsonError.NULL && err != JsonError.NONEXISTENT)
+                                   {
+                                       throw new IOException("Site returned error: " + err);
+                                   }
+                               });
+
+            // Extract the array of quote results from the quoteResponse
+            JsonArray resultArr = JsonUtil.getMemberAs(quoteResponse, "result", JsonElement::getAsJsonArray)
+                                          .getOrNull(err ->
+                                                     { throw new IOException("Error getting result array of current data: " + err); });
+
+            for(JsonElement element : resultArr)
             {
-                throw new IOException("Error getting current data 'quoteResponse' parent member");
-            }
+                logger.trace("Quote Element: " + element);
 
-            JsonElement error = quoteResponseErrorable.getValue().get("error");
-            if(error != null && !error.isJsonNull())
-            {
-                Errorable<JsonPrimitive, JsonError> errorErrorable = JsonUtil.getAs(error, JsonElement::getAsJsonPrimitive);
-                if(errorErrorable.isError())
+                // Get the quote as a JsonObject
+                JsonObject quote = JsonUtil.getAs(element, JsonElement::getAsJsonObject)
+                                           .getOrNull(err -> logger.error("Error getting quote: " + err));
+
+                // Extract the quote elements if the quote is valid
+                if(quote != null)
                 {
-                   throw new IOException("Error getting error returned by site " + errorErrorable.getError());
-                }
-                else
-                {
-                    throw new IOException("Site returned error: " + errorErrorable.getValue());
-                }
-            }
+                    // Extract the stock symbol from the quote
+                    String symbol = JsonUtil.getMemberAs(quote, "symbol", JsonElement::getAsString)
+                                            .getOrNull(err -> logger.error("Couldn't retrieve symbol: " + err));
 
-            Errorable<JsonArray, JsonError> resultErrorable = JsonUtil.getMemberAs(quoteResponseErrorable.getValue(), "result", JsonElement::getAsJsonArray);
-            if(resultErrorable.isError())
-            {
-                throw new IOException("Error getting current data result array");
-            }
+                    // Extract the current price from the quote
+                    BigDecimal currPrice = JsonUtil.getMemberAs(quote, "regularMarketPrice", JsonElement::getAsBigDecimal)
+                                                   .getOrNull(err -> logger.error("Couldn't retrieve regularMarketPrice: " + err));
 
-            for(JsonElement element : resultErrorable.getValue())
-            {
-                logger.info("Quote Element: " + element);
-                Errorable<JsonObject, JsonError> quoteErrorable = JsonUtil.getAs(element, JsonElement::getAsJsonObject);
-                if(quoteErrorable.isError())
-                {
-                    logger.error("Error getting element as JsonObject: " + quoteErrorable.getError() + "\n");
-                }
-                else
-                {
-                    JsonObject quote = quoteErrorable.getValue();
+                    // Extract the previous close price from the quote
+                    BigDecimal previousClose = JsonUtil.getMemberAs(quote, "regularMarketPreviousClose", JsonElement::getAsBigDecimal)
+                                                       .getOrNull(err -> logger.error("Couldn't retrieve previous market price: " + err));
 
-                    String symbol = null;
-                    BigDecimal currPrice = null;
-                    BigDecimal previousClose = null;
-                    int currVolume = -1;
+                    // Extract the current volume from the quote
+                    Integer currVolume = JsonUtil.getMemberAs(quote, "regularMarketVolume", JsonElement::getAsInt)
+                                             .getOrNull(err -> logger.error("Could not retrieve current market volume: " + err));
 
-                    Errorable<String, JsonError> symbolErrorable = JsonUtil.getMemberAs(quote, "symbol", JsonElement::getAsString);
-                    if(symbolErrorable.isError() || symbolErrorable.getValue().isEmpty())
-                    {
-                        logger.error("Couldn't retrieve symbol: " + symbolErrorable.getError());
-                    }
-                    else
-                    {
-                        symbol = symbolErrorable.getValue();
-                    }
-
-                    // Current market price
-                    Errorable<BigDecimal, JsonError> currPriceErrorable = JsonUtil.getMemberAs(quote, "regularMarketPrice", JsonElement::getAsBigDecimal);
-                    if(currPriceErrorable.isError())
-                    {
-                        logger.error("Couldn't retrieve current market price: " + currPriceErrorable.getError());
-                    }
-                    else
-                    {
-                        currPrice = currPriceErrorable.getValue();
-                    }
-
-                    // Price at market open/previous close
-                    Errorable<BigDecimal, JsonError> prevCloseErrorable = JsonUtil.getMemberAs(quote, "regularMarketPreviousClose", JsonElement::getAsBigDecimal);
-                    if(prevCloseErrorable.isError())
-                    {
-                        logger.error("Couldn't retrieve previous market price: " + prevCloseErrorable.getError());
-                    }
-                    else
-                    {
-                        previousClose = prevCloseErrorable.getValue();
-                    }
-
-                    // Current volume
-                    Errorable<Integer, JsonError> currVolumeErrorable = JsonUtil.getMemberAs(quote, "regularMarketVolume", JsonElement::getAsInt);
-                    if(currVolumeErrorable.isError())
-                    {
-                        logger.error("Could not retrieve current market volume: " + currVolumeErrorable.getError());
-                    }
-                    else
-                    {
-                        currVolume = currVolumeErrorable.getValue();
-                    }
-
-                    if(symbol != null && currPrice != null && previousClose != null && currVolume > -1)
-                    {
-                        resultMap.put(symbol, Errorable.WithValue(new Stock(symbol, currPrice, previousClose, currVolume, null)));
-                    }
+                    resultMap.put(symbol, Result.WithValue(new Stock(symbol, currPrice, previousClose, currVolume, null)));
                 }
             }
 
@@ -507,10 +463,10 @@ public class Scraper
         try
         {
             // Submit the task
-            Errorable<String, Integer> response = submit(new PriorityCallable<Errorable<String, Integer>>(priority)
+            Result<String, Integer> response = submit(new PriorityCallable<Result<String, Integer>>(priority)
             {
                 @Override
-                public Errorable<String, Integer> call() throws Exception
+                public Result<String, Integer> call() throws Exception
                 {
                     logger.info("Executing GET request with HttpClient; Url: " + url);
 
@@ -542,11 +498,11 @@ public class Scraper
                         // Return body if okay, otherwise return error code
                         if(statusCode == HttpStatus.SC_OK && body != null)
                         {
-                            return Errorable.WithValue(body);
+                            return Result.WithValue(body);
                         }
                         else
                         {
-                            return Errorable.WithError(statusCode);
+                            return Result.WithError(statusCode);
                         }
                     }
                 }

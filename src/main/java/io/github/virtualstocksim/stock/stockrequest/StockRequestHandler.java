@@ -13,7 +13,6 @@ import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.stock.StockData;
 import io.github.virtualstocksim.stock.StockDatabase;
 import io.github.virtualstocksim.update.ClientUpdater;
-import io.github.virtualstocksim.util.Errorable;
 import io.github.virtualstocksim.util.priority.Priority;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -227,11 +226,11 @@ public class StockRequestHandler implements HttpRequestListener
     private Pair<Optional<Stock>, Optional<StockData>> findNewStock(String symbol) throws StockRequestException
     {
         // Retrieve and add new stock data to database
-        Errorable<JsonObject, StockResponseCode> descAndHist = Scraper.getDescriptionAndHistory(symbol, TimeInterval.ONEMONTH, Priority.HIGH);
-        if(descAndHist.isError())
-            throw new StockRequestException("Scraper was unable to get description and history for stock symbol: " + symbol, descAndHist.getError());
+        JsonObject descAndHist = Scraper.getDescriptionAndHistory(symbol, TimeInterval.ONEMONTH, Priority.HIGH)
+                                        .getOrNull(err ->
+                                                   { throw new StockRequestException("Scraper was unable to get description and history for stock symbol: " + symbol, err); });
 
-        Optional<StockData> data = StockData.Create(String.valueOf(descAndHist.getValue()), SQL.GetTimeStamp());
+        Optional<StockData> data = StockData.Create(String.valueOf(descAndHist), SQL.GetTimeStamp());
 
         if(data.isPresent())
         {
