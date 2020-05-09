@@ -62,7 +62,7 @@ public class StockUpdater
                         {
                             old.setCurrPrice(current.getCurrPrice());
                             old.setPrevClose(current.getPrevClose());
-                            old.setPrevVolume(current.getPrevVolume());
+                            old.setCurrVolume(current.getCurrVolume());
                             old.setLastUpdated(SQL.GetTimeStamp());
 
                             old.update(conn);
