@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/compare"})
 public class CompareServlet extends HttpServlet
@@ -27,25 +28,7 @@ public class CompareServlet extends HttpServlet
     {
         logger.info("Compare Servlet: doGet");
 
-        HttpSession session = req.getSession(false);
-        if(session!=null)
-        {
-            String username = session.getAttribute("username").toString();
-            Account account = Account.Find(username).orElse(null);
-            if(account != null)
-            {
-                req.setAttribute("account", account);
-            }
-            else
-            {
-                logger.error("Account with useraname "+username+ " not found");
-            }
-        }
-        else
-        {
-        logger.info("User not logged in. Session was null");
-
-        }
+        Optional<Account> account = SessionValidater.validate(req);
 
         req.getRequestDispatcher("/_view/compare.jsp").forward(req, resp);
     }

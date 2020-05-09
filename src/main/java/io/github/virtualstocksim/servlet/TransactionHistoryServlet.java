@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/transactionHistory"})
 public class TransactionHistoryServlet extends HttpServlet
@@ -21,31 +22,18 @@ public class TransactionHistoryServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Transaction History Servlet Servlet: doGet");
-        // check if session exists, if not the user is not logged in or timedout.
-        HttpSession session = req.getSession(false);
 
-        if (session == null) {
+        Account account = SessionValidater.validate(req).orElse(null);
+
+        if (account == null) {
             logger.warn("Not logged in. Please login");
             resp.sendRedirect("/login");
             return;
         }
-        else
-        {
-            String username = session.getAttribute("username").toString();
-            Account localAcct = Account.Find(username).orElse(null);
-            if(localAcct !=null)
-            {
-                TransactionHistory model = new TransactionHistory(localAcct.getTransactionHistory());
-                req.setAttribute("model", model);
-                req.setAttribute("account", localAcct);
-                logger.info("LOOK HERE BRETT " + localAcct.getTransactionHistory());
-                req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
-            }
-            else
-            {
-                logger.error("Account not found");
-            }
 
-        }
+        TransactionHistory model = new TransactionHistory(account.getTransactionHistory());
+        req.setAttribute("model", model);
+        req.setAttribute("account", account);
+        req.getRequestDispatcher("/_view/transactionHistory.jsp").forward(req, resp);
     }
 }

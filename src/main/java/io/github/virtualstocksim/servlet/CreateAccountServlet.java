@@ -38,121 +38,81 @@ public class CreateAccountServlet extends HttpServlet {
         // String to hold error message (if any)
         String errorMessage = null;
 
-        try {
+        String uname = req.getParameter("uname");
+        String pword = req.getParameter("pword");
+        String email = req.getParameter("email");
+        String confirmPword = req.getParameter("pwordconfirm");
+        CreateAccountModel accountModel = new CreateAccountModel(email, uname);
 
-            String uname = req.getParameter("uname");
-            String pword = req.getParameter("pword");
-            String email = req.getParameter("email");
-            String confirmPword = req.getParameter("pwordconfirm");
-            CreateAccountModel accountModel = new CreateAccountModel(email, uname);
-
-            // check for fields containing values
-            if((uname == null) || (pword == null) || (email == null) || (confirmPword == null))
-            {
-                errorMessage = "Required field(s) empty";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-
-
-            }
-            // insure email does not exceed db length
-            else if(email.length() > 255)
-            {
-                errorMessage="Email cannot exceed 255 characters";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-
-            }
-            // check for passwords not matching
-            else if (!pword.equals(confirmPword))
-            {
-                errorMessage = "Passwords do not match. Please try again. ";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-
-                // check to make sure password is at least 8 characters
-            }
-            else if (pword.length() < 8 || pword.length() > 255)
-            {
-                errorMessage = "Passwords must be at least 8 characters long and less than 255 characters";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-            }
-
-            // check to make sure email is not taken
-            else if (!Account.FindCustom("SELECT id FROM account WHERE email LIKE ?", "'%" + email + "%'").isEmpty())
-            {
-                // email exists
-                errorMessage= "An account with this email already exists";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-            }
-            /**TODO: Fix this */
-/*             commenting this out because it's preventing compilation
-               I'll look into it later if i dont forget about it, but if it's working on other machines, i suspect something is weird with my pom.xml file or something
-            // check to see if email is valid using regex
-            else if(!EmailValidator.getInstance().isValid(accountModel.getEmail()))
-            {
-                errorMessage="Please enter a valid email.";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-            }
-*/
-            // check to see if username is taken
-            else if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
-            {
-                // username already exists
-                errorMessage= "That username is already in use.";
-                req.setAttribute("errorMessage", errorMessage);
-                req.setAttribute("CreateAccountModel", accountModel);
-                req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
-                return;
-
-            }
-            // if none of these conditions are met, account can be created
-            else
-            {
-               Optional<Account> account = Account.Create(accountModel.getUsername().trim(), accountModel.getEmail().trim(), pword.trim(), AccountType.USER);
-               if(account.isPresent())
-               {
-                   AccountController controller = new AccountController();
-                   controller.setModel(account.get());
-               }
-
-            }
-
-        }
-        catch (NumberFormatException e)
+        // check for fields containing values
+        if((uname == null) || (pword == null) || (email == null) || (confirmPword == null))
         {
-            errorMessage = "Invalid credentials. Please enter a valid username and password.";
+            errorMessage = "Required field(s) empty";
             req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
-        String uname = req.getParameter("uname").trim();
-        String pword = req.getParameter("pword").trim();
-        if(AccountController.login(uname,pword))
+        // insure email does not exceed db length
+        else if(email.length() > 255)
         {
-            // login is valid, redirect user
-            // create session
-            HttpSession session = req.getSession(true);
-            session.setAttribute("username", uname);
-            logger.info("Logging user" +uname+ " in....");
-            resp.sendRedirect("/home");
+            errorMessage="Email cannot exceed 255 characters";
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
+        // check for passwords not matching
+        else if (!pword.equals(confirmPword))
+        {
+            errorMessage = "Passwords do not match. Please try again. ";
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
 
+        }
+        // check to make sure password is at least 8 characters and less than the database limit
+        else if (pword.length() < 8 || pword.length() > 255)
+        {
+            errorMessage = "Passwords must be at least 8 characters long and less than 255 characters";
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+        }
+        // check to make sure email is not taken
+        else if (!Account.FindCustom("SELECT id FROM account WHERE email LIKE ?", "'%" + email + "%'").isEmpty())
+        {
+            // email exists
+            errorMessage= "An account with this email already exists";
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+        }
+        // check to see if username is taken
+        else if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
+        {
+            // username already exists
+            errorMessage= "That username is already in use.";
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("CreateAccountModel", accountModel);
+            req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+        }
+        // if none of these conditions are met, account can be created
+        else
+        {
+            AccountController controller = new AccountController();
 
+            Optional<Account> account = Account.Create(accountModel.getUsername().trim(), accountModel.getEmail().trim(), pword.trim(), AccountType.USER);
+            account.ifPresent(controller::setModel);
 
+            if(account.isPresent() && controller.login(uname, pword))
+            {
+                // login is valid, redirect user
+                // create session
+                HttpSession session = req.getSession(true);
+                session.setAttribute("uuid", controller.getModel().getUUID());
+                logger.info("Logging user " + uname + " in....");
+                resp.sendRedirect("/home");
+            }
+        }
     }
 
 }

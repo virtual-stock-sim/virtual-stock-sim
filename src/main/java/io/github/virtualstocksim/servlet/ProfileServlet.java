@@ -26,22 +26,6 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Profile Servlet: doGet");
 
-        /*// check if session exists, if not the user is not logged in or timedout.
-        HttpSession session = req.getSession(false);
-        if(session==null){
-            logger.warn("Not logged in. Please login");
-            resp.sendRedirect("/login");
-        }else{
-            Account acc = Account.Find(session.getAttribute("username").toString()).get();
-            String bio = acc.getBio();
-            req.setAttribute("bio", bio);
-            logger.info("User "+acc.getUsername()+ " account settings");
-            logger.info("Bio: "+bio);
-            req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
-        }
-
-        */
-
         String errorMsg = null;
 
         HttpSession session = req.getSession(false);
@@ -53,16 +37,7 @@ public class ProfileServlet extends HttpServlet {
         else
         {
             // Make sure user is logged in
-            String sessionUsername = session.getAttribute("username").toString();
-            Optional<Account> account;
-            if(sessionUsername != null && !sessionUsername.isEmpty())
-            {
-                account = Account.Find(sessionUsername);
-            }
-            else
-            {
-                account = Optional.empty();
-            }
+            Optional<Account> account = SessionValidater.validate(req);
 
             if(account.isPresent())
             {
@@ -94,17 +69,7 @@ public class ProfileServlet extends HttpServlet {
         boolean optOutSuccess, optInSuccess;
 
 
-        // Make sure user is logged in
-        String sessionUsername = session.getAttribute("username").toString();
-        Optional<Account> account;
-        if(sessionUsername != null && !sessionUsername.isEmpty())
-        {
-            account = Account.Find(sessionUsername);
-        }
-        else
-        {
-            account = Optional.empty();
-        }
+        Optional<Account> account = SessionValidater.validate(req);
 
         if(account.isPresent())
         {
@@ -180,8 +145,6 @@ public class ProfileServlet extends HttpServlet {
                         errorMsgs.add(lastError);
                     } else {
                         controller.updateUsername(username);
-                        // update username for session
-                        session.setAttribute("username", username);
                     }
                 }
             }
@@ -273,7 +236,6 @@ public class ProfileServlet extends HttpServlet {
         }
         else
         {
-            logger.error("Error finding account with username " + sessionUsername);
             errorMsgs.add("Whoops! Something went wrong on our end");
         }
 

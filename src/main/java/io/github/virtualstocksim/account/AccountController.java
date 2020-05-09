@@ -18,13 +18,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
 public class AccountController {
     // account instance
-    private Account acc;
+    private Account account;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
 
     public AccountController() {
@@ -33,11 +32,20 @@ public class AccountController {
 
 
     public Account getModel() {
-        return this.acc;
+        return this.account;
     }
 
-    public void setModel(Account acc) {
-        this.acc = acc;
+    /**
+     * Set the model
+     * @param account Account to set the model as
+     * @throws NullPointerException If account is null
+     */
+    public void setModel(Account account) throws NullPointerException
+    {
+        if(account == null)
+            throw new NullPointerException("Account can't be null");
+
+        this.account = account;
     }
 
     /**
@@ -45,15 +53,11 @@ public class AccountController {
      * @param password password provided - will be hashed and checked against that stored in database
      * @return Account found with specified username and password parameters, if any
      */
-    public static boolean login(String username, String password) {
+    public boolean login(String username, String password) {
         logger.info("Logging user " + username + " in...");
 
-        Optional<Account> acc = Account.Find(username);
-        if (!acc.isPresent()) {
-            return false;
-        }
         // check hash and salt against login credentials
-        boolean isValid = Encryption.validateInput(password.toCharArray(), acc.get().getPasswordSalt(), acc.get().getPasswordHash());
+        boolean isValid = Encryption.validateInput(password.toCharArray(), account.getPasswordSalt(), account.getPasswordHash());
 
         // check if credentials are valid
         if (isValid) {
@@ -83,14 +87,14 @@ public class AccountController {
             File picture = new File(saveDir.getPath() + "/" + imgName + ".jpg");
             logger.info(picture.getAbsolutePath());
             ImageIO.write(img, "jpg", picture);
-            acc.setProfilePicture(imgName + ".jpg");
+            account.setProfilePicture(imgName + ".jpg");
 
         } catch (IOException e) {
             throw new IOException("Error reading image: ", e);
         }
 
 
-        acc.update();
+        account.update();
         logger.info("Profile Picture updated successfully!");
     }
 
@@ -99,11 +103,11 @@ public class AccountController {
      */
     public void updateUsername(String newUsername) {
         // change username in model
-        acc.setUsername(newUsername);
+        account.setUsername(newUsername);
 
         // update username in db
         try {
-            acc.update();
+            account.update();
             logger.info("Username updated successfully!");
         } catch (SQLException e) {
             logger.error("Error: " + e.toString());
@@ -119,12 +123,12 @@ public class AccountController {
         byte[] newHash = Encryption.hash(password.toCharArray(), newSalt);
 
         // update account with newly created hash and salt
-        acc.setPasswordHash(newHash);
-        acc.setPasswordSalt(newSalt);
+        account.setPasswordHash(newHash);
+        account.setPasswordSalt(newSalt);
 
         /* update account in database */
         try {
-            acc.update();
+            account.update();
             logger.info("Password updated successfully!");
         } catch (SQLException e) {
             logger.error("Error: " + e.toString());
@@ -135,9 +139,9 @@ public class AccountController {
      * @param newBio updated bio given by user to be stored in DB
      */
     public void updateUserBio(String newBio) {
-        acc.setBio(newBio);
+        account.setBio(newBio);
         try {
-            acc.update();
+            account.update();
             logger.info("Bio updated successfully!");
         } catch (SQLException e) {
             logger.error("Error: " + e.toString());
@@ -173,7 +177,7 @@ public class AccountController {
         if (localStock == null) {
             throw new TradeException("That stock could not be found in the schema. Please check that the symbol is formatted correctly", TradeExceptionType.STOCK_NOT_FOUND);
         }
-        List<Account> queryResult = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
+        List<Account> queryResult = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", account.getUUID());
         if (queryResult.isEmpty()) {
             throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
         }
@@ -184,8 +188,8 @@ public class AccountController {
         }
         StocksFollowed followed = new StocksFollowed(localAccount.getFollowedStocks());
         followed.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
-        acc.setFollowedStocks(followed.followObjectsToSting());
-        acc.update();
+        account.setFollowedStocks(followed.followObjectsToSting());
+        account.update();
     }
 
     /**
@@ -194,8 +198,9 @@ public class AccountController {
      * @throws SQLException if an error occurs updating in DB
      */
     public void unFollowStock(String symbol) throws SQLException {
-        List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID());
-        
+        //StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
+        List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", account.getUUID());
+
         if (accounts.isEmpty() || accounts.get(0) == null)
         {
             throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
@@ -205,8 +210,8 @@ public class AccountController {
         if (followed.containsStock(symbol))
         {
             followed.removeFollow(symbol);
-            acc.setFollowedStocks(followed.followObjectsToSting());
-            acc.update();
+            account.setFollowedStocks(followed.followObjectsToSting());
+            account.update();
         }
         else
         {
@@ -220,7 +225,7 @@ public class AccountController {
      * @throws SQLException
      */
     public void unInvest(String symbol) throws SQLException {
-        List<Account> accounts = Account.FindCustom("SELECT id, invested_stocks FROM account WHERE UUID = ?", acc.getUUID());
+        List<Account> accounts = Account.FindCustom("SELECT id, invested_stocks FROM account WHERE UUID = ?", account.getUUID());
 
         // check if user exists
         if (accounts.isEmpty() || accounts.get(0) == null)
@@ -258,9 +263,9 @@ public class AccountController {
 
         if (type.equals(TransactionType.BUY)) {
             //check that the user has the funds
-            int compareResult = acc.getWalletBalance().compareTo(localStock.getCurrPrice().multiply(new BigDecimal(numShares)));
+            int compareResult = account.getWalletBalance().compareTo(localStock.getCurrPrice().multiply(new BigDecimal(numShares)));
             if (compareResult != -1) {
-                List<Account> queryResult = Account.FindCustom("SELECT followed_stocks, invested_stocks, transaction_history, id FROM account WHERE UUID = ?", acc.getUUID());
+                List<Account> queryResult = Account.FindCustom("SELECT followed_stocks, invested_stocks, transaction_history, id FROM account WHERE UUID = ?", account.getUUID());
                 if (queryResult.isEmpty()) {
                     throw new TradeException("Could not find user in schema!", TradeExceptionType.USER_NOT_FOUND);
                 }
@@ -281,16 +286,17 @@ public class AccountController {
                     Transaction tempTransaction = new Transaction(TransactionType.BUY, SQL.GetTimeStamp(), localStock.getCurrPrice(), numShares, localStock);
                     tempTransactionHistory.addTransaction(tempTransaction);
                     //update and push to DB
-                    acc.setTransactionHistory(tempTransactionHistory.buildTransactionJSON());
+                    account.setTransactionHistory(tempTransactionHistory.buildTransactionJSON());
 
 
                     //add the stock to investments   Exactly like transactionhistory minus the enum
                     InvestmentCollection investments = new InvestmentCollection(localAccount.getInvestedStocks());
                     Investment tempInvestment = new Investment(numShares, localStock, SQL.GetTimeStamp());
                     investments.addInvestment(tempInvestment);
-                    acc.setWalletBalance(acc.getWalletBalance().subtract(new BigDecimal(numShares).multiply(localStock.getCurrPrice())));
+                    account.setWalletBalance(
+                            account.getWalletBalance().subtract(new BigDecimal(numShares).multiply(localStock.getCurrPrice())));
                     //update and push to DB
-                    acc.setInvestedStocks(investments.buildJSON());
+                    account.setInvestedStocks(investments.buildJSON());
 
 
                     System.out.println("debug for the StocksFollowed object ");
@@ -299,10 +305,10 @@ public class AccountController {
                         System.out.println(f.getStock().getSymbol());
                     }
                     //update and push to DB
-                    acc.setFollowedStocks(tempStocksFollowed.followObjectsToSting());
-                    acc.update();
+                    account.setFollowedStocks(tempStocksFollowed.followObjectsToSting());
+                    account.update();
                     System.out.println("debug for string");
-                    System.out.println(acc.getFollowedStocks());
+                    System.out.println(account.getFollowedStocks());
 
                     logger.info("Transaction success!");
                 } else {
@@ -314,7 +320,7 @@ public class AccountController {
         } else if (type.equals(TransactionType.SELL)) {
             //check that the user has the particular stock they want to sell, as well as the quantity that they desire to sell
             //check that the lists are actually populated
-            List<Account> queryResult = Account.FindCustom("SELECT invested_stocks, transaction_history, followed_stocks, id FROM account WHERE UUID = ?", acc.getUUID());
+            List<Account> queryResult = Account.FindCustom("SELECT invested_stocks, transaction_history, followed_stocks, id FROM account WHERE UUID = ?", account.getUUID());
             if (queryResult.isEmpty() || queryResult.get(0) == null) {
                 throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
             }
@@ -327,7 +333,7 @@ public class AccountController {
                     //if all of the shares are sold, then remove from invested and back to follow send out to DB
                     investmentCollection.removeInvestment(symbol);
                     stocksFollowed.setFollow( new Follow(localStock.getCurrPrice(),localStock,SQL.GetTimeStamp()));
-                    acc.setFollowedStocks(stocksFollowed.followObjectsToSting());
+                    account.setFollowedStocks(stocksFollowed.followObjectsToSting());
                 } else if (numShares < investmentCollection.getInvestment(symbol).getNumShares()) {
                     //already invested, just update the number of shares
                     investmentCollection.getInvestment(symbol).setNumShares(investmentCollection.getInvestment(symbol).getNumShares() - numShares);
@@ -339,12 +345,13 @@ public class AccountController {
                 Stock stock = Stock.Find(symbol).orElse(null);
                 if (stock != null) {
                     th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), Stock.Find(symbol).get().getCurrPrice(), numShares, stock));
-                    acc.setTransactionHistory(th.buildTransactionJSON());
-                    acc.setInvestedStocks(investmentCollection.buildJSON());
+                    account.setTransactionHistory(th.buildTransactionJSON());
+                    account.setInvestedStocks(investmentCollection.buildJSON());
 
-                    acc.setWalletBalance(acc.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
+                    account.setWalletBalance(
+                            account.getWalletBalance().add(new BigDecimal(numShares).multiply(stock.getCurrPrice())));
                 }
-                acc.update();
+                account.update();
             } else {
                 throw new TradeException("You do not own any of that stock.", TradeExceptionType.NOT_INVESTED);
             }
@@ -357,11 +364,11 @@ public class AccountController {
      */
     public void updateWalletBalance(BigDecimal newBalance) {
         // set new account balance
-        acc.setWalletBalance(newBalance);
+        account.setWalletBalance(newBalance);
 
         // push to DB
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating balance in database.");
         }
@@ -371,10 +378,10 @@ public class AccountController {
      * Reset user's followed stocks
      */
     public void resetFollowed() {
-        acc.setFollowedStocks("");
+        account.setFollowedStocks("");
         // push to DB
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating followed stocks in database.");
         }
@@ -384,10 +391,10 @@ public class AccountController {
      * Reset User's transaction history
      */
     public void resetTransactionHistory(){
-        acc.setTransactionHistory("");
+        account.setTransactionHistory("");
         // push to DB
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating transaction history in database.");
         }
@@ -397,10 +404,10 @@ public class AccountController {
      * Opt into investor leaderboard
      */
     public void optInToLeaderboard(){
-        acc.setLeaderboardRank(0);
+        account.setLeaderboardRank(0);
 
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating leaderboard rank in database.");
         }
@@ -410,10 +417,10 @@ public class AccountController {
      * Opt out of investor leaderboard
      */
     public void optOutOfLeaderboard(){
-        acc.setLeaderboardRank(-1);
+        account.setLeaderboardRank(-1);
 
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating leaderboard rank in database.");
         }
@@ -424,10 +431,10 @@ public class AccountController {
      * @param newEmail Updated email from user
      */
     public void resetEmail(String newEmail){
-        acc.setEmail(newEmail);
+        account.setEmail(newEmail);
 
         try {
-            acc.update();
+            account.update();
         } catch (SQLException e) {
             logger.error("Error updating email in database.");
         }

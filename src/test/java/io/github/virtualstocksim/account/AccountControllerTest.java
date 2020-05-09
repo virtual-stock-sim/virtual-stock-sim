@@ -115,7 +115,7 @@ public class AccountControllerTest
 
     @Test
     public void testLogin() {
-        assertTrue((AccountController.login(conn.getModel().getUsername(), TEST_PASSWORD)));
+        assertTrue((conn.login(conn.getModel().getUsername(), TEST_PASSWORD)));
 
     }
 

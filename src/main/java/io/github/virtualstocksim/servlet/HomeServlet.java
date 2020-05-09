@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/home"})
 public class HomeServlet extends HttpServlet
@@ -33,33 +34,22 @@ public class HomeServlet extends HttpServlet
             e.printStackTrace();
         }
         lb.getCurrentRanks();
-        // do not create a new session until the user logs in
-        HttpSession session = req.getSession(false);
-        if(session!=null)
-        {
-            String username = (String) session.getAttribute("username");
-            Account account = Account.Find(username).orElse(null);
-            AccountController controller = new AccountController();
-            controller.setModel(account);
-            LeaderBoard leaderBoard = new LeaderBoard();
-            TopStocks topStocks = new TopStocks();
-            try {
-                //this update ranks function is what should be called by a task scheduler
-                //leaving this here now to show that it has functionality
-                leaderBoard.updateRanks();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            req.setAttribute("topStocksModel",topStocks);
-            req.setAttribute("leaderboardModel",leaderBoard);
-            if(account !=null)
-            {
 
-                req.setAttribute("account", account);
-                logger.info(username + " is logged in");
+        Optional<Account> account = SessionValidater.validate(req);
 
-            }
-        } else logger.info("Session was null - user not logged in");
+        AccountController controller = new AccountController();
+        account.ifPresent(controller::setModel);
+        LeaderBoard leaderBoard = new LeaderBoard();
+        TopStocks topStocks = new TopStocks();
+        try {
+            //this update ranks function is what should be called by a task scheduler
+            //leaving this here now to show that it has functionality
+            leaderBoard.updateRanks();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        req.setAttribute("topStocksModel",topStocks);
+        req.setAttribute("leaderboardModel",leaderBoard);
 
         req.getRequestDispatcher("/_view/home.jsp").forward(req, resp);
     }
