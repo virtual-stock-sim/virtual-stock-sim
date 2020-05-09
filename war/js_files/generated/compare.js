@@ -4,8 +4,10 @@ import { StockRequest } from "./stockrequest.js";
 import * as json from "./jsonformats.js";
 import { ezStockSearch } from "./stocksearch.js";
 import { storeStockData } from "./stockstorage.js";
+import { HttpRequest, HttpRequestType } from "./httprequest.js";
 // Stocks present in page to keep track of
 let stocks = [];
+// Set up data stream to handle stock updates
 let stream = new DataStream("stockStream", "/dataStream");
 stream.onMessageReceived = (event) => {
     let msg = json.Jsonable.deserialize(json.UpdateMessage, event.data);
@@ -15,15 +17,21 @@ stream.onMessageReceived = (event) => {
         request.send();
     }
 };
+let params = {
+    message: "",
+    protocol: HttpRequestType.POST,
+    uri: "/dataStream",
+};
+let msg = new HttpRequest(params);
+msg.send();
+// Set up the stock search bar
 let inputField = document.getElementById("search-input");
 let graphsInPage = new Map();
 ezStockSearch(inputField, result => {
     // Reset error text
     document.getElementById("error-text").innerText = "";
-    if (result.code === json.StockResponseCode.PROCESSING) {
-        // TODO: Notify user that stock will be available soon
-    }
     if (result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)) {
+        storeStockData([result.data]);
         stocks.push(result.symbol);
         let element = document.getElementById(result.symbol + "-graph");
         if (!element) {
