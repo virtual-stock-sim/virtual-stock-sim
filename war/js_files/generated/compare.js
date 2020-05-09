@@ -4,7 +4,6 @@ import { StockRequest } from "./stockrequest.js";
 import * as json from "./jsonformats.js";
 import { ezStockSearch } from "./stocksearch.js";
 import { storeStockData } from "./stockstorage.js";
-import { HttpRequest, HttpRequestType } from "./httprequest.js";
 // Stocks present in page to keep track of
 let stocks = [];
 // Set up data stream to handle stock updates
@@ -17,13 +16,6 @@ stream.onMessageReceived = (event) => {
         request.send();
     }
 };
-let params = {
-    message: "",
-    protocol: HttpRequestType.POST,
-    uri: "/dataStream",
-};
-let msg = new HttpRequest(params);
-msg.send();
 // Set up the stock search bar
 let inputField = document.getElementById("search-input");
 let graphsInPage = new Map();

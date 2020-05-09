@@ -10,8 +10,8 @@
 
 .loading-wheel
 {
-    border: 10px solid #f3f3f3; /* Light grey */
-    border-top: 10px solid #404040; /* Dark Grey */
+    border: 10px solid #404040; /* Dark Grey */
+    border-top: 10px solid #f3f3f3; /* Light grey */
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -21,10 +21,14 @@
 
 .loading-wheel-message
 {
+    color:white;
     display: inline;
     position: relative;
-    bottom: 25px;
+    bottom: 20px;
+    left: 10px;
+
 }
+
 
 @keyframes loading-wheel-spin {
     0% { transform: rotate(0deg); }
