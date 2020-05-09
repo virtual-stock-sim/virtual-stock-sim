@@ -315,6 +315,15 @@ public class AccountControllerTest
         assertFalse(conn.getModel().getEmail().equals("test@vss.com"));
     }
 
+    @Test
+    public void testUnInvest() throws SQLException{
+        conn.unInvest("AMZN");
+        InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
+        assertFalse(investmentCollection.isInvested("AMZN"));
+        assertTrue(investmentCollection.isInvested("TSLA"));
+
+    }
+
 
 
 
