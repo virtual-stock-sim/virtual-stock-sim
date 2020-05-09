@@ -30,6 +30,10 @@ body {
     font-size: 18px !important
 }
 
+.vss-xtra-large {
+    font-size: 24px !important
+}
+
 .vss-quarter {
     float: left;
     padding: 30px;
@@ -103,5 +107,5 @@ body {
 .github-link p > a {
     border-style: hidden;
     text-decoration: none;
-    color:black;
+    color: black;
 }

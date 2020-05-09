@@ -31,7 +31,7 @@
 <div class = vss-container style="padding:10px 16px">
 
     <div class="github-link">
-        <p class="vss-center">You can view the project's GitHub repository by clicking here <a class="vss-large" href="https://github.com/virtual-stock-sim/virtual-stock-sim"><i class="fa fa-github"></i></a></p>
+        <p class="vss-center">You can view the project's GitHub repository by clicking here <a class="vss-xtra-large" href="https://github.com/virtual-stock-sim/virtual-stock-sim"><i class="fa fa-github"></i></a></p>
     </div>
 
     <h3 class = "vss-center">ABOUT VSS</h3>
