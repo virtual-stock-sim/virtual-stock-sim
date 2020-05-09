@@ -50,8 +50,8 @@ class ScraperTaskSubmitter<T> extends PriorityCallable<T>
             long timeDiff = now - lastScrape;
             long sleepTime = DELAY - timeDiff;
             logger.info(
-                    "Last scraper task was " + TimeUnit.MILLISECONDS.toSeconds(timeDiff) + " seconds ago. " +
-                            "Sleeping for " + TimeUnit.MILLISECONDS.toSeconds(sleepTime) + " seconds before next task"
+                    "Last scraper task was " + ((double) timeDiff / 1000.0) + " seconds ago. " +
+                            "Sleeping for " + ((double) sleepTime / 1000.0) + " seconds before next task"
                        );
             // Sleep for the remaining time left in the desired delay
             TimeUnit.MILLISECONDS.sleep(sleepTime);
