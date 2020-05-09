@@ -55,7 +55,7 @@ public class Account extends DatabaseItem {
      * @param profilePicture String Path to profile picture locally on server
      * @param creationDate time the account was created (java.time)
      */
-    public Account(
+    protected Account(
             int id,
             String uuid,
             AccountType accountType,
@@ -70,8 +70,8 @@ public class Account extends DatabaseItem {
             int leaderboardRank,
             String bio,
             String profilePicture,
-            Timestamp creationDate
-                  ) {
+            Timestamp creationDate)
+    {
         super(id);
         this.uuid = uuid;
         this.type = accountType;
@@ -90,9 +90,24 @@ public class Account extends DatabaseItem {
 
     }
 
-
-
-
+    public Account(
+            String uuid,
+            AccountType accountType,
+            String email,
+            String username,
+            byte[] passwordHash,
+            byte[] passwordSalt,
+            String stocksFollowed,
+            String investedStocks,
+            String transactionHistory,
+            BigDecimal walletBalance,
+            int leaderboardRank,
+            String bio,
+            String profilePicture,
+            Timestamp creationDate)
+    {
+        this(-1, uuid, accountType, email, username, passwordHash, passwordSalt, stocksFollowed, investedStocks, transactionHistory, walletBalance, leaderboardRank, bio, profilePicture, creationDate);
+    }
 
     public String getUUID()
     {
@@ -238,6 +253,7 @@ public class Account extends DatabaseItem {
     // Static methods to search database based on given parameter
     public static Optional<Account> Find(int id){return Find("id", id);}
     public static Optional<Account> Find(String username){return Find("username", username);}
+    public static Optional<Account> FindByUuid(String uuid) { return Find("uuid", uuid); }
     public static Optional<Account> Find(String key, Object value)
     {
         List<Account> accounts = FindCustom(
