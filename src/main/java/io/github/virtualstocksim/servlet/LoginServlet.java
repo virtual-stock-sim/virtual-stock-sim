@@ -51,17 +51,7 @@ public class LoginServlet extends HttpServlet
         Optional<Account> account = Account.Find(uname);
         account.ifPresent(controller::setModel);
 
-        if(account.isPresent() && !controller.login(uname.trim(),pword.trim()))
-        {
-            // If user input is invalid, return error message with same page
-            errorMessage = "Login Failed. Please enter a valid username and password.";
-
-            // Make the username persist in the form
-            req.setAttribute("errorMessage", errorMessage);
-            req.setAttribute("uname", uname);
-            req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
-        }
-        else
+        if(account.isPresent() && controller.login(uname.trim(),pword.trim()))
         {
             // login is valid, redirect user and create session
             HttpSession session = req.getSession(true);
@@ -69,7 +59,16 @@ public class LoginServlet extends HttpServlet
             logger.info("Logging user" + uname + " in....");
 
             resp.sendRedirect("/home");
+        }
+        else
+        {
+            // If user input is invalid, return error message with same page
+            errorMessage = "Login Failed. That username and password combination is not in our system";
 
+            // Make the username persist in the form
+            req.setAttribute("errorMessage", errorMessage);
+            req.setAttribute("uname", uname);
+            req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
         }
     }
 
