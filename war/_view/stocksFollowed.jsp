@@ -58,7 +58,8 @@
             <h1>FOLLOWED STOCKS</h1>
             <h3>THE STOCKS YOU FOLLOW, AT A GLANCE</h3>
         </div>
-        <c:forEach var="followItem" items="${followedModel.stocksFollowed}">
+        <%--@elvariable id="followedModel" type="io.github.virtualstocksim.following.FollowedStocks"--%>
+        <c:forEach var="followItem" items="${followedModel.followedStocks.values()}">
             <t:stockTemplate stock="${followItem.stock}" followItem="${followItem}"/>
         </c:forEach>
     </div>
