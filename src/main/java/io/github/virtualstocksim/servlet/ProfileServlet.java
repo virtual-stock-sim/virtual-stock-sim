@@ -18,18 +18,20 @@ import java.util.Optional;
 
 @MultipartConfig
 @WebServlet(urlPatterns = {"/profile"})
-public class ProfileServlet extends HttpServlet {
+public class ProfileServlet extends HttpServlet
+{
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
         logger.info("Profile Servlet: doGet");
 
         String errorMsg = null;
 
         HttpSession session = req.getSession(false);
-        if(session == null)
+        if (session == null)
         {
             logger.info("User isn't logged in, redirecting to login page");
             resp.sendRedirect("/login");
@@ -39,7 +41,7 @@ public class ProfileServlet extends HttpServlet {
             // Make sure user is logged in
             Optional<Account> account = SessionValidater.validate(req);
 
-            if(account.isPresent())
+            if (account.isPresent())
             {
                 req.setAttribute("account", account.get());
             }
@@ -71,18 +73,21 @@ public class ProfileServlet extends HttpServlet {
 
         Optional<Account> account = SessionValidater.validate(req);
 
-        if(account.isPresent())
+        if (account.isPresent())
         {
             controller.setModel(account.get());
 
             // Update user bio
             String bio = req.getParameter("bio");
-            if(bio != null)
+            if (bio != null)
             {
-                if(bio.length() > 500){
+                if (bio.length() > 500)
+                {
                     logger.warn("Bio is greater than 500 characters. Abandoning update...");
                     errorMsgs.add("Bio is greater than 500 characters!");
-                }else {
+                }
+                else
+                {
                     logger.info("User requested bio change");
                     controller.updateUserBio(bio);
                     bioUpdateSuccess = true;
@@ -111,10 +116,14 @@ public class ProfileServlet extends HttpServlet {
                         lastError = "Uploaded file exceeds file size limit";
                         errorMsgs.add(lastError);
                         logger.info(lastError);
-                    } else {
+                    }
+                    else
+                    {
                         try
                         {
-                            controller.updateProfilePicture(profilePic.getInputStream(), Paths.get(profilePic.getSubmittedFileName()).getFileName().toString());
+                            controller.updateProfilePicture(
+                                    profilePic.getInputStream(), Paths.get(
+                                            profilePic.getSubmittedFileName()).getFileName().toString());
                             pictureUpdateSuccess = true;
                             req.setAttribute("pictureUpdateSuccess", pictureUpdateSuccess);
                         }
@@ -128,22 +137,29 @@ public class ProfileServlet extends HttpServlet {
 
             }
 
-             // User changing username
+            // User changing username
             String username = req.getParameter("username");
-            if(username != null) {
+            if (username != null)
+            {
                 username = username.trim();
-                if (username.length() > 255) {
+                if (username.length() > 255)
+                {
                     errorMsgs.add("Username cannot exceed 255 characters");
                     logger.warn("Username cannot exceed 255 characters, abandoning update....");
 
-                } else {
+                }
+                else
+                {
 
                     logger.info("User requested username change");
-                    if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + username + "%'").isEmpty()) {
+                    if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(username) = LOWER(?)", username).isEmpty())
+                    {
                         lastError = "Username already exists";
                         logger.warn(lastError);
                         errorMsgs.add(lastError);
-                    } else {
+                    }
+                    else
+                    {
                         controller.updateUsername(username);
                     }
                 }
@@ -151,7 +167,7 @@ public class ProfileServlet extends HttpServlet {
 
             String password = req.getParameter("password");
             String confirmPassword = req.getParameter("confirmPassword");
-            if(password != null && confirmPassword!=null && !(password = password.trim()).isEmpty() && !(confirmPassword = confirmPassword.trim()).isEmpty())
+            if (password != null && confirmPassword != null && !(password = password.trim()).isEmpty() && !(confirmPassword = confirmPassword.trim()).isEmpty())
             {
                 if (password.length() > 255)
                 {
@@ -162,7 +178,8 @@ public class ProfileServlet extends HttpServlet {
                 {
                     logger.info("User requested password change");
 
-                    if (password.length() < 8 ) {
+                    if (password.length() < 8)
+                    {
                         lastError = "Password must be at least 8 characters long";
                         logger.warn(lastError);
                         errorMsgs.add(lastError);
@@ -173,7 +190,7 @@ public class ProfileServlet extends HttpServlet {
                         errorMsgs.add("Password do not match");
                     }
                     else
-                        // else data is good, do update
+                    // else data is good, do update
                     {
                         controller.updatePassword(password);
                         credentialUpdateSuccess = true;
@@ -181,43 +198,53 @@ public class ProfileServlet extends HttpServlet {
                     }
                 }
             }
-            else
-                // if password or confirm password is null, notify user
+            // Only give an error if both fields are empty (as in they aren't changing their password)
+            else if ((password != null && confirmPassword == null) || (password == null && confirmPassword != null))
+            // if password or confirm password is null, notify user
             {
                 errorMsgs.add("Required field empty. Be sure to confirm your password!");
             }
 
             // check for user changing email
             String newEmail = req.getParameter("new-email");
-            if(newEmail!=null && !newEmail.isEmpty()){
+            if (newEmail != null && !newEmail.isEmpty())
+            {
                 newEmail = newEmail.trim();
-                controller.resetEmail(newEmail);
-                credentialUpdateSuccess = true;
-                req.setAttribute("credentialUpdateSuccess", credentialUpdateSuccess);
-                logger.info("Email successfully updated in database");
+                if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(email) = LOWER(?)", newEmail).isEmpty())
+                {
+                    // email exists
+                    errorMsgs.add("An account with this email already exists");
+                }
+                else
+                {
+                    controller.resetEmail(newEmail);
+                    credentialUpdateSuccess = true;
+                    req.setAttribute("credentialUpdateSuccess", credentialUpdateSuccess);
+                    logger.info("Email successfully updated in database");
+                }
             }
 
             // check for user resetting either transaction history or followed stocks
             String resetTransHist = req.getParameter("reset-transaction-history");
             String resetFollowed = req.getParameter("reset-followed");
-            if(resetTransHist!=null)
+            if (resetTransHist != null)
             {
                 controller.resetTransactionHistory();
-                resetTransHistSuccess=true;
+                resetTransHistSuccess = true;
                 req.setAttribute("resetTransHistSuccess", resetTransHistSuccess);
                 logger.info("Transaction History successfully cleared");
             }
-            if (resetFollowed!=null)
+            if (resetFollowed != null)
             {
                 controller.resetFollowed();
-                resetFollowedSuccess=true;
+                resetFollowedSuccess = true;
                 req.setAttribute("resetFollowedSuccess", resetFollowedSuccess);
                 logger.info("Followed Stocks successfully cleared");
             }
 
             String optIn = req.getParameter("opt-in");
             String optOut = req.getParameter("opt-out");
-            if(optIn!=null)
+            if (optIn != null)
             {
                 controller.optInToLeaderboard();
                 optInSuccess = true;
@@ -225,7 +252,7 @@ public class ProfileServlet extends HttpServlet {
                 logger.info("User successfully opted into leaderboard");
 
             }
-            else if(optOut!=null)
+            else if (optOut != null)
             {
                 controller.optOutOfLeaderboard();
                 optOutSuccess = true;
@@ -234,20 +261,18 @@ public class ProfileServlet extends HttpServlet {
             }
 
 
+            if (!errorMsgs.isEmpty())
+            {
+                req.setAttribute("errorMsgs", errorMsgs);
+            }
+
+            req.setAttribute("account", controller.getModel());
+            req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
         }
         else
         {
-            errorMsgs.add("Whoops! Something went wrong on our end");
+            resp.sendRedirect("/login");
         }
-
-        if(!errorMsgs.isEmpty())
-        {
-            req.setAttribute("errorMsg", String.join("<br>"));
-        }
-
-        req.setAttribute("account", controller.getModel());
-        req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
-
-       }
+    }
 
 }

@@ -42,10 +42,13 @@
         <h2>BUILT BY YOU, FROM THE GROUND UP.</h2>
     </div>
 
-    <!-- Display error message, if any-->
-    <c:if test="${! empty errorMsg}">
-        <div class="error">${errorMsg}</div>
-    </c:if>
+    <c:forEach var="errorMsg" items="${errorMsgs}">
+        <c:if test="${! empty errorMsg}">
+            <div class="alert alert-danger alert-dismissible" style="width:50%;margin-left: 25%;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Whoops! </strong>${errorMsg}</div>
+        </c:if>
+    </c:forEach>
 
     <c:if test="${bioUpdateSuccess==true}">
         <div class="alert alert-success alert-dismissible" id="bio-success" style="width:50%; margin-left:25%;">
@@ -170,10 +173,10 @@
                 <h5>Others will be able to see where you stand</h5>
                 <h5>(You are opted out by default)</h5>
                 <form action="${pageContext.servletContext.contextPath}/profile" class="form-group" method="post" id="opt-in-form">
-                    <input type="radio" id="opt-in" name="opt-in" value="in">
+                    <input type="radio" id="opt-in" name="leaderboard-opt-in" value="in">
                     <label for="opt-in">Opt in</label><br>
-                    <input type="radio" id="opt-out" name="opt-out" value="out">
-                    <label for="opt-in">Opt out</label><br>
+                    <input type="radio" id="opt-out" name="leaderboard-opt-in" value="out">
+                    <label for="opt-out">Opt out</label><br>
                     <input type="submit" value="Submit">
                 </form>
         </div>
