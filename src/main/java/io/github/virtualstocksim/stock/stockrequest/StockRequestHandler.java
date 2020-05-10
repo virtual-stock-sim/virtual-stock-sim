@@ -241,6 +241,7 @@ public class StockRequestHandler implements HttpRequestListener
                     try
                     {
                         controller.followStock(stock.get());
+                        return new ImmutablePair<>(Optional.empty(), Optional.empty());
                     }
                     catch (SQLException e)
                     {
