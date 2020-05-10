@@ -2,8 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.following.FollowedStock;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.Investment;
 import org.slf4j.Logger;
@@ -62,10 +61,9 @@ public class CompareServlet extends HttpServlet
                 }
 
 
-                List<Follow> stocksFollowedInPage = new ArrayList<Follow>();
+               List<FollowedStock> stocksFollowedInPage  = new ArrayList<FollowedStock>();
                 List<Investment> stocksInvestedInPage = new ArrayList<Investment>();
                 for (Stock stock : stockList) {
-                    if()
                 }
             }
         }
