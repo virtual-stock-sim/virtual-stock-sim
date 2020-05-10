@@ -110,8 +110,12 @@ public class CompareServlet extends HttpServlet
             else{
                 logger.error("STOCKS IN PAGE WAS NULL");
             }
-        }
 
-        req.getRequestDispatcher("/_view/compare.jsp").forward(req, resp);
+            req.getRequestDispatcher("/_view/compare.jsp").forward(req, resp);
+        }
+        else
+        {
+            resp.sendRedirect("/login");
+        }
     }
 }
