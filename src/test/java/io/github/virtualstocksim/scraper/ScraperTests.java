@@ -9,11 +9,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class ScraperTests
@@ -65,7 +66,7 @@ public class ScraperTests
                           {
                               if(p.getLeft().equals("aaaaasdlksdf") || p.getLeft().contains("^NASDAQ"))
                               {
-                                  logger.info("Error correctly returned" + r.getError().toString());
+                                  logger.info("Error correctly returned: " + r.getError().toString());
                                   return true;
                               }
                               else

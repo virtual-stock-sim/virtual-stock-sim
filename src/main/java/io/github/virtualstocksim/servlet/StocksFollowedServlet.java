@@ -2,7 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
@@ -13,10 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/stocksFollowed"})
 public class StocksFollowedServlet extends HttpServlet
@@ -36,7 +34,7 @@ public class StocksFollowedServlet extends HttpServlet
             return;
         }
 
-        StocksFollowed followedModel = new StocksFollowed(account.getFollowedStocks());
+        FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
         InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
         req.setAttribute("followedModel", followedModel);
         req.setAttribute("investModel", investModel);
@@ -59,7 +57,7 @@ public class StocksFollowedServlet extends HttpServlet
         AccountController accountController = new AccountController();
         accountController.setModel(account);
 
-        StocksFollowed followedModel = new StocksFollowed(account.getFollowedStocks());
+        FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
         InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
 
         req.setAttribute("followedModel", followedModel);
@@ -101,7 +99,7 @@ public class StocksFollowedServlet extends HttpServlet
 
         if(stockToUnfollow!=null){
             try {
-                accountController.unFollowStock(stockToUnfollow);
+                accountController.unfollowStock(stockToUnfollow);
                 accountController.unInvest(stockToUnfollow);
                 stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
                 req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);

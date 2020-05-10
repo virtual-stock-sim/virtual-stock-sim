@@ -1,9 +1,10 @@
 package io.github.virtualstocksim.account;
 
+import com.google.gson.JsonParseException;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.following.FollowedStock;
+import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.*;
 import org.slf4j.Logger;
@@ -18,12 +19,14 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
 public class AccountController {
     // account instance
     private Account account;
+    private FollowedStocks followedStocks;
     private static final Logger logger = LoggerFactory.getLogger(Account.class);
 
     public AccountController() {
@@ -31,7 +34,8 @@ public class AccountController {
     }
 
 
-    public Account getModel() {
+    public Account getModel()
+    {
         return this.account;
     }
 
@@ -39,13 +43,15 @@ public class AccountController {
      * Set the model
      * @param account Account to set the model as
      * @throws NullPointerException If account is null
+     * @throws JsonParseException If the account's followed stocks couldn't be parsed
      */
-    public void setModel(Account account) throws NullPointerException
+    public void setModel(Account account) throws NullPointerException, JsonParseException
     {
         if(account == null)
             throw new NullPointerException("Account can't be null");
 
         this.account = account;
+        followedStocks = new FollowedStocks(account.getFollowedStocks());
     }
 
     /**
@@ -168,55 +174,29 @@ public class AccountController {
     }
 
     /**
-     *
-     * @param symbol symbol of stock to follow
-     * @throws SQLException if an error occurs updating in DB
+     * Add a stock to list of followed stocks for this controller's account model
+     * @param stock Stock to follow
+     * @throws SQLException Exception while committing the account changes to the database
      */
-    public void followStock(String symbol) throws SQLException {
-        Stock localStock = Stock.Find(symbol).orElse(null);
-        if (localStock == null) {
-            throw new TradeException("That stock could not be found in the schema. Please check that the symbol is formatted correctly", TradeExceptionType.STOCK_NOT_FOUND);
-        }
-        List<Account> queryResult = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", account.getUUID());
-        if (queryResult.isEmpty()) {
-            throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
-        }
-        Account localAccount = queryResult.get(0);
+    public void followStock(Stock stock) throws SQLException
+    {
+        FollowedStock followedStock = new FollowedStock(stock, stock.getCurrPrice(), SQL.GetTimeStamp());
+        followedStocks.addFollowedStock(followedStock);
 
-        if (queryResult.get(0) == null) {
-            throw new TradeException("stock not found", TradeExceptionType.STOCK_NOT_FOUND);
-        }
-        StocksFollowed followed = new StocksFollowed(localAccount.getFollowedStocks());
-        followed.addFollow(new Follow(localStock.getCurrPrice(), localStock, SQL.GetTimeStamp()));
-        account.setFollowedStocks(followed.followObjectsToString());
+        account.setFollowedStocks(String.valueOf(followedStocks.asJsonArray()));
         account.update();
     }
 
     /**
-     *
-     * @param symbol - Symbol of stock to unfollow
-     * @throws SQLException if an error occurs updating in DB
+     * Remove a stock from the list of followed stocks for this controller's account model
+     * @param stockSymbol Stock to unfollow
+     * @throws SQLException Exception while committing the account changes to the database
      */
-    public void unFollowStock(String symbol) throws SQLException {
-        //StocksFollowed temp = new StocksFollowed(Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", acc.getUUID()).get(0).getFollowedStocks());
-        List<Account> accounts = Account.FindCustom("SELECT id, followed_stocks FROM account WHERE UUID = ?", account.getUUID());
-
-        if (accounts.isEmpty() || accounts.get(0) == null)
-        {
-            throw new TradeException("User not found", TradeExceptionType.USER_NOT_FOUND);
-        }
-
-        StocksFollowed followed = new StocksFollowed(accounts.get(0).getFollowedStocks());
-        if (followed.containsStock(symbol))
-        {
-            followed.removeFollow(symbol);
-            account.setFollowedStocks(followed.followObjectsToString());
-            account.update();
-        }
-        else
-        {
-            logger.error("Error: Control flow broke somewhere, user cannot unfollow a stock that they aren't following!");
-        }
+    public void unfollowStock(String stockSymbol) throws SQLException
+    {
+        followedStocks.removeFollowedStock(stockSymbol);
+        account.setFollowedStocks(String.valueOf(followedStocks.asJsonArray()));
+        account.update();
     }
 
     /**
@@ -273,13 +253,13 @@ public class AccountController {
                 if (localAccount == null) {
                     throw new TradeException("could not find user in schema", TradeExceptionType.USER_NOT_FOUND);
                 }
-                StocksFollowed tempStocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
+                FollowedStocks tempFollowedStocks = new FollowedStocks(localAccount.getFollowedStocks());
 
                 InvestmentCollection ic = new InvestmentCollection(localAccount.getInvestedStocks());
 
                 //StocksFollowed tempStocksFollowed = new StocksFollowed(followingString);
                 //if it contains the symbol, remove it from the following list
-                if (tempStocksFollowed.containsStock(symbol) || ic.isInvested(symbol)) {
+                if (tempFollowedStocks.contains(symbol) || ic.isInvested(symbol)) {
                     //add the stock to transactionHistory
                     //add the transaction using a method with a string
                     TransactionHistory tempTransactionHistory = new TransactionHistory(localAccount.getTransactionHistory());
@@ -298,11 +278,8 @@ public class AccountController {
                     //update and push to DB
                     account.setInvestedStocks(investments.buildJSON());
 
-                    tempStocksFollowed.removeFollow(symbol);
 
-                    //update and push to DB
-                    account.setFollowedStocks(tempStocksFollowed.followObjectsToString());
-                    account.update();
+                    unfollowStock(symbol);
 
                     logger.info("Transaction success!");
                 } else {
@@ -320,14 +297,14 @@ public class AccountController {
             }
             Account localAccount = queryResult.get(0);
             InvestmentCollection investmentCollection = new InvestmentCollection(localAccount.getInvestedStocks());
-            StocksFollowed stocksFollowed = new StocksFollowed(localAccount.getFollowedStocks());
+            FollowedStocks followedStocks = new FollowedStocks(localAccount.getFollowedStocks());
 
             if (investmentCollection.isInvested(symbol)) {
                 if (numShares == investmentCollection.getInvestment(symbol).getNumShares()) {
                     //if all of the shares are sold, then remove from invested and back to follow send out to DB
                     investmentCollection.removeInvestment(symbol);
-                    stocksFollowed.setFollow( new Follow(localStock.getCurrPrice(),localStock,SQL.GetTimeStamp()));
-                    account.setFollowedStocks(stocksFollowed.followObjectsToString());
+                    followedStocks.addFollowedStock(new FollowedStock(localStock, localStock.getCurrPrice(), SQL.GetTimeStamp()));
+                    account.setFollowedStocks(String.valueOf(followedStocks.asJsonArray()));
                 } else if (numShares < investmentCollection.getInvestment(symbol).getNumShares()) {
                     //already invested, just update the number of shares
                     investmentCollection.getInvestment(symbol).setNumShares(investmentCollection.getInvestment(symbol).getNumShares() - numShares);
