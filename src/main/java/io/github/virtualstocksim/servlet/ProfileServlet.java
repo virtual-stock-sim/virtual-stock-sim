@@ -45,7 +45,8 @@ public class ProfileServlet extends HttpServlet {
             }
             else
             {
-                req.setAttribute("errorMsg", "Whoops! Something went wrong on our end");
+                errorMsg = "Whoops! Something went wrong on our end";
+                req.setAttribute("errorMsg", errorMsg);
             }
 
             req.getRequestDispatcher("/_view/profile.jsp").forward(req, resp);
@@ -59,7 +60,6 @@ public class ProfileServlet extends HttpServlet {
         logger.info("Profile Servlet: doPost");
 
         AccountController controller = new AccountController();
-        HttpSession session = req.getSession(false);
         String lastError;
         List<String> errorMsgs = new LinkedList<>();
         boolean bioUpdateSuccess;
@@ -92,7 +92,6 @@ public class ProfileServlet extends HttpServlet {
             }
             /* TODO: Look into a better way to check for the picture field being null**/
             // User is updating profile picture
-            logger.error(req.getContentType());
             if (req.getContentType().contains("multipart/form-data"))
             {
                 Part profilePic = req.getPart("file");
@@ -132,6 +131,7 @@ public class ProfileServlet extends HttpServlet {
              // User changing username
             String username = req.getParameter("username");
             if(username != null) {
+                username = username.trim();
                 if (username.length() > 255) {
                     errorMsgs.add("Username cannot exceed 255 characters");
                     logger.warn("Username cannot exceed 255 characters, abandoning update....");
@@ -151,7 +151,7 @@ public class ProfileServlet extends HttpServlet {
 
             String password = req.getParameter("password");
             String confirmPassword = req.getParameter("confirmPassword");
-            if(password != null && confirmPassword!=null)
+            if(password != null && confirmPassword!=null && !(password = password.trim()).isEmpty() && !(confirmPassword = confirmPassword.trim()).isEmpty())
             {
                 if (password.length() > 255)
                 {
@@ -190,6 +190,7 @@ public class ProfileServlet extends HttpServlet {
             // check for user changing email
             String newEmail = req.getParameter("new-email");
             if(newEmail!=null && !newEmail.isEmpty()){
+                newEmail = newEmail.trim();
                 controller.resetEmail(newEmail);
                 credentialUpdateSuccess = true;
                 req.setAttribute("credentialUpdateSuccess", credentialUpdateSuccess);
@@ -224,7 +225,7 @@ public class ProfileServlet extends HttpServlet {
                 logger.info("User successfully opted into leaderboard");
 
             }
-            if(optOut!=null)
+            else if(optOut!=null)
             {
                 controller.optOutOfLeaderboard();
                 optOutSuccess = true;
