@@ -78,7 +78,7 @@ public class CreateAccountServlet extends HttpServlet {
             req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
         // check to make sure email is not taken
-        else if (!Account.FindCustom("SELECT id FROM account WHERE email LIKE ?", "'%" + email + "%'").isEmpty())
+        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(email) = LOWER(?)", email.trim()).isEmpty())
         {
             // email exists
             errorMessage= "An account with this email already exists";
@@ -87,7 +87,7 @@ public class CreateAccountServlet extends HttpServlet {
             req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
         // check to see if username is taken
-        else if (!Account.FindCustom("SELECT id FROM account WHERE username LIKE ?", "'%" + uname + "%'").isEmpty())
+        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(username) = LOWER(?)", uname.trim()).isEmpty())
         {
             // username already exists
             errorMessage= "That username is already in use.";
