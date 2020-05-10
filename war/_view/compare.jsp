@@ -33,8 +33,13 @@
         <h3>FRESH DATA AT YOUR FINGERTIPS</h3>
     </div>
         <label>
-            <input type="text" id="search-input" data-type="data" placeholder="Search for a symbol...">
+            <input type="text" id="search-input" data-type="stock" placeholder="Search for a symbol...">
         </label>
+
+    <form hidden id="add-stock-form" method="POST" action="/compare">
+        <input hidden id="stocks-in-page" value=""/>
+    </form>
+
         <p id="error-text"></p>
     </body>
 </html>

@@ -27,6 +27,56 @@ stream.onMessageReceived = (event) =>
 // Set up the stock search bar
 let inputField: HTMLInputElement = document.getElementById("search-input") as HTMLInputElement;
 let graphsInPage = new Map();
+
+
+ezStockSearch(inputField,
+        result =>
+        {
+            // Reset error text
+            document.getElementById("error-text").innerText = "";
+
+            // if data is present and code is okay or processing, display stock template
+            if(result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING))
+            {
+
+                storeStockData([result.data])
+
+                stocks.push(result.symbol)
+
+                let listOfStocks: HTMLInputElement = document.getElementById("stocks-in-page") as HTMLInputElement;
+
+
+                if(listOfStocks)
+                   // if list is empty, add comma to beginning
+                {
+                    listOfStocks.value.concat(inputField+",");
+                }
+                else
+                    // if list is currently empty, don't need a comma in beginning
+                {
+                    listOfStocks.value.concat(","+inputField+",");
+                }
+
+                // submit form with input searched
+                let stockForm: HTMLFormElement = document.getElementById("add-stock-form") as HTMLFormElement;
+                stockForm.submit();
+
+            }
+            else
+            {
+                document.getElementById("error-text").innerText = "Error: " + result.code;
+            }
+        },
+    errorCode =>
+    {
+        document.getElementById("error-text").innerText = inputField.value + " not found. Error Code: " + errorCode;
+    });
+
+
+
+
+
+/*
 ezStockSearch(inputField,
               result =>
               {
@@ -58,6 +108,8 @@ ezStockSearch(inputField,
               {
                   document.getElementById("error-text").innerText = inputField.value + " not found. Error Code: " + errorCode;
               });
+*/
+
 
 function onStockUpdate(response: json.StockResponseItem[])
 {
