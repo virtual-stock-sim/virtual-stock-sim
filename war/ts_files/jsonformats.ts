@@ -234,7 +234,7 @@ export class StockRequest extends Jsonable<StockRequest>
     _toJsonObject(): object
     {
         //return `{"items": [${this._items.map(item => Jsonable.serialize(item))}]}`;
-        return {items: this._items.map(item => item._toJsonObject())};
+        return {items: this._items.map(item => { if(item !== undefined) item._toJsonObject(); })};
     }
 }
 
@@ -336,7 +336,9 @@ export class StockResponseItem extends Jsonable<StockResponseItem>
 
     _toJsonObject(): object
     {
-        return {code: this._code, type: this._type, symbol: this._symbol, stock: this._stock._toJsonObject(), data: this._data._toJsonObject()};
+        return {code: this._code, type: this._type, symbol: this._symbol,
+            stock: this.stock === undefined ? undefined : this._stock._toJsonObject(),
+            data: this.data === undefined ? undefined : this._data._toJsonObject()};
     }
 }
 
@@ -393,7 +395,7 @@ export class StockResponse extends Jsonable<StockResponse>
 
     _toJsonObject(): object
     {
-        return {code: this._code, items: this._items.map(item => item._toJsonObject())};
+        return {code: this._code, items: this._items.map(item => { if(item !== undefined) item._toJsonObject(); })};
     }
 
 }
@@ -651,7 +653,7 @@ export class StockData extends Jsonable<StockData>
         return {
                     symbol: this._symbol,
                     description: this._description,
-                    history: this._history.map(item => item._toJsonObject()),
+                    history: this._history.map(item => { if(item !== undefined) item._toJsonObject(); }),
                     lastUpdated: this._lastUpdated,
                     ttl: this._ttl
                 };

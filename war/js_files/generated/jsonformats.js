@@ -203,7 +203,9 @@ export class StockResponseItem extends Jsonable {
         }
     }
     _toJsonObject() {
-        return { code: this._code, type: this._type, symbol: this._symbol, stock: this._stock._toJsonObject(), data: this._data._toJsonObject() };
+        return { code: this._code, type: this._type, symbol: this._symbol,
+            stock: this.stock === undefined ? undefined : this._stock._toJsonObject(),
+            data: this.data === undefined ? undefined : this._data._toJsonObject() };
     }
 }
 export class StockResponse extends Jsonable {
