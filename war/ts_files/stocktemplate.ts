@@ -120,11 +120,11 @@ function updateStocks(responseItems: json.StockResponseItem[])
                 for(let tag of tags) tag.innerHTML = stock.currVolume.toString();
             }
 
-            if(stock.prevVolume)
+/*            if(stock.prevVolume)
             {
                 tags = document.getElementsByName(stock.symbol + "-curr_volume");
                 for(let tag of tags) tag.innerHTML = stock.currVolume.toString();
-            }
+            }*/
 
             if(stock.percentChange)
             {

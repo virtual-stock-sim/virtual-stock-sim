@@ -68,10 +68,10 @@
                         <th>Current Volume:</th>
                         <td><span name="${stock.symbol}-curr_volume">${stock.currVolume}</span></td>
                     </tr>
-                    <tr>
+<%--                    <tr>
                         <th>Previous Volume:</th>
                         <td><span name="${stock.symbol}-prev_volume">${stock.prevVolume}</span></td>
-                    </tr>
+                    </tr>--%>
                     <tr>
                         <th>Percent Change Since Last Close:</th>
                         <td><span name="${stock.symbol}-pchange"<c:choose>
