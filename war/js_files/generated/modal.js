@@ -8,7 +8,7 @@ let dependencies = [
 let modalContainerId = "dynamic-modal-container";
 let modalId = "dynamic-modal";
 let modalCloseButtonId = "dynamic-modal-button";
-export function displayModal(title, body, footer) {
+export function displayModal(title, body, footer = "") {
     if (!document.getElementById(modalContainerId)) {
         loadDependencies(dependencies);
         let modalHtml = `
