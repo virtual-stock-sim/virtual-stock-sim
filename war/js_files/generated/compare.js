@@ -18,7 +18,6 @@ stream.onMessageReceived = (event) => {
 };
 // Set up the stock search bar
 let inputField = document.getElementById("search-input");
-let graphsInPage = new Map();
 ezStockSearch(inputField, result => {
     // Reset error text
     document.getElementById("error-text").innerText = "";
@@ -68,8 +67,8 @@ ezStockSearch(inputField, result => {
         }
         displayModal("Houston, We've Got A Problem", message, "Error Code: " + result.code);
     }
-    else if (result.stock && result.code === json.StockResponseCode.SYMBOL_NOT_FOUND) {
-        displayModal("Houston, We've Got A Problem", "Sorry! '" + result.stock + "' is not available within our system. We apologize for the inconvenience.", "Error Code: " + result.code);
+    else if (result.symbol && result.code === json.StockResponseCode.SYMBOL_NOT_FOUND) {
+        displayModal("Stock not available", "Sorry! '" + result.symbol + "' is not available within our system. We apologize for the inconvenience.", "Error Code: " + result.code);
     }
     else {
         displayModal("Houston, We've Got A Problem", "It seems something went wrong on our end. Please wait a minute and try again," +

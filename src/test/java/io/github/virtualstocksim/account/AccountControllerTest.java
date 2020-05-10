@@ -228,7 +228,7 @@ public class AccountControllerTest
 
     //test just the sell portion of the trade function
     @Test
-    public void testSell() throws SQLException {
+    public void testSell() throws SQLException, TradeException {
         TransactionHistory transactionHistory = new TransactionHistory(conn.getModel().getTransactionHistory());
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
         FollowedStocks followedStocksSell = new FollowedStocks(conn.getModel().getFollowedStocks());
@@ -319,7 +319,7 @@ public class AccountControllerTest
     }
 
     @Test
-    public void testUnInvest() throws SQLException{
+    public void testUnInvest() throws SQLException, TradeException {
         conn.unInvest("AMZN");
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
         assertFalse(investmentCollection.isInvested("AMZN"));

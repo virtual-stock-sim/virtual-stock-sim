@@ -1,9 +1,6 @@
 package io.github.virtualstocksim.leaderboard;
 
-import io.github.virtualstocksim.account.Account;
-import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.account.AccountDatabase;
-import io.github.virtualstocksim.account.AccountType;
+import io.github.virtualstocksim.account.*;
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.stock.DummyStocks;
 import io.github.virtualstocksim.stock.DummyStocks.StockSymbol;
@@ -28,7 +25,8 @@ public class LeaderboardTest {
     LeaderBoard leaderboard= new LeaderBoard();
     private List<Map.Entry<String, BigDecimal>> usernameValuePair;
     @Before
-    public void setup() throws SQLException {
+    public void setup() throws SQLException, TradeException
+    {
 
         try {
             Connection conn = AccountDatabase.getConnection();

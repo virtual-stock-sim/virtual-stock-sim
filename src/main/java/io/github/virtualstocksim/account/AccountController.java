@@ -265,7 +265,7 @@ public class AccountController {
      * @param numShares Shares that user is buying or selling
      * @throws SQLException If an error occurs updating in DB
      */
-    public void trade(TransactionType type, String symbol, int numShares) throws SQLException {
+    public void trade(TransactionType type, String symbol, int numShares) throws SQLException, TradeException {
         if (numShares == -1) {
             throw new TradeException("Please specify at least one stock to trade with", TradeExceptionType.NOT_ENOUGH_SHARES);
         }

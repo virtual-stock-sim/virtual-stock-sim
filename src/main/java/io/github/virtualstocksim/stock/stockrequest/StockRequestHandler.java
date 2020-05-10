@@ -274,8 +274,9 @@ public class StockRequestHandler implements HttpRequestListener
         // response code other than symbol not found
         if(descAndHist == null)
         {
-            logger.info("Stock symbol was not found");
-            return new ImmutablePair<>(Optional.empty(), Optional.empty());
+/*            logger.info("Stock symbol was not found");
+            return new ImmutablePair<>(Optional.empty(), Optional.empty());*/
+            throw new StockRequestException("Stock symbol was not found: " + symbol, StockResponseCode.SYMBOL_NOT_FOUND);
         }
 
         Optional<StockData> data = StockData.Create(String.valueOf(descAndHist), SQL.GetTimeStamp());

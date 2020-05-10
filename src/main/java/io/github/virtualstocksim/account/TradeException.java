@@ -1,6 +1,6 @@
 package io.github.virtualstocksim.account;
 
-public class TradeException extends RuntimeException
+public class TradeException extends Exception
 {
     private TradeExceptionType type;
 

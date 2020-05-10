@@ -4,6 +4,7 @@ package io.github.virtualstocksim.servlet;
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.TradeException;
+import io.github.virtualstocksim.account.TradeExceptionType;
 import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
 import io.github.virtualstocksim.transaction.TransactionType;
@@ -59,12 +60,6 @@ public class StocksFollowedServlet extends HttpServlet
             AccountController accountController = new AccountController();
             accountController.setModel(account);
 
-            FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
-            InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
-
-            req.setAttribute("followedModel", followedModel);
-            req.setAttribute("investModel", investModel);
-//            req.setAttribute("account", account);
 
             String sellShares = req.getParameter("shares-to-sell");
             String buyShares = req.getParameter("shares-to-buy");
@@ -81,7 +76,20 @@ public class StocksFollowedServlet extends HttpServlet
                     sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of "+stockName+" stock.";
                     req.setAttribute("sellSuccessMsg", sellSuccessMsg);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("", e);
+                }
+                catch (TradeException e)
+                {
+                    logger.warn("", e);
+                    if(e.getType() == TradeExceptionType.USER_NOT_FOUND || e.getType() == TradeExceptionType.STOCK_NOT_FOUND)
+                    {
+                        errorMsg = "Sorry! Something went wrong on our end. Please try again in a little bit";
+                    }
+                    else
+                    {
+                        errorMsg = e.getMessage();
+                    }
+                    req.setAttribute("errorMsg", errorMsg);
                 }
             }
             if (buyShares != null)
@@ -96,6 +104,19 @@ public class StocksFollowedServlet extends HttpServlet
                 catch (SQLException e)
                 {
                     e.printStackTrace();
+                }
+                catch (TradeException e)
+                {
+                    logger.warn("", e);
+                    if(e.getType() == TradeExceptionType.USER_NOT_FOUND || e.getType() == TradeExceptionType.STOCK_NOT_FOUND)
+                    {
+                        errorMsg = "Sorry! Something went wrong on our end. Please try again in a little bit";
+                    }
+                    else
+                    {
+                        errorMsg = e.getMessage();
+                    }
+                    req.setAttribute("errorMsg", errorMsg);
                 }
             }
 
@@ -117,6 +138,8 @@ public class StocksFollowedServlet extends HttpServlet
                 }
 
             }
+            req.setAttribute("followedModel", accountController.getFollowedStocks());
+            req.setAttribute("investModel", new InvestmentCollection(account.getInvestedStocks()));
             req.setAttribute("account", account);
             req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
         }

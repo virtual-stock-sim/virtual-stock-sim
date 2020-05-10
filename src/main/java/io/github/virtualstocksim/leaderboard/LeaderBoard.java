@@ -69,10 +69,10 @@ public class LeaderBoard {
         for(int i=0; i<usernameValuePair.size();i++){
             Account tempAccount = Account.Find(usernameValuePair.get(i).getKey()).orElse(null);
             System.out.println("Found account "+ tempAccount.getEmail());
-            if(tempAccount==null){
+/*            if(tempAccount==null){
                 //this would have to be a really weird case to trigger this
                 throw new TradeException("Account not found in database", TradeExceptionType.USER_NOT_FOUND);
-            }
+            }*/
             tempAccount.setLeaderboardRank(i+1);
             tempAccount.update();
         }

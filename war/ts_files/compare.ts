@@ -27,8 +27,6 @@ stream.onMessageReceived = (event) =>
 
 // Set up the stock search bar
 let inputField: HTMLInputElement = document.getElementById("search-input") as HTMLInputElement;
-let graphsInPage = new Map();
-
 
 ezStockSearch(inputField,
         result =>
@@ -99,9 +97,9 @@ ezStockSearch(inputField,
                 }
                 displayModal("Houston, We've Got A Problem", message, "Error Code: " + result.code);
             }
-            else if(result.stock && result.code === json.StockResponseCode.SYMBOL_NOT_FOUND)
+            else if(result.symbol && result.code === json.StockResponseCode.SYMBOL_NOT_FOUND)
             {
-                displayModal("Houston, We've Got A Problem", "Sorry! '" + result.stock + "' is not available within our system. We apologize for the inconvenience.",
+                displayModal("Stock not available", "Sorry! '" + result.symbol + "' is not available within our system. We apologize for the inconvenience.",
                              "Error Code: " + result.code);
             }
             else
@@ -157,7 +155,7 @@ function onStockUpdate(response: json.StockResponseItem[])
         let processingStocks = processingStocksElem.innerText.split(",");
         for(let item of response)
         {
-            if(item.code === json.StockResponseCode.OK || item.code === json.StockResponseCode.PROCESSING)
+            if(item.code === json.StockResponseCode.OK)
             {
                 if(processingStocks.indexOf(item.symbol) > -1)
                 {
@@ -166,7 +164,7 @@ function onStockUpdate(response: json.StockResponseItem[])
                     stockForm.submit();
                 }
             }
-            else
+            else if(item.code !== json.StockResponseCode.PROCESSING)
             {
                 displayModal("Houston, We've Got A Problem", "It seems something went wrong on our end. Please wait a minute and try again," +
                         " we apologize for the inconvenience. ", "Error Code: " + item.code);
