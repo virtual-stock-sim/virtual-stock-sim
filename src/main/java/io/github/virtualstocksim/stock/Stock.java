@@ -4,6 +4,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,7 +214,7 @@ public class Stock extends DatabaseItem
 
     /**
      * Commit stock to stock database
-     * @throws SQLException
+     * @throws SQLException If there was an error while committing changes to the database
      */
     @Override
     public void update() throws SQLException
@@ -227,7 +228,7 @@ public class Stock extends DatabaseItem
     /**
      * Commit Stock to database
      * @param conn Connection to stock database
-     * @throws SQLException
+     * @throws SQLException If there was an error while committing changes to the database
      */
     @Override
     public void update(Connection conn) throws SQLException
@@ -291,22 +292,19 @@ public class Stock extends DatabaseItem
     {
         if(currPrice != null && prevClose != null)
         {
-            BigDecimal diff = currPrice.subtract(prevClose, MathContext.DECIMAL64);
-            if(prevClose.compareTo(new BigDecimal(0))!=0){
+            if(prevClose.compareTo(BigDecimal.ZERO) == 0)
+            {
+                return 100.0;
+            }
+            else
+            {
+                BigDecimal diff = currPrice.subtract(prevClose, MathContext.DECIMAL64);
                 BigDecimal change = diff.divide(prevClose.abs(), 9, RoundingMode.HALF_EVEN);
                 BigDecimal percentChange = change.multiply(DECIMAL_100);
-                DecimalFormat df = new DecimalFormat("#.##");
-                return Double.parseDouble(df.format(percentChange));
-            }else{
-                //to avoid divide by 0
-                BigDecimal percentChange = new BigDecimal(100);
+
                 DecimalFormat df = new DecimalFormat("#.##");
                 return Double.parseDouble(df.format(percentChange));
             }
-
-
-
-
         }
         else
         {
