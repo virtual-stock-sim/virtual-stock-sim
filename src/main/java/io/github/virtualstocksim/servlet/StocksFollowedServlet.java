@@ -1,3 +1,4 @@
+
 package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
@@ -52,60 +53,60 @@ public class StocksFollowedServlet extends HttpServlet
 
         // check if session exists, if not the user is not logged in or timed out.
         Account account = SessionValidater.validate(req).orElse(null);
-        if (account == null) {
+        if (account != null) {
 
-        AccountController accountController = new AccountController();
-        accountController.setModel(account);
+            AccountController accountController = new AccountController();
+            accountController.setModel(account);
 
-        FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
-        InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
+            FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
+            InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
 
-        req.setAttribute("followedModel", followedModel);
-        req.setAttribute("investModel", investModel);
-        req.setAttribute("account", account);
+            req.setAttribute("followedModel", followedModel);
+            req.setAttribute("investModel", investModel);
+            req.setAttribute("account", account);
 
-        String sellShares = req.getParameter("shares-to-sell");
-        String buyShares = req.getParameter("shares-to-buy");
-        String stockName = req.getParameter("stock-name");
-        String stockToUnfollow = req.getParameter("stock-to-unfollow");
+            String sellShares = req.getParameter("shares-to-sell");
+            String buyShares = req.getParameter("shares-to-buy");
+            String stockName = req.getParameter("stock-name");
+            String stockToUnfollow = req.getParameter("stock-to-unfollow");
 
 
 
-        //We should add error checking here on MS4
-        //This is probably very bad, especially if the forms persist & you change between buy and sell
-        if (sellShares != null) {
-            try {
-                accountController.trade(TransactionType.SELL, stockName, Integer.parseInt(sellShares.trim()));
-                sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of "+stockName+" stock.";
-                req.setAttribute("sellSuccessMsg", sellSuccessMsg);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            //We should add error checking here on MS4
+            //This is probably very bad, especially if the forms persist & you change between buy and sell
+            if (sellShares != null) {
+                try {
+                    accountController.trade(TransactionType.SELL, stockName, Integer.parseInt(sellShares.trim()));
+                    sellSuccessMsg="You have successfully sold "+Integer.valueOf(sellShares)+" shares of "+stockName+" stock.";
+                    req.setAttribute("sellSuccessMsg", sellSuccessMsg);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        if (buyShares != null)
-        {
-            try
+            if (buyShares != null)
             {
-                accountController.trade(TransactionType.BUY, stockName, Integer.parseInt(buyShares.trim()));
-                buySuccessMsg = "You have successfully purchased " + Integer.valueOf(
-                        buyShares) + " shares of " + stockName + " stock.";
-                req.setAttribute("buySuccessMsg", buySuccessMsg);
+                try
+                {
+                    accountController.trade(TransactionType.BUY, stockName, Integer.parseInt(buyShares.trim()));
+                    buySuccessMsg = "You have successfully purchased " + Integer.valueOf(
+                            buyShares) + " shares of " + stockName + " stock.";
+                    req.setAttribute("buySuccessMsg", buySuccessMsg);
+                }
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
             }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        if(stockToUnfollow!=null){
-            try {
-                accountController.unfollowStock(stockToUnfollow);
-                accountController.unInvest(stockToUnfollow);
-                stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
-                req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);
-            } catch (SQLException e){
-                logger.info("Error unfollowing "+stockToUnfollow+ ":"+e);
-            }
+            if(stockToUnfollow!=null){
+                try {
+                    accountController.unfollowStock(stockToUnfollow);
+                    accountController.unInvest(stockToUnfollow);
+                    stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
+                    req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);
+                } catch (SQLException e){
+                    logger.info("Error unfollowing "+stockToUnfollow+ ":"+e);
+                }
 
             }
         }
