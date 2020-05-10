@@ -53,7 +53,7 @@
 </c:if>
 
 <c:if test="${! empty errorMsg}">
-    <div class="alert alert-warning alert-dismissible" id="error-message" style="width:50%;margin-left: 25%;">
+    <div class="alert alert-danger alert-dismissible" id="error-message" style="width:50%;margin-left: 25%;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <strong>Whoops! </strong>${errorMsg}</div>
 </c:if>
