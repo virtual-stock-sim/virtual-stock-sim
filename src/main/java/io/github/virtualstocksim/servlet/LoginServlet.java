@@ -46,12 +46,17 @@ public class LoginServlet extends HttpServlet
             resp.sendRedirect("/500");
             return;
         }
+        else
+        {
+            uname = uname.trim();
+            pword = pword.trim();
+        }
 
         AccountController controller = new AccountController();
         Optional<Account> account = Account.Find(uname);
         account.ifPresent(controller::setModel);
 
-        if(account.isPresent() && controller.login(uname.trim(),pword.trim()))
+        if(account.isPresent() && controller.login(uname,pword))
         {
             // login is valid, redirect user and create session
             HttpSession session = req.getSession(true);

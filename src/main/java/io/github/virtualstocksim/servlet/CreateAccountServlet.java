@@ -51,9 +51,18 @@ public class CreateAccountServlet extends HttpServlet {
             req.setAttribute("errorMessage", errorMessage);
             req.setAttribute("CreateAccountModel", accountModel);
             req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
+            return;
         }
+        else
+        {
+            uname = uname.trim();
+            pword = pword.trim();
+            email = email.trim();
+            confirmPword = confirmPword.trim();
+        }
+
         // insure email does not exceed db length
-        else if(email.length() > 255)
+        if(email.length() > 255)
         {
             errorMessage="Email cannot exceed 255 characters";
             req.setAttribute("errorMessage", errorMessage);
@@ -78,7 +87,7 @@ public class CreateAccountServlet extends HttpServlet {
             req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
         // check to make sure email is not taken
-        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(email) = LOWER(?)", email.trim()).isEmpty())
+        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(email) = LOWER(?)", email).isEmpty())
         {
             // email exists
             errorMessage= "An account with this email already exists";
@@ -87,7 +96,7 @@ public class CreateAccountServlet extends HttpServlet {
             req.getRequestDispatcher("/_view/createAccount.jsp").forward(req, resp);
         }
         // check to see if username is taken
-        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(username) = LOWER(?)", uname.trim()).isEmpty())
+        else if (!Account.FindCustom("SELECT id FROM account WHERE LOWER(username) = LOWER(?)", uname).isEmpty())
         {
             // username already exists
             errorMessage= "That username is already in use.";
@@ -100,7 +109,7 @@ public class CreateAccountServlet extends HttpServlet {
         {
             AccountController controller = new AccountController();
 
-            Optional<Account> account = Account.Create(accountModel.getUsername().trim(), accountModel.getEmail().trim(), pword.trim(), AccountType.USER);
+            Optional<Account> account = Account.Create(accountModel.getUsername(), accountModel.getEmail(), pword, AccountType.USER);
             account.ifPresent(controller::setModel);
 
             if(account.isPresent() && controller.login(uname, pword))
@@ -111,6 +120,11 @@ public class CreateAccountServlet extends HttpServlet {
                 session.setAttribute("uuid", controller.getModel().getUUID());
                 logger.info("Logging user " + uname + " in....");
                 resp.sendRedirect("/home");
+            }
+            // If checks passed and account isn't present then something happened on our end
+            else
+            {
+                resp.sendRedirect("/500");
             }
         }
     }
