@@ -42,6 +42,11 @@ public class FollowedStocks
         followedStocks = parseFollowedObjects(followedJson);
     }
 
+    /**
+     * Get a followed stock if it exists
+     * @param stockSymbol Stock symbol to search for
+     * @return An optional containing the FollowedStock object if found, otherwise Optional.empty()
+     */
     public Optional<FollowedStock> getFollowedStock(String stockSymbol)
     {
         if(followedStocks.containsKey(stockSymbol))
@@ -64,6 +69,11 @@ public class FollowedStocks
         followedStocks.remove(stockSymbol);
     }
 
+    /**
+     * Is the account following this stock
+     * @param stockSymbol Stock symbol to search for
+     * @return If the account is following the stock
+     */
     public boolean contains(String stockSymbol)
     {
         return followedStocks.containsKey(stockSymbol);

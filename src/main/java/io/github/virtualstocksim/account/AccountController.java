@@ -199,9 +199,33 @@ public class AccountController {
         account.update();
     }
 
+    /**
+     * Is the account following this stock
+     * @param stockSymbol Stock symbol to search for
+     * @return If the account is following the stock
+     */
     public boolean isFollowingStock(String stockSymbol)
     {
         return followedStocks.contains(stockSymbol);
+    }
+
+    /**
+     * Get a followed stock if it exists
+     * @param stockSymbol Stock symbol to search for
+     * @return An optional containing the FollowedStock object if found, otherwise Optional.empty()
+     */
+    public Optional<FollowedStock> getFollowedStock(String stockSymbol)
+    {
+        return followedStocks.getFollowedStock(stockSymbol);
+    }
+
+    /**
+     * Get the internal followed stocks object
+     * @return FollowedStocks object
+     */
+    public FollowedStocks getFollowedStocks()
+    {
+        return followedStocks;
     }
 
     /**
