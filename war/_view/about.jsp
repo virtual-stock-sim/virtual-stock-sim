@@ -83,7 +83,8 @@
                     <h3>Earl Kennedy</h3>
                     <p class="vss-opacity">Project Manager & Full Stack Developer</p>
                     <p>The glue that held the team together, Earl served as the team's lead as he delegated
-                        tasks and managed deadlines while also creating the database backend from the ground up.</p>
+                        tasks and managed deadlines while also creating the database backend from the ground up,
+                        featuring HTTPS client-server communication with realtime data & scheduled updates.</p>
                     <p><button onclick="earlLinkedin()" class="vss-button vss-light-grey vss-block"><i class="fa fa-envelope"></i> Contact</button></p>
                     <script>
                         function earlLinkedin() {
@@ -99,8 +100,9 @@
                     <div class="vss-container">
                         <h3>Dan Palmieri</h3>
                         <p class="vss-opacity">Frontend Lead & Full Stack Developer</p>
-                        <p>Dan's interest in web development led him to taking on the bulk of designing and building the
-                            frontend user interface. He also was responsible for developing the Stock, Account and Encryption backend.
+                        <p>Dan's interest in web development led him to taking on designing and building the
+                            frontend user interface. He also developed the stock template, as well as the Account, AccountController,
+                            and Encryption classes and the Account database on the backend.
                         </p>
                         <p><button onclick="danLinkedin()" class="vss-button vss-light-grey vss-block"><i class="fa fa-envelope"></i> Contact</button></p>
                         <script>
@@ -117,8 +119,8 @@
                         <div class="vss-container">
                             <h3>Brett Kearney</h3>
                             <p class="vss-opacity">Full Stack Developer</p>
-                            <p>Brett took on the majority of the backend, developing the transaction history and followed
-                                stocks. Brett also used web scraping to get the company history and price history for a stock.
+                            <p>Brett took on the majority of the backend, developing the transaction history, followed stocks,
+                                and investments. Brett also used web scraping & JSON to get the company history and price history for a stock.
                             </p>
                             <p><button onclick="brettLinkedin()" class="vss-button vss-light-grey vss-block"><i class="fa fa-envelope"></i> Contact</button></p>
                             <script>

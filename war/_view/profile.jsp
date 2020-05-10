@@ -78,7 +78,7 @@
     <c:if test="${resetFollowedSuccess==true}">
         <div class="alert alert-success alert-dismissible" id ="reset-followed-success" style="width:50%; margin-left:25%;">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Success!</strong> Your Stocks Followed were successfully reset.
+            <strong>Success!</strong> Your followed stocks were successfully reset.
         </div>
     </c:if>
 
@@ -149,7 +149,7 @@
                     <input type="text" id="username" name ="username" class="form-control" placeholder="${account.username}"><br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter a new password"><br>
-                    <label for="password">Password:</label>
+                    <label for="confirmPassword">Confirm Password:</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm password"><br>
                     <input type="submit" value="Save">
             </form>
