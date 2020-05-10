@@ -36,12 +36,10 @@ ezStockSearch(inputField,
             document.getElementById("error-text").innerText = "";
 
             // if data is present and code is okay or processing, display stock template
-            if(result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING))
+            if(result.stock && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING))
             {
 
-                storeStockData([result.data])
-
-                stocks.push(result.symbol)
+                stocks.push(result.symbol);
 
                 let listOfStocks: HTMLInputElement = document.getElementById("stocks-in-page") as HTMLInputElement;
 
@@ -49,17 +47,18 @@ ezStockSearch(inputField,
                 if(listOfStocks)
                    // if list is empty, add comma to beginning
                 {
-                    listOfStocks.value.concat(inputField+",");
+                    listOfStocks.value = listOfStocks.value.concat(result.symbol+",");
                 }
                 else
                     // if list is currently empty, don't need a comma in beginning
                 {
-                    listOfStocks.value.concat(","+inputField+",");
+                    listOfStocks.value = listOfStocks.value.concat(","+result.symbol+",");
                 }
 
                 // submit form with input searched
                 let stockForm: HTMLFormElement = document.getElementById("add-stock-form") as HTMLFormElement;
                 stockForm.submit();
+                console.log("Form submitted");
 
             }
             else

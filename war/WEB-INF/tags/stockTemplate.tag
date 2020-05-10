@@ -1,7 +1,7 @@
 <%@tag description="Template for displaying a Stock" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="stock" required="true" type="io.github.virtualstocksim.stock.Stock" %>
-<%@attribute name="followItem" required="false" type="io.github.virtualstocksim.following.Follow" %>
+<%@attribute name="followItem" required="false" type="io.github.virtualstocksim.following.FollowedStock" %>
 <%@attribute name="investItem" required="false" type="io.github.virtualstocksim.transaction.Investment" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
@@ -22,7 +22,7 @@
                     INVEST<i class="material-icons" style="border-style:hidden;display:inline-block;position:relative;top:4px;">
                     import_export</i>
                 </button>
-                <u1 class="dropdown-menu">
+                <u1 class="dropdown-menu" style="z-index: 1034;">
                     <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-buy-modal" style="cursor:pointer; font-weight: bold;">BUY</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-item"><a type="button" data-toggle="modal" data-target="#${stock.symbol}-sell-modal" style="cursor:pointer;font-weight: bold;">SELL</a></li>

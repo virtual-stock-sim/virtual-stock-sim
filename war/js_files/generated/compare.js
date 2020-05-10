@@ -22,18 +22,24 @@ let graphsInPage = new Map();
 ezStockSearch(inputField, result => {
     // Reset error text
     document.getElementById("error-text").innerText = "";
-    if (result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)) {
-        storeStockData([result.data]);
+    // if data is present and code is okay or processing, display stock template
+    if (result.stock && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)) {
         stocks.push(result.symbol);
-        let element = document.getElementById(result.symbol + "-graph");
-        if (!element) {
-            element = document.createElement("div");
-            element.id = result.symbol + "-graph";
-            document.body.appendChild(element);
+        let listOfStocks = document.getElementById("stocks-in-page");
+        if (listOfStocks) 
+        // if list is empty, add comma to beginning
+        {
+            listOfStocks.value = listOfStocks.value.concat(result.symbol + ",");
         }
-        let config = { element: element, stockSymbol: result.symbol, minDate: null, maxDate: null };
-        drawPriceHistoryGraph([config]);
-        graphsInPage.set(element.id, config);
+        else 
+        // if list is currently empty, don't need a comma in beginning
+        {
+            listOfStocks.value = listOfStocks.value.concat("," + result.symbol + ",");
+        }
+        // submit form with input searched
+        let stockForm = document.getElementById("add-stock-form");
+        stockForm.submit();
+        console.log("Form submitted");
     }
     else {
         document.getElementById("error-text").innerText = "Error: " + result.code;
@@ -41,6 +47,39 @@ ezStockSearch(inputField, result => {
 }, errorCode => {
     document.getElementById("error-text").innerText = inputField.value + " not found. Error Code: " + errorCode;
 });
+/*
+ezStockSearch(inputField,
+              result =>
+              {
+                  // Reset error text
+                  document.getElementById("error-text").innerText = "";
+
+                  if(result.data && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING))
+                  {
+                      storeStockData([result.data])
+
+                      stocks.push(result.symbol);
+                      let element = document.getElementById(result.symbol + "-graph");
+                      if(!element)
+                      {
+                          element = document.createElement("div");
+                          element.id = result.symbol + "-graph";
+                          document.body.appendChild(element);
+                      }
+                      let config = {element: element, stockSymbol: result.symbol, minDate: null, maxDate: null};
+                      drawPriceHistoryGraph([config]);
+                      graphsInPage.set(element.id, config);
+                  }
+                  else
+                  {
+                      document.getElementById("error-text").innerText = "Error: " + result.code;
+                  }
+              },
+              errorCode =>
+              {
+                  document.getElementById("error-text").innerText = inputField.value + " not found. Error Code: " + errorCode;
+              });
+*/
 function onStockUpdate(response) {
     let updatedStocks = [];
     for (let item of response) {

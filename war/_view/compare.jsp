@@ -36,10 +36,26 @@
             <input type="text" id="search-input" data-type="stock" placeholder="Search for a symbol...">
         </label>
 
-    <form hidden id="add-stock-form" method="POST" action="/compare">
-        <input hidden id="stocks-in-page" value=""/>
+    <form hidden id="add-stock-form" method="POST" action="${pageContext.servletContext.contextPath}/compare">
+        <input hidden id="stocks-in-page" name="stocks-in-page" value="${stocksSearched}"/>
     </form>
-
         <p id="error-text"></p>
+
+
+    <!--Invested stocks templates-->
+    <c:forEach var="investedItem" items="${investedList}">
+        <t:stockTemplate stock="${investedItem.stock}" investItem="${investedItem}"/>
+    </c:forEach>
+
+    <!--Followed stocks templates-->
+    <c:forEach var="followItem" items="${followedList}">
+        <t:stockTemplate stock="${followItem.stock}" followItem="${followItem}"/>
+    </c:forEach>
+
+    <!--Not followed Or invested stocks templates-->
+    <c:forEach var="stock" items="${notFollowedOrInvestedList}">
+        <t:stockTemplate stock="${stock}"/>
+    </c:forEach>
+
     </body>
 </html>

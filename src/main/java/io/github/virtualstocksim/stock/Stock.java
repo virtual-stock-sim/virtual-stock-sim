@@ -4,7 +4,6 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import io.github.virtualstocksim.database.DatabaseItem;
 import io.github.virtualstocksim.database.SQL;
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
