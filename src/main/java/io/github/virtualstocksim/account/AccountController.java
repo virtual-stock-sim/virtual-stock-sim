@@ -199,6 +199,11 @@ public class AccountController {
         account.update();
     }
 
+    public boolean isFollowingStock(String stockSymbol)
+    {
+        return followedStocks.contains(stockSymbol);
+    }
+
     /**
      * Called when a user is unfollowing a stock and (may) still owns shares in it
      * @param symbol Symbol of stock to uninvest
