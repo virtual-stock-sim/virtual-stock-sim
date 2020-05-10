@@ -98,11 +98,7 @@ function updateStocks(responseItems: json.StockResponseItem[])
 {
     for(let item of responseItems)
     {
-        if(item.code === json.StockResponseCode.PROCESSING)
-        {
-            // TODO: Notify user
-        }
-        else if(item.code === json.StockResponseCode.OK && item.stock)
+        if(item.code === json.StockResponseCode.OK && item.stock)
         {
             let stock = item.stock;
             let tags: NodeListOf<HTMLElement>;
