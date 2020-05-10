@@ -6,6 +6,25 @@
 <html>
 <head>
         <title>Create an Account - Virtual Stock Sim</title>
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+        <script src="/js_files/redirect.js"></script>
+
+        <!--     Fonts and icons     -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
+        <link rel="stylesheet" href="/cssfiles/generalCSS/generalStyle.css">
+
         <style><%@include file="../cssfiles/accountPageStyle.css"%></style>
         <script src="/js_files/redirect.js"></script>
 </head>
@@ -19,7 +38,9 @@
 
 
         <c:if test="${! empty errorMessage}">
-                <div class="error">${errorMessage}</div>
+                <div class="alert alert-danger alert-dismissible" id="error-message" style="width:50%;margin-left: 25%;">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Whoops! </strong>${errorMessage}</div>
         </c:if>
 
         <div class = "sign-up">
