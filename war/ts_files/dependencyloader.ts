@@ -27,14 +27,16 @@ export async function loadDependencies(dependencies: Dependency[])
             // If the dependency isn't already in the page, add it
             if(!currentScripts.some(url => dependency.uri === url))
             {
-                let script: HTMLScriptElement = document.createElement("script");
-                script.src = dependency.uri;
-                script.type = "text/javascript";
-                if(dependency.async === false)
+                console.log("Loading dependency: " + JSON.stringify(dependency));
+                if(dependency.async)
                 {
-                    script.async = false;
+                    loadDependency(dependency).then(() => console.log("Dependency loaded"));
                 }
-                document.head.appendChild(script);
+                else
+                {
+                    await loadDependency(dependency);
+                    console.log("Dependency loaded");
+                }
             }
         }
         else if(dependency.type == DependencyType.STYLESHEET)
@@ -49,4 +51,22 @@ export async function loadDependencies(dependencies: Dependency[])
             }
         }
     }
+}
+
+async function loadDependency(dependency: Dependency)
+{
+    return new Promise(((resolve, reject) =>
+    {
+        let script: HTMLScriptElement = document.createElement("script");
+        script.src = dependency.uri;
+        script.type = "text/javascript";
+        if(dependency.async === false)
+        {
+            script.async = false;
+        }
+        document.head.appendChild(script);
+
+        script.onload = resolve;
+        script.onerror = reject;
+    }));
 }
