@@ -42,20 +42,29 @@
         <p id="error-text"></p>
 
 
-    <!--Invested stocks templates-->
-    <c:forEach var="investedItem" items="${investedList}">
-        <t:stockTemplate stock="${investedItem.stock}" investItem="${investedItem}"/>
-    </c:forEach>
+    <div class="invested-templates">
+        <!--Invested stocks templates-->
+        <c:forEach var="investedItem" items="${investedList}">
+            <t:stockTemplate stock="${investedItem.stock}" investItem="${investedItem}"/>
+        </c:forEach>
+    </div>
 
-    <!--Followed stocks templates-->
-    <c:forEach var="followItem" items="${followedList}">
-        <t:stockTemplate stock="${followItem.stock}" followItem="${followItem}"/>
-    </c:forEach>
 
-    <!--Not followed Or invested stocks templates-->
-    <c:forEach var="stock" items="${notFollowedOrInvestedList}">
-        <t:stockTemplate stock="${stock}"/>
-    </c:forEach>
+    <div class = "followed-templates">
+        <!--Followed stocks templates-->
+        <c:forEach var="followItem" items="${followedList}">
+            <t:stockTemplate stock="${followItem.stock}" followItem="${followItem}"/>
+        </c:forEach>
+    </div>
+
+    <div class="not-following-or-invested-templates">
+        <!--Not followed Or invested stocks templates-->
+        <c:forEach var="stock" items="${notFollowedOrInvestedList}">
+            <t:stockTemplate stock="${stock}"/>
+        </c:forEach>
+    </div>
+
+
 
     </body>
 </html>
