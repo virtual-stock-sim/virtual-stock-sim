@@ -40,7 +40,7 @@
          <h5>Experience Wall Street, from your computer</h5>
     </div>
     <c:if test="${! empty errorMessage}">
-        <div class="alert alert-danger alert-dismissible" id="error-message" style="width:50%;margin-left: 25%;">
+        <div class="alert alert-danger alert-dismissible" id="error-message" style="width:50%;margin-left: 25%;margin-bottom: 2%;">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Whoops! </strong>${errorMessage}</div>
     </c:if>

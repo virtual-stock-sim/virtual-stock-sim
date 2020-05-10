@@ -48,10 +48,6 @@ body {
     padding-bottom: 50px;
 }
 
-.error {
-    color: red;
-}
-
 
 input::-webkit-input-placeholder {
     color: rgba(255,255,255,0.7);

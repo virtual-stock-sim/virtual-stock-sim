@@ -8,14 +8,14 @@
 <head>
     <style><%@include file="../cssfiles/resetPageStyle.css"%></style>
 </head>
-<title>VSS-Password Reset</title>
+<title>Reset Your Password - VSS: Virtual Stock Sim</title>
 <h1 >Forgot your password?</h1>
 
 <form action="${pageContext.servletContext.contextPath}/reset?token=${salt}"  method="post">
 
     <%-- In this case the link parameter is NOT empty(there is an argument AND it is valid in the DB according to checks in ResetToken and ResetManager after the question mark ...../reset?token=XXX --%>
 <c:if test="${not empty salt}">
-    <div class =generalInformation>
+    <div class ="generalInformation">
         <p>Please input the new password & confirm it in the fields below </p>
     </div>
 
