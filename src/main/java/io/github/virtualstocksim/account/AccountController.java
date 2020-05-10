@@ -348,7 +348,7 @@ public class AccountController {
                 TransactionHistory th = new TransactionHistory(localAccount.getTransactionHistory());
                 Stock stock = Stock.Find(symbol).orElse(null);
                 if (stock != null) {
-                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), Stock.Find(symbol).get().getCurrPrice(), numShares, stock));
+                    th.addTransaction(new Transaction(type, SQL.GetTimeStamp(), stock.getCurrPrice(), numShares, stock));
                     account.setTransactionHistory(th.buildTransactionJSON());
                     account.setInvestedStocks(investmentCollection.buildJSON());
 
