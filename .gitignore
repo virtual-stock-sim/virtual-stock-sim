@@ -15,6 +15,7 @@ derby.log
 *.db
 *.zip
 
-userdata/**
+**/userdata/**
+**/generated/**
 
 *.jks
