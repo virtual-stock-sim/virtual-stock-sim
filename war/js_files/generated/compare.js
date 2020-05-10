@@ -1,9 +1,8 @@
 import { DataStream } from "./datastream.js";
-import { drawPriceHistoryGraph } from "./graphs.js";
 import { StockRequest } from "./stockrequest.js";
 import * as json from "./jsonformats.js";
 import { ezStockSearch } from "./stocksearch.js";
-import { storeStockData } from "./stockstorage.js";
+import { displayLoadingWheel, removeLoadingWheel } from "./loadingwheel.js";
 import { displayModal } from "./modal.js";
 // Stocks present in page to keep track of
 let stocks = [];
@@ -11,8 +10,8 @@ let stocks = [];
 let stream = new DataStream("stockStream", "/dataStream");
 stream.onMessageReceived = (event) => {
     let msg = json.Jsonable.deserialize(json.UpdateMessage, event.data);
-    if (stocks.length > 0 && msg && msg.type === json.StockType.STOCK_DATA) {
-        let requestItems = stocks.map(stock => new json.StockRequestItem(json.StockType.STOCK_DATA, stock));
+    if (stocks.length > 0 && msg && msg.type !== json.StockType.FOLLOW) {
+        let requestItems = stocks.map(stock => new json.StockRequestItem(msg.type, stock));
         let request = new StockRequest(requestItems, onStockUpdate);
         request.send();
     }
@@ -24,23 +23,40 @@ ezStockSearch(inputField, result => {
     // Reset error text
     document.getElementById("error-text").innerText = "";
     // if data is present and code is okay or processing, display stock template
-    if (result.stock && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)) {
+    if (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING) {
         stocks.push(result.symbol);
         let listOfStocks = document.getElementById("stocks-in-page");
-        if (listOfStocks) 
-        // if list is empty, add comma to beginning
-        {
-            listOfStocks.value = listOfStocks.value.concat(result.symbol + ",");
+        if (!listOfStocks.value) {
+            listOfStocks.value = result.symbol;
         }
-        else 
-        // if list is currently empty, don't need a comma in beginning
-        {
-            listOfStocks.value = listOfStocks.value.concat("," + result.symbol + ",");
+        else {
+            console.log(listOfStocks.value);
+            if (listOfStocks.value.indexOf(result.symbol) < 0) {
+                listOfStocks.value = listOfStocks.value.concat("," + result.symbol);
+            }
         }
-        // submit form with input searched
-        let stockForm = document.getElementById("add-stock-form");
-        stockForm.submit();
-        console.log("Form submitted");
+        if (result.code === json.StockResponseCode.PROCESSING) {
+            displayModal("Success!", "We've found '" + result.symbol + "' but it isn't in our system yet. We'll automatically refresh your page within the " +
+                "next minute once your data is available. Thank you for your patience");
+            displayLoadingWheel("Loading stock information. Please don't refresh your page, this may take up to a minute...");
+            let processingStocks = document.getElementById("processing-stocks");
+            if (!processingStocks) {
+                processingStocks = document.createElement("div");
+                processingStocks.id = "processing-stocks";
+                processingStocks.hidden = true;
+                processingStocks.innerText = result.symbol;
+            }
+            else {
+                processingStocks.innerText += ("," + result.symbol);
+            }
+            document.body.appendChild(processingStocks);
+        }
+        else if (result.code === json.StockResponseCode.OK) {
+            // submit form with input searched
+            let stockForm = document.getElementById("add-stock-form");
+            stockForm.submit();
+            console.log("Form submitted");
+        }
     }
     else if (result.code === json.StockResponseCode.INVALID_STOCK_SYMBOL) {
         let message;
@@ -87,19 +103,26 @@ for (let symbol of stockSymbols) {
     }
 }
 function onStockUpdate(response) {
-    let updatedStocks = [];
-    for (let item of response) {
-        if (item.data && (item.code == json.StockResponseCode.OK || item.code == json.StockResponseCode.PROCESSING)) {
-            updatedStocks.push(item.data);
+    let processingStocksElem = document.getElementById("processing-stocks");
+    if (processingStocksElem) {
+        let processingStocks = processingStocksElem.innerText.split(",");
+        for (let item of response) {
+            if (item.code === json.StockResponseCode.OK || item.code === json.StockResponseCode.PROCESSING) {
+                if (processingStocks.indexOf(item.symbol) > -1) {
+                    // Submit and refresh the page so the button will update
+                    let stockForm = document.getElementById("add-stock-form");
+                    stockForm.submit();
+                }
+            }
+            else {
+                displayModal("Houston, We've Got A Problem", "It seems something went wrong on our end. Please wait a minute and try again," +
+                    " we apologize for the inconvenience. ", "Error Code: " + item.code);
+                removeLoadingWheel();
+                break;
+            }
         }
-        else {
-            // TODO: Handle error
-            console.log(item);
-        }
+        processingStocksElem.remove();
     }
-    console.log(response);
-    storeStockData(updatedStocks);
-    drawPriceHistoryGraph(Array.from(graphsInPage.values()));
 }
 function findStocksInPage() {
     let stockSymbols = [];

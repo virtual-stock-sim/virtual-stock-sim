@@ -4,7 +4,7 @@ import {StockRequest} from "./stockrequest.js";
 import * as json from "./jsonformats.js";
 import {ezStockSearch} from "./stocksearch.js";
 import {storeStockData} from "./stockstorage.js";
-import {displayLoadingWheel} from "./loadingwheel.js";
+import {displayLoadingWheel, removeLoadingWheel} from "./loadingwheel.js";
 import {HttpRequest, HttpRequestType, MessageParams} from "./httprequest.js";
 import {displayModal} from "./modal.js";
 
@@ -16,9 +16,9 @@ let stream = new DataStream("stockStream", "/dataStream");
 stream.onMessageReceived = (event) =>
 {
     let msg: json.UpdateMessage = json.Jsonable.deserialize(json.UpdateMessage, event.data);
-    if(stocks.length > 0 && msg && msg.type === json.StockType.STOCK_DATA)
+    if(stocks.length > 0 && msg && msg.type !== json.StockType.FOLLOW)
     {
-        let requestItems = stocks.map(stock => new json.StockRequestItem(json.StockType.STOCK_DATA, stock));
+        let requestItems = stocks.map(stock => new json.StockRequestItem(msg.type, stock));
 
         let request = new StockRequest(requestItems, onStockUpdate);
         request.send();
@@ -37,30 +37,54 @@ ezStockSearch(inputField,
             document.getElementById("error-text").innerText = "";
 
             // if data is present and code is okay or processing, display stock template
-            if(result.stock && (result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING))
+            if(result.code === json.StockResponseCode.OK || result.code === json.StockResponseCode.PROCESSING)
             {
-
                 stocks.push(result.symbol);
 
                 let listOfStocks: HTMLInputElement = document.getElementById("stocks-in-page") as HTMLInputElement;
 
 
-                if(listOfStocks)
-                   // if list is empty, add comma to beginning
+                if(!listOfStocks.value)
                 {
-                    listOfStocks.value = listOfStocks.value.concat(result.symbol+",");
+                    listOfStocks.value = result.symbol
                 }
                 else
-                    // if list is currently empty, don't need a comma in beginning
                 {
-                    listOfStocks.value = listOfStocks.value.concat(","+result.symbol+",");
+                    console.log(listOfStocks.value);
+                    if(listOfStocks.value.indexOf(result.symbol) < 0)
+                    {
+                        listOfStocks.value = listOfStocks.value.concat(","+result.symbol);
+                    }
                 }
 
-                // submit form with input searched
-                let stockForm: HTMLFormElement = document.getElementById("add-stock-form") as HTMLFormElement;
-                stockForm.submit();
-                console.log("Form submitted");
+                if(result.code === json.StockResponseCode.PROCESSING)
+                {
+                    displayModal("Success!", "We've found '" + result.symbol +"' but it isn't in our system yet. We'll automatically refresh your page within the " +
+                            "next minute once your data is available. Thank you for your patience");
+                    displayLoadingWheel("Loading stock information. Please don't refresh your page, this may take up to a minute...");
 
+                    let processingStocks = document.getElementById("processing-stocks");
+                    if(!processingStocks)
+                    {
+                        processingStocks = document.createElement("div");
+                        processingStocks.id = "processing-stocks";
+                        processingStocks.hidden = true;
+                        processingStocks.innerText = result.symbol;
+                    }
+                    else
+                    {
+                        processingStocks.innerText += ("," + result.symbol);
+                    }
+
+                    document.body.appendChild(processingStocks);
+                }
+                else if(result.code === json.StockResponseCode.OK)
+                {
+                    // submit form with input searched
+                    let stockForm: HTMLFormElement = document.getElementById("add-stock-form") as HTMLFormElement;
+                    stockForm.submit();
+                    console.log("Form submitted");
+                }
             }
             else if (result.code === json.StockResponseCode.INVALID_STOCK_SYMBOL)
             {
@@ -127,24 +151,32 @@ for(let symbol of stockSymbols)
 
 function onStockUpdate(response: json.StockResponseItem[])
 {
-
-    let updatedStocks: json.StockData[] = [];
-    for(let item of response)
+    let processingStocksElem = document.getElementById("processing-stocks");
+    if(processingStocksElem)
     {
-        if(item.data && (item.code == json.StockResponseCode.OK || item.code == json.StockResponseCode.PROCESSING))
+        let processingStocks = processingStocksElem.innerText.split(",");
+        for(let item of response)
         {
-            updatedStocks.push(item.data);
+            if(item.code === json.StockResponseCode.OK || item.code === json.StockResponseCode.PROCESSING)
+            {
+                if(processingStocks.indexOf(item.symbol) > -1)
+                {
+                    // Submit and refresh the page so the button will update
+                    let stockForm: HTMLFormElement = document.getElementById("add-stock-form") as HTMLFormElement;
+                    stockForm.submit();
+                }
+            }
+            else
+            {
+                displayModal("Houston, We've Got A Problem", "It seems something went wrong on our end. Please wait a minute and try again," +
+                        " we apologize for the inconvenience. ", "Error Code: " + item.code);
+                removeLoadingWheel();
+                break;
+            }
         }
-        else
-        {
-            // TODO: Handle error
-            console.log(item);
-        }
-    }
 
-    console.log(response);
-    storeStockData(updatedStocks);
-    drawPriceHistoryGraph(Array.from(graphsInPage.values()));
+        processingStocksElem.remove();
+    }
 }
 
 function findStocksInPage(): string[]
