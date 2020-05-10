@@ -2,9 +2,10 @@ package io.github.virtualstocksim.stock.stockrequest;
 
 import com.google.gson.*;
 import io.github.virtualstocksim.account.Account;
+import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.database.SQL;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.following.FollowedStock;
+import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.scraper.Scraper;
 import io.github.virtualstocksim.scraper.TimeInterval;
 import io.github.virtualstocksim.servlet.HttpRequestListener;
@@ -235,17 +236,15 @@ public class StockRequestHandler implements HttpRequestListener
                 Optional<Stock> stock = Stock.Find(symbol);
                 if(stock.isPresent())
                 {
-                    Follow follow = new Follow(stock.get().getCurrPrice(), stock.get(), SQL.GetTimeStamp());
-                    StocksFollowed stocksFollowed = new StocksFollowed(account.getFollowedStocks());
-                    stocksFollowed.addFollow(follow);
-                    account.setFollowedStocks(stocksFollowed.followObjectsToString());
+                    AccountController controller = new AccountController();
+                    controller.setModel(account);
                     try
                     {
-                        account.update();
+                        controller.followStock(stock.get());
                     }
                     catch (SQLException e)
                     {
-                        throw new StockRequestException("Unable to add stock to list of followed stocks for account; Uuid: " + account.getUUID(), StockResponseCode.SERVER_ERROR, e);
+                        throw new StockRequestException("Exception while committing account after following stock; Uuid: " + account.getUUID(), StockResponseCode.SERVER_ERROR, e);
                     }
                 }
                 break;

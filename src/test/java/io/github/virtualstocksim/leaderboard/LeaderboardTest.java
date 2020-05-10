@@ -5,6 +5,8 @@ import io.github.virtualstocksim.account.AccountController;
 import io.github.virtualstocksim.account.AccountDatabase;
 import io.github.virtualstocksim.account.AccountType;
 import io.github.virtualstocksim.database.SQL;
+import io.github.virtualstocksim.stock.DummyStocks;
+import io.github.virtualstocksim.stock.DummyStocks.StockSymbol;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,11 +48,11 @@ public class LeaderboardTest {
             //opt in every account
             account.setLeaderboardRank(1000);
             accountController.setModel(account);
-            accountController.followStock("AMZN");
-            accountController.followStock("TSLA");
-            accountController.followStock("GOOGL");
-            accountController.followStock("F");
-            accountController.followStock("BDX");
+            accountController.followStock(DummyStocks.GetDummyStock(StockSymbol.AMAZON));
+            accountController.followStock(DummyStocks.GetDummyStock(StockSymbol.TESLA));
+            accountController.followStock(DummyStocks.GetDummyStock(StockSymbol.GOOGLE));
+            accountController.followStock(DummyStocks.GetDummyStock(StockSymbol.FORD));
+            accountController.followStock(DummyStocks.GetDummyStock(StockSymbol.BDX));
         }
 
         //most in cash (second)

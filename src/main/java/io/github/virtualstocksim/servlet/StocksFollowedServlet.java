@@ -2,8 +2,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
-import io.github.virtualstocksim.following.StocksFollowed;
-import io.github.virtualstocksim.stock.Stock;
+import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
 import io.github.virtualstocksim.transaction.TransactionType;
 import org.slf4j.Logger;
@@ -14,11 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/stocksFollowed"})
 public class StocksFollowedServlet extends HttpServlet
@@ -38,7 +34,7 @@ public class StocksFollowedServlet extends HttpServlet
             return;
         }
 
-        StocksFollowed followedModel = new StocksFollowed(account.getFollowedStocks());
+        FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
         InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
         req.setAttribute("followedModel", followedModel);
         req.setAttribute("investModel", investModel);
@@ -56,12 +52,12 @@ public class StocksFollowedServlet extends HttpServlet
 
         // check if session exists, if not the user is not logged in or timed out.
         Account account = SessionValidater.validate(req).orElse(null);
-        if (account != null) {
+        if (account == null) {
 
         AccountController accountController = new AccountController();
         accountController.setModel(account);
 
-        StocksFollowed followedModel = new StocksFollowed(account.getFollowedStocks());
+        FollowedStocks followedModel = new FollowedStocks(account.getFollowedStocks());
         InvestmentCollection investModel = new InvestmentCollection(account.getInvestedStocks());
 
         req.setAttribute("followedModel", followedModel);
@@ -74,7 +70,9 @@ public class StocksFollowedServlet extends HttpServlet
         String stockToUnfollow = req.getParameter("stock-to-unfollow");
 
 
-        // check for user selling/buying shares
+
+        //We should add error checking here on MS4
+        //This is probably very bad, especially if the forms persist & you change between buy and sell
         if (sellShares != null) {
             try {
                 accountController.trade(TransactionType.SELL, stockName, Integer.parseInt(sellShares.trim()));
@@ -84,7 +82,7 @@ public class StocksFollowedServlet extends HttpServlet
                 e.printStackTrace();
             }
         }
-        else if (buyShares != null)
+        if (buyShares != null)
         {
             try
             {
@@ -99,9 +97,9 @@ public class StocksFollowedServlet extends HttpServlet
             }
         }
 
-        if(stockToUnfollow!=null) {
+        if(stockToUnfollow!=null){
             try {
-                accountController.unFollowStock(stockToUnfollow);
+                accountController.unfollowStock(stockToUnfollow);
                 accountController.unInvest(stockToUnfollow);
                 stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
                 req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);
@@ -109,9 +107,8 @@ public class StocksFollowedServlet extends HttpServlet
                 logger.info("Error unfollowing "+stockToUnfollow+ ":"+e);
             }
 
+            }
         }
-
-    }
 
 
         req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);

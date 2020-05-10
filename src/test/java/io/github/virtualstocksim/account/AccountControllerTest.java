@@ -2,8 +2,10 @@ package io.github.virtualstocksim.account;
 
 import io.github.virtualstocksim.database.SQL;
 import io.github.virtualstocksim.encryption.Encryption;
-import io.github.virtualstocksim.following.Follow;
-import io.github.virtualstocksim.following.StocksFollowed;
+import io.github.virtualstocksim.following.FollowedStock;
+import io.github.virtualstocksim.following.FollowedStocks;
+import io.github.virtualstocksim.stock.DummyStocks;
+import io.github.virtualstocksim.stock.DummyStocks.StockSymbol;
 import io.github.virtualstocksim.stock.ResetStockDB;
 import io.github.virtualstocksim.stock.Stock;
 import io.github.virtualstocksim.transaction.*;
@@ -16,10 +18,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +27,7 @@ public class AccountControllerTest
     private static final Logger logger = LoggerFactory.getLogger(AccountControllerTest.class);
     private AccountController conn;
     private Account acct;
-    StocksFollowed stocksFollowed;
+    FollowedStocks followedStocks;
     InvestmentCollection investmentCollection;
     Stock Amazon;
     List<Transaction> transactions;
@@ -66,14 +65,14 @@ public class AccountControllerTest
         conn.setModel(Account.Create("TestAdmin", "test@vss.com", TEST_PASSWORD, AccountType.ADMIN).get());
 
 
-        List <Follow>followList = new LinkedList<Follow>();
+        Map<String, FollowedStock> followedStockMap = new HashMap<>();
         //followList.add(new Follow(new BigDecimal(200), Stock.Find("AMZN").get(),SQL.GetTimeStamp()));
         //followList.add(new Follow(new BigDecimal(600), Stock.Find("TSLA").get(),SQL.GetTimeStamp()));
-        followList.add(new Follow(new BigDecimal(23), Stock.Find("GOOGL").get(),SQL.GetTimeStamp()));
-        followList.add(new Follow(new BigDecimal(12), Stock.Find("F").get(),SQL.GetTimeStamp()));
+        followedStockMap.put(StockSymbol.GOOGLE.getSymbol(), new FollowedStock(DummyStocks.GetDummyStock(StockSymbol.GOOGLE), new BigDecimal(23), SQL.GetTimeStamp()));
+        followedStockMap.put(StockSymbol.FORD.getSymbol(), new FollowedStock(DummyStocks.GetDummyStock(StockSymbol.FORD), new BigDecimal(12), SQL.GetTimeStamp()));
        // followList.add(new Follow(new BigDecimal(100), Stock.Find("BDX").get(),SQL.GetTimeStamp())); //add later to test addInvestment
-        stocksFollowed = new StocksFollowed(followList);
-        conn.getModel().setFollowedStocks(stocksFollowed.followObjectsToString());
+        followedStocks = new FollowedStocks(followedStockMap);
+        conn.getModel().setFollowedStocks(String.valueOf(followedStocks.asJsonArray()));
 
         List investmentList = new LinkedList<>();
         investmentList.add(new Investment(12,Stock.Find("AMZN").orElse(null),SQL.GetTimeStamp()));
@@ -148,7 +147,10 @@ public class AccountControllerTest
         TransactionHistory transactionHistory = new TransactionHistory(conn.getModel().getTransactionHistory());
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
         //System.out.println("Parsing to investmentCollection" + conn.getModel().getInvestedStocks());
-        StocksFollowed stocksFollowed = new StocksFollowed(conn.getModel().getFollowedStocks());
+        FollowedStocks followedStocks = new FollowedStocks(conn.getModel().getFollowedStocks());
+
+        conn.setModel(conn.getModel());
+
         int init_size = investmentCollection.getInvestments().size();
         int initial_num_transactions = transactionHistory.getTransactions().size();
 
@@ -162,8 +164,8 @@ public class AccountControllerTest
         conn.trade(TransactionType.BUY, "AMZN", 10);
         conn.trade(TransactionType.BUY,"TSLA",10);
 
-        assertTrue(stocksFollowed.containsStock("GOOGL"));
-        assertTrue(stocksFollowed.containsStock("F"));
+        assertTrue(followedStocks.contains("GOOGL"));
+        assertTrue(followedStocks.contains("F"));
 
         //Buy shares that account follows, but is not invested in
         assertFalse(investmentCollection.isInvested("GOOGL"));
@@ -196,7 +198,7 @@ public class AccountControllerTest
         }
 
 
-        stocksFollowed.updateStocksFollowed(conn.getModel().getFollowedStocks());
+        followedStocks.setFollowedStocks(conn.getModel().getFollowedStocks());
         investmentCollection.updateInvestments(conn.getModel().getInvestedStocks());
         transactionHistory.updateTransactions(conn.getModel().getTransactionHistory());
 
@@ -211,12 +213,12 @@ public class AccountControllerTest
 
         //For these shares, they should have been removed from following and placed in investment
         assertFalse(conn.getModel().getFollowedStocks().contains("GOOGL"));
-        assertFalse(stocksFollowed.containsStock("F"));
+        assertFalse(followedStocks.contains("F"));
         //and data that was unchanged during test should remain
 
 
         //The investment list should have expanded by 2 and not four, because only two investments were made in companies that
-        assertEquals(investmentCollection.getInvestments().size(), init_size+2);
+        assertEquals(init_size+2, investmentCollection.getInvestments().size());
 
         //verify that transaction was expanded for every transaction made in this test
         assertEquals(transactionHistory.getTransactions().size(), initial_num_transactions+4);
@@ -229,7 +231,8 @@ public class AccountControllerTest
     public void testSell() throws SQLException {
         TransactionHistory transactionHistory = new TransactionHistory(conn.getModel().getTransactionHistory());
         InvestmentCollection investmentCollection = new InvestmentCollection(conn.getModel().getInvestedStocks());
-        StocksFollowed stocksFollowedSell = new StocksFollowed(conn.getModel().getFollowedStocks());
+        FollowedStocks followedStocksSell = new FollowedStocks(conn.getModel().getFollowedStocks());
+        conn.setModel(conn.getModel());
         int init_size = investmentCollection.getInvestments().size();
         int initial_num_transactions = transactionHistory.getTransactions().size();
 
@@ -237,7 +240,7 @@ public class AccountControllerTest
         assertTrue(investmentCollection.isInvested("AMZN"));
 
         assertTrue(investmentCollection.isInvested("TSLA"));
-        assertFalse(stocksFollowedSell.containsStock("TSLA"));
+        assertFalse(followedStocksSell.contains("TSLA"));
 
         conn.trade(TransactionType.SELL, "AMZN",10);
 
@@ -249,7 +252,7 @@ public class AccountControllerTest
        // System.out.println(conn.getModel().getInvestedStocks());
         //System.out.println("Stocks folllowed: " + conn.getModel().getFollowedStocks());
 
-        stocksFollowedSell.updateStocksFollowed(conn.getModel().getFollowedStocks());
+        followedStocksSell.setFollowedStocks(conn.getModel().getFollowedStocks());
 
 
         assertEquals(2, investmentCollection.getInvestment("AMZN").getNumShares());
@@ -258,30 +261,30 @@ public class AccountControllerTest
         //since we sold all shares of tesla, tesla should no longer be in the invested list
         //and should be moved back to followed
         assertFalse(investmentCollection.isInvested("TSLA"));
-        assertTrue(stocksFollowedSell.containsStock("TSLA"));
+        assertTrue(followedStocksSell.contains("TSLA"));
 
     }
 
     @Test
     public void testFollowStock() throws SQLException {
-        StocksFollowed tempFollow = new StocksFollowed(conn.getModel().getFollowedStocks());
-        assertTrue(tempFollow.containsStock("GOOGL"));
-        assertTrue(tempFollow.containsStock("F"));
+        FollowedStocks tempFollow = new FollowedStocks(conn.getModel().getFollowedStocks());
+        assertTrue(tempFollow.contains("GOOGL"));
+        assertTrue(tempFollow.contains("F"));
 
-        assertFalse(tempFollow.containsStock("TSLA"));
-        assertFalse(tempFollow.containsStock("AMZN"));
-        assertFalse(tempFollow.containsStock("BDX"));
+        assertFalse(tempFollow.contains("TSLA"));
+        assertFalse(tempFollow.contains("AMZN"));
+        assertFalse(tempFollow.contains("BDX"));
 
-        conn.followStock("TSLA");
-        conn.followStock("AMZN");
-        conn.followStock("BDX");
+        conn.followStock(DummyStocks.GetDummyStock(StockSymbol.TESLA));
+        conn.followStock(DummyStocks.GetDummyStock(StockSymbol.AMAZON));
+        conn.followStock(DummyStocks.GetDummyStock(StockSymbol.BDX));
 
-        tempFollow.updateStocksFollowed(conn.getModel().getFollowedStocks());
+        tempFollow.setFollowedStocks(conn.getModel().getFollowedStocks());
         conn.getModel().update();
 
-        assertTrue(tempFollow.containsStock("TSLA"));
-        assertTrue(tempFollow.containsStock("AMZN"));
-        assertTrue(tempFollow.containsStock("BDX"));
+        assertTrue(tempFollow.contains("TSLA"));
+        assertTrue(tempFollow.contains("AMZN"));
+        assertTrue(tempFollow.contains("BDX"));
     }
 
     @Test
