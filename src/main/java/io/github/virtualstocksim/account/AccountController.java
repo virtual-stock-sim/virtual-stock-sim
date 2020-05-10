@@ -233,7 +233,7 @@ public class AccountController {
      * @param symbol Symbol of stock to uninvest
      * @throws SQLException
      */
-    public void unInvest(String symbol) throws SQLException {
+    public void unInvest(String symbol) throws SQLException, TradeException {
         List<Account> accounts = Account.FindCustom("SELECT id, invested_stocks FROM account WHERE UUID = ?", account.getUUID());
 
         // check if user exists
@@ -244,7 +244,11 @@ public class AccountController {
 
         // get investments to retrieve shares
         InvestmentCollection investmentCollection = new InvestmentCollection(accounts.get(0).getInvestedStocks());
-        int sharesToSell = investmentCollection.getInvestment(symbol).getNumShares();
+        Investment investment = investmentCollection.getInvestment(symbol);
+        if(investment == null)
+            throw new TradeException("User is not currently invested in: " + symbol);
+
+        int sharesToSell = investment.getNumShares();
 
         if(sharesToSell > 0)
         {

@@ -152,7 +152,7 @@
 
         <div class="modal-body">
             <form action=${pageContext.servletContext.contextPath}/following name="${stock.symbol}-sell-form" method="post" id="${stock.symbol}-sell-form">
-                <textarea class="form-control" form="${stock.symbol}-sell-form" onsubmit="this.value=''" rows="1" cols="5" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell"></textarea><br>
+                <input type="number" class="form-control" form="${stock.symbol}-sell-form" onsubmit="this.value=''" placeholder="Enter the number of shares you'd like to sell" name="shares-to-sell" /><br>
                 <input type="hidden" name="stock-name" value="${stock.symbol}">
                 <input class="btn btn-default" type="submit" value="Sell">
             </form>
@@ -181,6 +181,7 @@
                 <label for="unfollow-confirm">Yes, unfollow ${stock.symbol} and sell my current shares.</label>
                 <input type="checkbox" name="unfollow-confirm" id="unfollow-confirm" value="${stock.symbol}"><br>
                 <input class="btn btn-default" type="submit" value="Confirm">
+                <input hidden name="stock-to-unfollow" value="${stock.symbol}">
             </form>
         </div>
     </div>

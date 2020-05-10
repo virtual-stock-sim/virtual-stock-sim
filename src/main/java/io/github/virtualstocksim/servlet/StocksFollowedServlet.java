@@ -3,6 +3,7 @@ package io.github.virtualstocksim.servlet;
 
 import io.github.virtualstocksim.account.Account;
 import io.github.virtualstocksim.account.AccountController;
+import io.github.virtualstocksim.account.TradeException;
 import io.github.virtualstocksim.following.FollowedStocks;
 import io.github.virtualstocksim.transaction.InvestmentCollection;
 import io.github.virtualstocksim.transaction.TransactionType;
@@ -63,7 +64,7 @@ public class StocksFollowedServlet extends HttpServlet
 
             req.setAttribute("followedModel", followedModel);
             req.setAttribute("investModel", investModel);
-            req.setAttribute("account", account);
+//            req.setAttribute("account", account);
 
             String sellShares = req.getParameter("shares-to-sell");
             String buyShares = req.getParameter("shares-to-buy");
@@ -100,8 +101,15 @@ public class StocksFollowedServlet extends HttpServlet
 
             if(stockToUnfollow!=null){
                 try {
+                    try
+                    {
+                        accountController.unInvest(stockToUnfollow);
+                    }
+                    catch (TradeException e)
+                    {
+                        logger.warn("", e);
+                    }
                     accountController.unfollowStock(stockToUnfollow);
-                    accountController.unInvest(stockToUnfollow);
                     stockUnfollowSuccess= "You have unfollowed "+stockToUnfollow+ " and your remaining shares were sold.";
                     req.setAttribute("stockUnfollowSuccess", stockUnfollowSuccess);
                 } catch (SQLException e){
@@ -109,11 +117,13 @@ public class StocksFollowedServlet extends HttpServlet
                 }
 
             }
+            req.setAttribute("account", account);
+            req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
         }
-
-
-        req.getRequestDispatcher("/_view/stocksFollowed.jsp").forward(req, resp);
-
+        else
+        {
+            resp.sendRedirect("/login");
+        }
     }
 
 }
