@@ -408,7 +408,7 @@ public class AccountController {
      * Opt into investor leaderboard
      */
     public void optInToLeaderboard(){
-        account.setLeaderboardRank(0);
+        account.setLeaderboardRank(Integer.MAX_VALUE);
 
         try {
             account.update();
