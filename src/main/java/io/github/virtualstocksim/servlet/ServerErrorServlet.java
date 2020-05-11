@@ -26,4 +26,14 @@ public class ServerErrorServlet extends HttpServlet {
 
         req.getRequestDispatcher("/_view/500.jsp").forward(req, resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        logger.info("Server Error Servlet: doPost");
+
+
+
+        req.getRequestDispatcher("/_view/500.jsp").forward(req, resp);
+    }
 }
