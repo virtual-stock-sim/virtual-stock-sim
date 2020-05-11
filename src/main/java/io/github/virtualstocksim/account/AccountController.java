@@ -338,6 +338,7 @@ public class AccountController {
                     investmentCollection.removeInvestment(symbol);
                     followedStocks.addFollowedStock(new FollowedStock(localStock, localStock.getCurrPrice(), SQL.GetTimeStamp()));
                     account.setFollowedStocks(String.valueOf(followedStocks.asJsonArray()));
+                    this.followedStocks = followedStocks;
                 } else if (numShares < investmentCollection.getInvestment(symbol).getNumShares()) {
                     //already invested, just update the number of shares
                     investmentCollection.getInvestment(symbol).setNumShares(investmentCollection.getInvestment(symbol).getNumShares() - numShares);
