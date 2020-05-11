@@ -120,7 +120,7 @@ public class StocksFollowedServlet extends HttpServlet
                 }
             }
 
-            if(stockToUnfollow!=null){
+            if(stockToUnfollow!=null && req.getParameter("unfollow-confirm") != null){
                 try {
                     try
                     {
