@@ -39,7 +39,7 @@
 <%-- In this case the link parameter is empty(there is nothing after the question mark ...../reset?token=XXX --%>
 <c:if test = "${empty salt}">
 
-    <div class = generalInformation>
+    <div class = "generalInformation">
     <p>Please provide the username or email for the account who's password you would like to reset</p>
     <p>If an account exists under that username or email, we will send an automated message to the email account associated with that username with instructions on how to reset your password</p>
     </div>
