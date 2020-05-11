@@ -44,7 +44,8 @@ public class FollowedStockTest
         {
             Stock dummy = dummyIt.next();
             FollowedStock followed = followedIt.next();
-            Stock stock = followed.getStock();
+            // Make a new stock so that the dummy stock isn't being edited
+            Stock stock = new Stock(followed.getStock().getSymbol(), followed.getStock().getCurrPrice(), new BigDecimal("0.0"), 0, 0);
             stock.setCurrPrice(stock.getCurrPrice().subtract(BigDecimal.TEN));
 
             double expectedPerChange = percentChange(dummy.getCurrPrice(), followed.getInitialPrice());
