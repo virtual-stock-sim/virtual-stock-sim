@@ -243,7 +243,7 @@ public class ProfileServlet extends HttpServlet
             }
 
             String optIn = req.getParameter("leaderboard-opt-in");
-            if (optIn.equals("in"))
+            if (optIn != null && optIn.equals("in"))
             {
                 controller.optInToLeaderboard();
                 optInSuccess = true;
@@ -251,7 +251,7 @@ public class ProfileServlet extends HttpServlet
                 logger.info("User successfully opted into leaderboard");
 
             }
-            else if (optIn.equals("out"))
+            else if (optIn != null && optIn.equals("out"))
             {
                 controller.optOutOfLeaderboard();
                 optOutSuccess = true;
