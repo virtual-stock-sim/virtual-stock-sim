@@ -163,7 +163,7 @@ public class PasswordResetManager {
     if(this.email!=null) {
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("virtualstocksim@gmail.com"));
+            message.setFrom(new InternetAddress(from));
             //send to the email associated with this PasswordResetManager object
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(this.email));
             message.setSubject("VSS - requested password reset");
