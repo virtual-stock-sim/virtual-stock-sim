@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet
 
         if(uname == null || pword == null)
         {
-            resp.sendRedirect("/500");
+            resp.sendRedirect("/error500");
             return;
         }
         else

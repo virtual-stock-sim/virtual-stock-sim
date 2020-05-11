@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/500"})
+@WebServlet(urlPatterns = {"/error500"})
 public class ServerErrorServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorServlet.class);

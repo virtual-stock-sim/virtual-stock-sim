@@ -124,7 +124,7 @@ public class CreateAccountServlet extends HttpServlet {
             // If checks passed and account isn't present then something happened on our end
             else
             {
-                resp.sendRedirect("/500");
+                resp.sendRedirect("/error500");
             }
         }
     }
