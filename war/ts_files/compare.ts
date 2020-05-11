@@ -86,15 +86,7 @@ ezStockSearch(inputField,
             }
             else if (result.code === json.StockResponseCode.INVALID_STOCK_SYMBOL)
             {
-                let message;
-                if(result.stock)
-                {
-                    message = "Your stock symbol was invalid. It must only contain English letters and be no greater than 10 characters long";
-                }
-                else
-                {
-                    message = "The search field cannot be empty";
-                }
+                let message = "Your stock symbol was invalid. It must only contain English letters and be no greater than 10 characters long";
                 displayModal("Houston, We've Got A Problem", message, "Error Code: " + result.code);
             }
             else if(result.symbol && result.code === json.StockResponseCode.SYMBOL_NOT_FOUND)
